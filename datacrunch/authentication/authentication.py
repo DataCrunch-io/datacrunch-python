@@ -39,7 +39,8 @@ class AuthenticationService:
             "client_secret": self._client_secret
         }
 
-        response = requests.post(url, data=payload, headers=self._generate_headers())
+        response = requests.post(
+            url, data=payload, headers=self._generate_headers())
         handle_error(response)
 
         auth_data = response.json()
@@ -74,13 +75,15 @@ class AuthenticationService:
             "refresh_token": self._refresh_token
         }
 
-        response = requests.post(url, data=payload, headers=self._generate_headers())
+        response = requests.post(
+            url, data=payload, headers=self._generate_headers())
         handle_error(response)
 
         return response.json()
 
     def _generate_headers(self):
-        client_id_truncated = self._client_id[:10]  # get the first 10 chars of the client id
+        # get the first 10 chars of the client id
+        client_id_truncated = self._client_id[:10]
         headers = {
             'User-Agent': 'datacrunch-python-' + client_id_truncated
         }

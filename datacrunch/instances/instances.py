@@ -330,21 +330,23 @@ class InstancesService:
         instance = self.get_by_id(id)
         return instance
 
-    def action(self, id_list: List[str], action: str) -> None:
-        """Performs an action on a list of instances
+    def action(self, id_list: Union[List[str], str], action: str) -> None:
+        """Performs an action on a list of instances / single instance
 
-        :param id_list: list of instance ids
-        :type id_list: List[str]
+        :param id_list: list of instance ids, or an instance id
+        :type id_list: Union[List[str], str]
         :param action: the action to perform
         :type action: str
         """
+        if type(id_list) is str:
+            id_list = [id_list]
+
         payload = {
             "id": id_list,
             "action": action
         }
 
-        response = self._http_client.post(
-            INSTANCES_ENDPOINT + '/action', json=payload)
+        self._http_client.post(INSTANCES_ENDPOINT + '/action', json=payload)
         return
 
     def is_available(self, instance_type: str) -> bool:

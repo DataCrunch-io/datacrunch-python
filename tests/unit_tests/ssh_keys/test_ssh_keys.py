@@ -14,12 +14,13 @@ KEY_VALUE = 'asdf'
 KEY_ID_2 = '12345dc1-a5d2-4972-ae4e-d429115d055b'
 
 PAYLOAD = [
-    {         
+    {
         'id': KEY_ID,
         'name': KEY_NAME,
         'key': KEY_VALUE
     }
 ]
+
 
 class TestSSHKeys:
 
@@ -139,7 +140,7 @@ class TestSSHKeys:
         result = ssh_key_service.delete([KEY_ID, KEY_ID_2])
 
         # assert
-        assert result == None
+        assert result is None
         assert responses.assert_call_count(endpoint, 1) is True
         
 
