@@ -1,5 +1,6 @@
 class APIException(Exception):
-    """This exception is raised if there was an error datacrunch's API.
+    """This exception is raised if there was an error from datacrunch's API.
+    Could be an invalid input, token etc.
 
     Raised when an API HTTP call response has a status code >= 400
     """

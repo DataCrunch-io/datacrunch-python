@@ -8,43 +8,43 @@ Open new issues at https://github.com/DataCrunch-io/datacrunch-python/issues.
 You can open pull requests by following the steps:
 
 Code Contribution:
--------------
+------------------
 
 1. Fork the `datacrunch-python` repo on GitHub.
 
-2. Clone your fork locally:
+2. Clone your fork locally::
 
-    `git clone git@github.com:{your_username}/datacrunch-python.git`
+    git clone git@github.com:{your_username}/datacrunch-python.git
 
-    `cd datacrunch-python`
+    cd datacrunch-python
 
-3. Create virtual environment & install this local copy into the virtual environment:
+3. Create virtual environment & install this local copy into the virtual environment::
     
-    `python3 -m venv datacrunch_env && source .datacrunch_env/bin/activate`
+    python3 -m venv datacrunch_env && source .datacrunch_env/bin/activate
     
-    `python3 setup.py develop`
+    python3 setup.py develop
 
 4. Create a new branch:
 
-    if it's a feature:
+    if it's a feature::
 
-    `git checkout -b feature/new-feature-name`
+        git checkout -b feature/new-feature-name
 
-    or a bugfix:
+    or a bugfix::
 
-    `git checkout -b hotfix/some-bugfix`
+        git checkout -b hotfix/some-bugfix
 
 5. Make your local changes 
 
-6. Run tests:
+6. Run tests::
 
-    `pytest`
+    pytest
 
-7. Commit and push:
+7. Commit and push::
 
-    `git commit .am "Detailed commit message"`
+    git commit .am "Detailed commit message"
 
-    `git push origin {branch-name}`
+    git push origin {branch-name}
 
 8. Submit a pull request in GitHub.
 

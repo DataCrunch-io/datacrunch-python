@@ -7,9 +7,11 @@ DataCrunch Python SDK
 =====================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :hidden:
 
-   Installation
-   Examples
+   installation
+   examples
    API
+   contributing
+   changelog

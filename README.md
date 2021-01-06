@@ -98,7 +98,10 @@ We use pytest for testing.
 
 ### Generating the documentation
 
-TODO
+```bash
+cd docs
+make html
+```
 
 ### Style Guide
 
