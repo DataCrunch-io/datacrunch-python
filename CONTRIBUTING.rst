@@ -52,7 +52,7 @@ Pull Request Guidelines
 ------------------------
 
 1. The pull request should include tests.
-2. Please add documentation docstrings and tipe hinting to any new feature.
+2. Please add documentation docstrings and type hinting to any new feature.
 
 Release Guidelines
 ------------------------

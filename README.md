@@ -23,7 +23,7 @@ DataCrunch's Public API documentation [is available here](https://datacrunch.sto
   Other platforms:
   https://en.wikipedia.org/wiki/Environment_variable
 
-- Create server example:
+- Example for creating a new instance:
 
   ```python
   import os
@@ -54,7 +54,7 @@ DataCrunch's Public API documentation [is available here](https://datacrunch.sto
 
 ## Development
 
-### Setting up & Configuration
+### Setting up the local development environment
 
 - Clone the repository:
 
@@ -68,7 +68,7 @@ DataCrunch's Public API documentation [is available here](https://datacrunch.sto
   python3 -m venv datacrunch_env && source .datacrunch_env/bin/activate
   ```
 
-  or if using fish shell:
+  or if using [fish shell](https://fishshell.com/):
 
   ```fish
   python3 -m venv datacrunch_env && source .datacrunch_env/bin/activate.fish
@@ -82,17 +82,19 @@ DataCrunch's Public API documentation [is available here](https://datacrunch.sto
 
 ### Running Tests
 
-Executing all tests
+We use pytest for testing.
 
-```bash
-pytest
-```
+- To execute all tests
 
-Executing a single test file
+  ```bash
+  pytest
+  ```
 
-```bash
-pytest ./tests/unit_tests/test_file.py
-```
+- To execute a single test file
+
+  ```bash
+  pytest ./tests/unit_tests/test_file.py
+  ```
 
 ### Generating the documentation
 
