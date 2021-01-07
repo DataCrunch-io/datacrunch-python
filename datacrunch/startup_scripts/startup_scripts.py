@@ -75,9 +75,8 @@ class StartupScriptsService:
         """
         script = self._http_client.get(
             STARTUP_SCRIPTS_ENDPOINT + f'/{id}').json()[0]
-        script_object = StartupScript(
-            script['id'], script['name'], script['script'])
-        return script_object
+
+        return StartupScript(script['id'], script['name'], script['script'])
 
     def delete(self, id_list: List[str]) -> None:
         """Delete multiple startup scripts by id
@@ -109,4 +108,5 @@ class StartupScriptsService:
         :rtype: str
         """
         payload = {"name": name, "script": script}
-        return self._http_client.post(STARTUP_SCRIPTS_ENDPOINT, json=payload).json()
+        id = self._http_client.post(STARTUP_SCRIPTS_ENDPOINT, json=payload).text
+        return StartupScript(id, name, script)

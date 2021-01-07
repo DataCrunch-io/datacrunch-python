@@ -1,8 +1,5 @@
 from typing import List, Union
 
-from datacrunch.exceptions import APIException
-from datacrunch.constants import Actions, InstanceStatus, ErrorCodes
-
 INSTANCES_ENDPOINT = '/instances'
 
 
@@ -326,7 +323,7 @@ class InstancesService:
             "description": description,
             "location": location
         }
-        id = self._http_client.post(INSTANCES_ENDPOINT, json=payload).json()
+        id = self._http_client.post(INSTANCES_ENDPOINT, json=payload).text
         instance = self.get_by_id(id)
         return instance
 

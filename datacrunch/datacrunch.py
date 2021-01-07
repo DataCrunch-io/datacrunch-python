@@ -40,11 +40,11 @@ class DataCrunchClient:
         self.version: str = VERSION
         """Current SDK Version"""
 
-
         # Services
         self._authentication: AuthenticationService = AuthenticationService(
             client_id, client_secret, self.base_url)
-        self._http_client: HTTPClient = HTTPClient(self._authentication, self.base_url)
+        self._http_client: HTTPClient = HTTPClient(
+            self._authentication, self.base_url)
 
         self.balance: BalanceService = BalanceService(self._http_client)
         """Balance service. Get client balance"""
@@ -52,7 +52,8 @@ class DataCrunchClient:
         self.images: ImagesService = ImagesService(self._http_client)
         """Image service"""
 
-        self.instance_types: InstanceTypesService = InstanceTypesService(self._http_client)
+        self.instance_types: InstanceTypesService = InstanceTypesService(
+            self._http_client)
         """Instance type service"""
 
         self.instances: InstancesService = InstancesService(self._http_client)
@@ -61,6 +62,6 @@ class DataCrunchClient:
         self.ssh_keys: SSHKeysService = SSHKeysService(self._http_client)
         """SSH keys service"""
 
-        self.startup_scripts: StartupScriptsService = StartupScriptsService(self._http_client)
+        self.startup_scripts: StartupScriptsService = StartupScriptsService(
+            self._http_client)
         """Startup Scripts service"""
-

@@ -108,5 +108,5 @@ class SSHKeysService:
         :rtype: SSHKey
         """
         payload = {"name": name, "key": key}
-        id = self._http_client.post(SSHKEYS_ENDPOINT, json=payload).json()
+        id = self._http_client.post(SSHKEYS_ENDPOINT, json=payload).text
         return SSHKey(id, name, key)

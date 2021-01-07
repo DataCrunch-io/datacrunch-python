@@ -20,7 +20,7 @@ Code Contribution:
 
 3. Create virtual environment & install this local copy into the virtual environment::
     
-    python3 -m venv datacrunch_env && source .datacrunch_env/bin/activate
+    python3 -m venv datacrunch_env && source ./datacrunch_env/bin/activate
     
     python3 setup.py develop
 
