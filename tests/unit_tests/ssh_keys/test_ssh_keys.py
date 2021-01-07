@@ -97,7 +97,7 @@ class TestSSHKeys:
         responses.add(
             responses.POST,
             endpoint,
-            json=KEY_ID,
+            body=KEY_ID,
             status=201
         )
 

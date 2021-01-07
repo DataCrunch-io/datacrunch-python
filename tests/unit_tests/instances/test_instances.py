@@ -1,9 +1,9 @@
 import pytest
-import responses # https://github.com/getsentry/responses
+import responses  # https://github.com/getsentry/responses
 
 from datacrunch.exceptions import APIException
 from datacrunch.instances.instances import InstancesService, Instance
-from datacrunch.constants import Actions, InstanceStatus, ErrorCodes
+from datacrunch.constants import Actions, ErrorCodes
 
 INVALID_REQUEST = ErrorCodes.INVALID_REQUEST
 INVALID_REQUEST_MESSAGE = 'Your existence is invalid'
@@ -53,8 +53,8 @@ PAYLOAD = [
     }
 ]
 
-class TestInstancesService:
 
+class TestInstancesService:
     @pytest.fixture
     def instances_service(self, http_client):
         return InstancesService(http_client)
@@ -96,7 +96,6 @@ class TestInstancesService:
         assert type(instances[0].memory) == dict
         assert type(instances[0].storage) == dict
         assert responses.assert_call_count(endpoint, 1) is True
-
 
     def test_get_instances_by_status_successful(self, instances_service, endpoint):
         # arrange - add response mock
@@ -209,7 +208,7 @@ class TestInstancesService:
         responses.add(
             responses.POST,
             endpoint,
-            json=INSTANCE_ID,
+            body=INSTANCE_ID,
             status=200
         )
         # get instance by id
@@ -287,7 +286,7 @@ class TestInstancesService:
         result = instances_service.action(id_list=[INSTANCE_ID], action=Actions.SHUTDOWN)
 
         # assert
-        assert result == None
+        assert result is None
         assert responses.assert_call_count(url, 1) is True
 
     def test_action_failed(self, instances_service, endpoint):
@@ -323,7 +322,7 @@ class TestInstancesService:
         is_available = instances_service.is_available(INSTANCE_TYPE)
 
         # assert
-        assert is_available == True
+        assert is_available is True
         assert responses.assert_call_count(url, 1) is True
 
     def test_is_available_failed(self, instances_service, endpoint):
@@ -344,4 +343,3 @@ class TestInstancesService:
         assert excinfo.value.code == INVALID_REQUEST
         assert excinfo.value.message == INVALID_REQUEST_MESSAGE
         assert responses.assert_call_count(url, 1) is True
-
