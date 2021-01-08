@@ -1,5 +1,17 @@
 # DataCrunch Python SDK
 
+<p>
+  <a href='https://github.com/DataCrunch-io/datacrunch-python/blob/master/LICENSE'>
+    <img src='https://img.shields.io/github/license/DataCrunch-io/datacrunch-python'></img>
+  </a>
+  <a href='https://pypi.org/project/datacrunch/'>
+    <img src='https://img.shields.io/pypi/v/datacrunch?logo=python&logoColor=green'></img>
+  </a>
+  <a href='https://datacrunch.io'>
+    <img src='https://img.shields.io/badge/datacrunch-.io-blue'></img>
+  </a>
+</p>
+
 The official DataCrunch.io python SDK.
 
 DataCrunch's Public API documentation [is available here](https://datacrunch.stoplight.io/docs/datacrunch-public/docs/Overview/Introduction.md).
