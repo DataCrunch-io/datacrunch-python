@@ -20,10 +20,17 @@ setuptools.setup(
     install_requires=['requests>=2.25.1,<3'],
     extras_require={
         'dev': [''],
-        'test': ['pytest>=6.2.1,<7', 'pytest-responses>=0.4.0,<1', 'responses>=0.12.1,<1']
+        'test': ['pytest>=6.2.1,<7',
+                 'pytest-cov>=2.10.1,<3',
+                 'pytest-responses>=0.4.0,<1',
+                 'responses>=0.12.1,<1']
     },
     classifiers=[
         "Programming Language :: Python :: 3",
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",

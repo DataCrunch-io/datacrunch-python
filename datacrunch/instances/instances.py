@@ -40,7 +40,7 @@ class Instance:
         :type description: str
         :param ip: instance ip address
         :type ip: str
-        :param status: instance current status, might be out of date if changed.
+        :param status: instance current status, might be out of date if changed
         :type status: str
         :param created_at: the time the instance was deployed (UTC)
         :type created_at: str
@@ -354,4 +354,5 @@ class InstancesService:
         :return: True if available to deploy, False otherwise
         :rtype: bool
         """
-        return self._http_client.get(INSTANCES_ENDPOINT + f'/availability/{instance_type}').json()
+        url = INSTANCES_ENDPOINT + f'/availability/{instance_type}'
+        return self._http_client.get(url).json()
