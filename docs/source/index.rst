@@ -15,6 +15,8 @@ The Python SDK is open-sourced and can be `found here <https://github.com/DataCr
 Basic Examples:
 ---------------
 
+First, get your client credentials - `instructions available here <https://datacrunch.stoplight.io/docs/datacrunch-public/docs/Overview/Quick-Start-Guide.md>`_.
+
 Deploy a new instance:
 
 .. code-block:: python
