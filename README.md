@@ -1,6 +1,15 @@
 # DataCrunch Python SDK
 
 <p>
+  <a href='https://github.com/DataCrunch-io/datacrunch-python/actions?query=workflow%3A%22Unit+Tests%22+branch%3Amaster'>
+    <img src='https://github.com/DataCrunch-io/datacrunch-python/workflows/Unit%20Tests/badge.svg'></img>
+  </a>
+  <a href='https://github.com/DataCrunch-io/datacrunch-python/actions?query=workflow%3A%22Code+Style%22+branch%3Amaster'>
+    <img src='https://github.com/DataCrunch-io/datacrunch-python/workflows/Code%20Style/badge.svg'></img>
+  </a>
+  <a href='https://datacrunch-python.readthedocs.io/en/latest/'>
+    <img src='https://readthedocs.org/projects/datacrunch-python/badge/?version=latest'></img>
+  </a>
   <a href='https://github.com/DataCrunch-io/datacrunch-python/blob/master/LICENSE'>
     <img src='https://img.shields.io/github/license/DataCrunch-io/datacrunch-python'></img>
   </a>
