@@ -7,6 +7,7 @@ BASE_URL = "https://api-testing.datacrunch.io/v1"
 ACCESS_TOKEN = "test-token"
 CLIENT_ID = "0123456789xyz"
 
+
 @pytest.fixture
 def http_client():
     auth_service = Mock()

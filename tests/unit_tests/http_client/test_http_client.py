@@ -1,7 +1,6 @@
 import pytest
-import responses # https://github.com/getsentry/responses
+import responses  # https://github.com/getsentry/responses
 from unittest.mock import Mock
-from datacrunch.http_client import http_client
 from datacrunch.exceptions import APIException
 
 INVALID_REQUEST = 'invalid_request'
@@ -10,12 +9,13 @@ INVALID_REQUEST_MESSAGE = 'Your existence is invalid'
 UNAUTHORIZED_REQUEST = 'unauthorized_request'
 UNAUTHORIZED_REQUEST_MESSAGE = 'Access token is missing or invalid'
 
+
 class TestHttpClient:
     def test_add_base_url(self, http_client):
         # arrange
         path = "/test"
         base = http_client._base_url
-        
+
         # act
         url = http_client._add_base_url(path)
 
@@ -31,14 +31,14 @@ class TestHttpClient:
         assert bearer_string == f'Bearer {access_token}'
 
     def test_generate_user_agent(self, http_client):
-        # arrange 
+        # arrange
         version = http_client._version
         client_id_truncated = http_client._auth_service._client_id[0:10]
 
         # act
         user_agent_string = http_client._generate_user_agent()
 
-        # assert 
+        # assert
         assert type(user_agent_string) == str
         assert user_agent_string == f'datacrunch-python-v{version}-{client_id_truncated}'
 
@@ -47,7 +47,7 @@ class TestHttpClient:
         headers = http_client._generate_headers()
         authorization_string = http_client._generate_bearer_header()
         user_agent_string = http_client._generate_user_agent()
-        
+
         # assert
         assert type(headers) == dict
         assert type(headers['Content-Type']) == str
@@ -91,7 +91,7 @@ class TestHttpClient:
         response = http_client.get('/test')
 
         # assert
-        assert response.ok == True
+        assert response.ok is True
         assert response.status_code == 200
         assert response.text == '{}'
         assert response.headers['Content-Type'] == 'application/json'
@@ -111,7 +111,7 @@ class TestHttpClient:
         response = http_client.post('/test', params={})
 
         # assert
-        assert response.ok == True
+        assert response.ok is True
         assert response.status_code == 200
         assert response.text == '{}'
         assert response.headers['Content-Type'] == 'application/json'
@@ -131,7 +131,7 @@ class TestHttpClient:
         response = http_client.delete('/test')
 
         # assert
-        assert response.ok == True
+        assert response.ok is True
         assert response.status_code == 200
         assert response.headers['Content-Type'] == 'application/json'
         assert responses.assert_call_count(http_client._base_url + '/test', 1) is True
@@ -141,10 +141,11 @@ class TestHttpClient:
         responses.add(
             method=responses.GET,
             url=(http_client._base_url + '/test'),
-            status=401, 
+            status=401,
             json={'code': UNAUTHORIZED_REQUEST, 'message': UNAUTHORIZED_REQUEST_MESSAGE},
             content_type='application/json'
         )
+        error_str = f'error code: {UNAUTHORIZED_REQUEST}\nmessage: {UNAUTHORIZED_REQUEST_MESSAGE}'
 
         # act
         with pytest.raises(APIException) as excinfo:
@@ -153,13 +154,14 @@ class TestHttpClient:
         # assert
         assert excinfo.value.code == UNAUTHORIZED_REQUEST
         assert excinfo.value.message == UNAUTHORIZED_REQUEST_MESSAGE
+        assert excinfo.value.__str__() == error_str
 
     def test_post_failed(self, http_client):
         # arrange - add response mock
         responses.add(
             method=responses.POST,
             url=(http_client._base_url + '/test'),
-            status=400, 
+            status=400,
             json={'code': INVALID_REQUEST, 'message': INVALID_REQUEST_MESSAGE},
             content_type='application/json'
         )
@@ -177,7 +179,7 @@ class TestHttpClient:
         responses.add(
             method=responses.DELETE,
             url=(http_client._base_url + '/test'),
-            status=400, 
+            status=400,
             json={'code': INVALID_REQUEST, 'message': INVALID_REQUEST_MESSAGE},
             content_type='application/json'
         )
