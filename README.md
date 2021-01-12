@@ -99,13 +99,13 @@ DataCrunch's Public API documentation [is available here](https://datacrunch.sto
 - Create local virtual environment:
 
   ```bash
-  python3 -m venv datacrunch_env && source .datacrunch_env/bin/activate
+  python3 -m venv datacrunch_env && source ./datacrunch_env/bin/activate
   ```
 
   or if using [fish shell](https://fishshell.com/):
 
   ```fish
-  python3 -m venv datacrunch_env && source .datacrunch_env/bin/activate.fish
+  python3 -m venv datacrunch_env && source ./datacrunch_env/bin/activate.fish
   ```
 
 - Install Dependencies:
