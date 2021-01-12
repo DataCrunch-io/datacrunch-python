@@ -30,7 +30,9 @@
   </a>
 </p>
 
-The official DataCrunch.io python SDK.
+The official DataCrunch.io Python SDK.
+
+The SDK's documentation is available on [ReadTheDocs](https://datacrunch-python.readthedocs.io/en/latest/)
 
 DataCrunch's Public API documentation [is available here](https://datacrunch.stoplight.io/docs/datacrunch-public/docs/Overview/Introduction.md).
 
@@ -39,8 +41,10 @@ DataCrunch's Public API documentation [is available here](https://datacrunch.sto
 - Install via pip:
 
   ```bash
-  pip3 install datacrunch
+  pip install datacrunch
   ```
+
+- Generate your client credentials - [instructions in the public API docs](https://datacrunch.stoplight.io/docs/datacrunch-public/docs/Overview/Quick-Start-Guide.md).
 
 - Add the client secret to an environment variable (don't want it to be hardcoded):
 
@@ -80,7 +84,7 @@ DataCrunch's Public API documentation [is available here](https://datacrunch.sto
   datacrunch.instances.action(instance.id, datacrunch.actions.DELETE)
   ```
 
-  More examples can be found in the `/examples` folder or in the documentation.
+  More examples can be found in the `/examples` folder or in the [documentation](https://datacrunch-python.readthedocs.io/en/latest/).
 
 ## Development
 
