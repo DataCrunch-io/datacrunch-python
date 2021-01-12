@@ -22,15 +22,15 @@
   </a>
 
   <a href='https://pypi.org/project/datacrunch/'>
-    <img src='https://img.shields.io/pypi/v/datacrunch?logo=python&logoColor=green'></img>
+    <img src='https://img.shields.io/pypi/v/datacrunch?logo=python'></img>
   </a>
 
-  <a href='https://datacrunch.io'>
-    <img src='https://img.shields.io/badge/datacrunch-.io-blue'></img>
+  <a href='https://pypi.org/project/datacrunch/'>
+    <img src='https://img.shields.io/pypi/pyversions/datacrunch'></img>
   </a>
 </p>
 
-The official DataCrunch.io Python SDK.
+The official [DataCrunch.io](https://datacrunch.io) Python SDK.
 
 The SDK's documentation is available on [ReadTheDocs](https://datacrunch-python.readthedocs.io/en/latest/)
 
