@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List, Union, Optional
 
 INSTANCES_ENDPOINT = '/instances'
 
@@ -327,23 +327,26 @@ class InstancesService:
         instance = self.get_by_id(id)
         return instance
 
-    def action(self, id_list: Union[List[str], str], action: str) -> None:
+    def action(self, id_list: Union[List[str], str], action: str, volume_ids: Optional[List[str]]) -> None:
         """Performs an action on a list of instances / single instance
 
         :param id_list: list of instance ids, or an instance id
         :type id_list: Union[List[str], str]
         :param action: the action to perform
         :type action: str
+        :param volume_ids: the volume ids to delete
+        :type volume_ids: Optional[List[str]]
         """
         if type(id_list) is str:
             id_list = [id_list]
 
         payload = {
             "id": id_list,
-            "action": action
+            "action": action,
+            "volume_ids": volume_ids
         }
 
-        self._http_client.post(INSTANCES_ENDPOINT + '/action', json=payload)
+        self._http_client.put(INSTANCES_ENDPOINT, json=payload)
         return
 
     def is_available(self, instance_type: str) -> bool:
@@ -354,5 +357,5 @@ class InstancesService:
         :return: True if available to deploy, False otherwise
         :rtype: bool
         """
-        url = INSTANCES_ENDPOINT + f'/availability/{instance_type}'
+        url = f'/instance-availability/{instance_type}'
         return self._http_client.get(url).json()

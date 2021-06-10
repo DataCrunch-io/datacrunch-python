@@ -6,7 +6,7 @@ from datacrunch.instance_types.instance_types import InstanceTypesService
 from datacrunch.instances.instances import InstancesService
 from datacrunch.ssh_keys.ssh_keys import SSHKeysService
 from datacrunch.startup_scripts.startup_scripts import StartupScriptsService
-from datacrunch.constants import Actions, InstanceStatus, ErrorCodes
+from datacrunch.constants import Actions, VolumeActions, InstanceStatus, ErrorCodes
 from datacrunch.__version__ import VERSION
 
 
@@ -27,6 +27,9 @@ class DataCrunchClient:
         # Constants
         self.actions: Actions = Actions()
         """Available actions to perform on an instance"""
+
+        self.actions: VolumeActions = VolumeActions()
+        """Available actions to perform on a volume"""
 
         self.instance_status: InstanceStatus = InstanceStatus()
         """Possible instance statuses"""

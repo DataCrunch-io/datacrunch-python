@@ -1,4 +1,5 @@
 from typing import List, Union, Optional
+from datacrunch.constants import VolumeActions
 
 VOLUMES_ENDPOINT = '/volumes'
 
@@ -14,7 +15,7 @@ class Volume:
                  type: str,
                  is_os_volume: bool,
                  created_at: str,
-                 target: str,
+                 target: str = None,
                  location: str = "FIN1",
                  instance_id: str = None,
                  ) -> None:
@@ -35,7 +36,7 @@ class Volume:
         :param created_at: the time the volume was created (UTC)
         :type created_at: str
         :param target: target device e.g. vda
-        :type target: str
+        :type target: str, optional
         :param location: datacenter location, defaults to "FIN1"
         :type location: str, optional
         :param instance_id: the instance id the volume is attached to, None if detached
@@ -108,11 +109,11 @@ class Volume:
         return self._created_at
 
     @property
-    def target(self) -> str:
+    def target(self) -> Optional[str]:
         """Get the target device
 
         :return: target device
-        :rtype: str
+        :rtype: str, optional
         """
         return self._target
 
@@ -159,9 +160,9 @@ class VolumesService:
             type=volume_dict['type'],
             is_os_volume=volume_dict['is_os_volume'],
             created_at=volume_dict['created_at'],
-            target=volume_dict['target'],
+            target=volume_dict['target'] if 'target' in volume_dict else None,
             location=volume_dict['location'],
-            instance_id=volume_dict['instance_id'],
+            instance_id=volume_dict['instance_id'] if 'instance_id' in volume_dict else None,
         ), volumes_dict))
         return volumes
 
@@ -173,8 +174,21 @@ class VolumesService:
         :return: Volume details object
         :rtype: Volume
         """
-        # TODO
-        return
+        volume_dict = self._http_client.get(
+            VOLUMES_ENDPOINT + f'/{id}').json()
+        volume = Volume(
+            id=volume_dict['id'],
+            status=volume_dict['status'],
+            name=volume_dict['name'],
+            size=volume_dict['size'],
+            type=volume_dict['type'],
+            is_os_volume=volume_dict['is_os_volume'],
+            created_at=volume_dict['created_at'],
+            target=volume_dict['target'] if 'target' in volume_dict else None,
+            location=volume_dict['location'],
+            instance_id=volume_dict['instance_id'] if 'instance_id' in volume_dict else None,
+        )
+        return volume
 
     def create(self,
                type: str,
@@ -218,7 +232,13 @@ class VolumesService:
         :param instance_id: instance id the volume(s) will be attached to
         :type instance_id: str
         """
-        # TODO
+        payload = {
+            "id": id_list,
+            "action": VolumeActions.ATTACH,
+            "instance_id": instance_id
+        }
+
+        self._http_client.put(VOLUMES_ENDPOINT, json=payload)
         return
 
     def detach(self, id_list: Union[List[str], str]) -> None:
@@ -228,7 +248,12 @@ class VolumesService:
         :param id_list: list of volume ids, or a volume id
         :type id_list: Union[List[str], str]
         """
-        # TODO
+        payload = {
+            "id": id_list,
+            "action": VolumeActions.DETACH,
+        }
+
+        self._http_client.put(VOLUMES_ENDPOINT, json=payload)
         return
 
     def rename(self, id_list: Union[List[str], str], name: str) -> None:
@@ -239,7 +264,13 @@ class VolumesService:
         :param name: new name
         :type name: str
         """
-        # TODO
+        payload = {
+            "id": id_list,
+            "action": VolumeActions.RENAME,
+            "name": name
+        }
+
+        self._http_client.put(VOLUMES_ENDPOINT, json=payload)
         return
 
     def increase_size(self, id_list: Union[List[str], str], size: int) -> None:
@@ -250,7 +281,13 @@ class VolumesService:
         :param size: new size in GB
         :type size: int
         """
-        # TODO
+        payload = {
+            "id": id_list,
+            "action": VolumeActions.INCREASE_SIZE,
+            "size": size,
+        }
+
+        self._http_client.put(VOLUMES_ENDPOINT, json=payload)
         return
 
     def delete(self, id_list: Union[List[str], str]) -> None:
@@ -260,5 +297,10 @@ class VolumesService:
         :param id_list: list of volume ids, or a volume id
         :type id_list: Union[List[str], str]
         """
-        # TODO
+        payload = {
+            "id": id_list,
+            "action": VolumeActions.DELETE,
+        }
+
+        self._http_client.put(VOLUMES_ENDPOINT, json=payload)
         return

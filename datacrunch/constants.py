@@ -9,6 +9,17 @@ class Actions:
         return
 
 
+class VolumeActions:
+    ATTACH = 'attach'
+    DETACH = 'detach'
+    RENAME = 'rename'
+    INCREASE_SIZE = 'increase-`size'
+    DELETE = 'delete'
+
+    def __init__(self):
+        return
+
+
 class InstanceStatus:
     RUNNING = 'running'
     PROVISIONING = 'provisioning'
