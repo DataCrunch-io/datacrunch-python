@@ -275,9 +275,9 @@ class TestInstancesService:
 
     def test_action_successful(self, instances_service, endpoint):
         # arrange - add response mock
-        url = endpoint + '/action'
+        url = endpoint
         responses.add(
-            responses.POST,
+            responses.PUT,
             url,
             status=202
         )
@@ -291,9 +291,9 @@ class TestInstancesService:
 
     def test_action_failed(self, instances_service, endpoint):
         # arrange - add response mock
-        url = endpoint + '/action'
+        url = endpoint
         responses.add(
-            responses.POST,
+            responses.PUT,
             url,
             json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
             status=400
@@ -310,7 +310,7 @@ class TestInstancesService:
 
     def test_is_available_successful(self, instances_service, endpoint):
         # arrange - add response mock
-        url = endpoint + '/availability/' + INSTANCE_TYPE
+        url = instances_service._http_client._base_url + '/instance-availability/' + INSTANCE_TYPE
         responses.add(
             responses.GET,
             url,
@@ -327,7 +327,7 @@ class TestInstancesService:
 
     def test_is_available_failed(self, instances_service, endpoint):
         # arrange - add response mock
-        url = endpoint + '/availability/x'
+        url = instances_service._http_client._base_url + '/instance-availability/x'
         responses.add(
             responses.GET,
             url,

@@ -327,7 +327,7 @@ class InstancesService:
         instance = self.get_by_id(id)
         return instance
 
-    def action(self, id_list: Union[List[str], str], action: str, volume_ids: Optional[List[str]]) -> None:
+    def action(self, id_list: Union[List[str], str], action: str, volume_ids: Optional[List[str]] = None) -> None:
         """Performs an action on a list of instances / single instance
 
         :param id_list: list of instance ids, or an instance id

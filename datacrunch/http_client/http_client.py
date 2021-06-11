@@ -33,7 +33,7 @@ class HTTPClient:
         self._auth_service.authenticate()
 
     def post(self, url: str, json: dict = None, **kwargs) -> requests.Response:
-        """Sends a POST request. 
+        """Sends a POST request.
 
         A wrapper for the requests.post method.
 
@@ -59,8 +59,35 @@ class HTTPClient:
 
         return response
 
+    def put(self, url: str, json: dict = None, **kwargs) -> requests.Response:
+        """Sends a PUT request.
+
+        A wrapper for the requests.put method.
+
+        Builds the url, uses custom headers, refresh tokens if needed.
+
+        :param url: relative url of the API endpoint
+        :type url: str
+        :param json: A JSON serializable Python object to send in the body of the Request, defaults to None
+        :type json: dict, optional
+
+        :raises APIException: an api exception with message and error type code
+
+        :return: Response object
+        :rtype: requests.Response
+        """
+        url = self._add_base_url(url)
+        headers = self._generate_headers()
+
+        self._refresh_token_if_expired()
+
+        response = requests.put(url, json=json, headers=headers, **kwargs)
+        handle_error(response)
+
+        return response
+
     def get(self, url: str, params: dict = None, **kwargs) -> requests.Response:
-        """Sends a GET request. 
+        """Sends a GET request.
 
         A wrapper for the requests.get method.
 
@@ -87,7 +114,7 @@ class HTTPClient:
         return response
 
     def delete(self, url: str, json: dict = None, **kwargs) -> requests.Response:
-        """Sends a DELETE request. 
+        """Sends a DELETE request.
 
         A wrapper for the requests.delete method.
 
