@@ -5,6 +5,9 @@ from datacrunch.exceptions import APIException
 from datacrunch.volumes.volumes import VolumesService, Volume
 from datacrunch.constants import VolumeActions, VolumeStatus, ErrorCodes
 
+INVALID_REQUEST = ErrorCodes.INVALID_REQUEST
+INVALID_REQUEST_MESSAGE = 'Your existence is invalid'
+
 INSTANCE_ID = "4fee633c-b119-4447-af9c-70ba17675fc5"
 
 FIN1 = "FIN1"
@@ -12,7 +15,7 @@ NVME = "NVMe"
 HDD = "HDD"
 TARGET_VDA = "vda"
 
-NMVE_VOL_ID = "cf995e26-ce69-4149-84a3-cdd1e100670f"
+NVME_VOL_ID = "cf995e26-ce69-4149-84a3-cdd1e100670f"
 NVME_VOL_STATUS = VolumeStatus.ATTACHED
 NVME_VOL_NAME = "Volume-nxC2tf9F"
 NVME_VOL_SIZE = 50
@@ -24,33 +27,33 @@ HDD_VOL_NAME = "Volume-iHdL4ysR"
 HDD_VOL_SIZE = 100
 HDD_VOL_CREATED_AT = "2021-06-02T12:56:49.582Z"
 
+NVME_VOLUME = {
+    "id": NVME_VOL_ID,
+    "status": NVME_VOL_STATUS,
+    "instance_id": INSTANCE_ID,
+    "name": NVME_VOL_NAME,
+    "size": NVME_VOL_SIZE,
+    "type": NVME,
+    "location": FIN1,
+    "is_os_volume": True,
+    "created_at": NVME_VOL_CREATED_AT,
+    "target": TARGET_VDA
+}
 
-PAYLOAD = [
-    {
-        "id": NMVE_VOL_ID,
-        "status": NVME_VOL_STATUS,
-        "instance_id": INSTANCE_ID,
-        "name": NVME_VOL_NAME,
-        "size": NVME_VOL_SIZE,
-        "type": NVME,
-        "location": FIN1,
-        "is_os_volume": True,
-        "created_at": NVME_VOL_CREATED_AT,
-        "target": TARGET_VDA
-    },
-    {
-        "id": HDD_VOL_ID,
-        "status": HDD_VOL_STATUS,
-        "instance_id": None,
-        "name": HDD_VOL_NAME,
-        "size": HDD_VOL_SIZE,
-        "type": HDD,
-        "location": FIN1,
-        "is_os_volume": False,
-        "created_at": HDD_VOL_CREATED_AT,
-        "target": None
-    }
-]
+HDD_VOLUME = {
+    "id": HDD_VOL_ID,
+    "status": HDD_VOL_STATUS,
+    "instance_id": None,
+    "name": HDD_VOL_NAME,
+    "size": HDD_VOL_SIZE,
+    "type": HDD,
+    "location": FIN1,
+    "is_os_volume": False,
+    "created_at": HDD_VOL_CREATED_AT,
+    "target": None
+}
+
+PAYLOAD = [NVME_VOLUME, HDD_VOLUME]
 
 
 class TestVolumesService:
@@ -81,7 +84,7 @@ class TestVolumesService:
         assert len(volumes) == 2
         assert type(volume_nvme) == Volume
         assert type(volume_hdd) == Volume
-        assert volume_nvme.id == NMVE_VOL_ID
+        assert volume_nvme.id == NVME_VOL_ID
         assert volume_nvme.status == NVME_VOL_STATUS
         assert volume_nvme.instance_id == INSTANCE_ID
         assert volume_nvme.name == NVME_VOL_NAME
@@ -104,20 +107,95 @@ class TestVolumesService:
         assert volume_hdd.target is None
 
     def test_get_volumes_by_status_successful(self, volumes_service, endpoint):
-        # TODO:
-        return
+        # arrange - add response mock
+        responses.add(
+            responses.GET,
+            endpoint + "?status=attached",
+            json=[NVME_VOLUME],
+            status=200
+        )
+
+        # act
+        volumes = volumes_service.get()
+        volume_nvme = volumes[0]
+
+        # assert
+        assert type(volumes) == list
+        assert len(volumes) == 1
+        assert type(volume_nvme) == Volume
+        assert volume_nvme.id == NVME_VOL_ID
+        assert volume_nvme.status == NVME_VOL_STATUS
+        assert volume_nvme.instance_id == INSTANCE_ID
+        assert volume_nvme.name == NVME_VOL_NAME
+        assert volume_nvme.size == NVME_VOL_SIZE
+        assert volume_nvme.type == NVME
+        assert volume_nvme.location == FIN1
+        assert volume_nvme.is_os_volume
+        assert volume_nvme.created_at == NVME_VOL_CREATED_AT
+        assert volume_nvme.target == TARGET_VDA
 
     def test_get_volumes_by_status_failed(self, volumes_service, endpoint):
-        # TODO:
-        return
+        url = endpoint + "?status=flummoxed"
+        responses.add(
+            responses.GET,
+            url,
+            json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
+            status=400
+        )
+
+        # act
+        with pytest.raises(APIException) as excinfo:
+            volumes_service.get(status='flummoxed')
+
+        # assert
+        assert excinfo.value.code == INVALID_REQUEST
+        assert excinfo.value.message == INVALID_REQUEST_MESSAGE
+        assert responses.assert_call_count(url, 1) is True
 
     def test_get_volume_by_id_successful(self, volumes_service, endpoint):
-        # TODO:
-        return
+        # arrange - add response mock
+        url = endpoint + "/" + NVME_VOL_ID
+        responses.add(
+            responses.GET,
+            url,
+            json=NVME_VOLUME,
+            status=200
+        )
+
+        # act
+        volume_nvme = volumes_service.get_by_id(NVME_VOL_ID)
+
+        # assert
+        assert type(volume_nvme) == Volume
+        assert volume_nvme.id == NVME_VOL_ID
+        assert volume_nvme.status == NVME_VOL_STATUS
+        assert volume_nvme.instance_id == INSTANCE_ID
+        assert volume_nvme.name == NVME_VOL_NAME
+        assert volume_nvme.size == NVME_VOL_SIZE
+        assert volume_nvme.type == NVME
+        assert volume_nvme.location == FIN1
+        assert volume_nvme.is_os_volume
+        assert volume_nvme.created_at == NVME_VOL_CREATED_AT
+        assert volume_nvme.target == TARGET_VDA
 
     def test_get_volume_by_id_failed(self, volumes_service, endpoint):
-        # TODO:
-        return
+        # arrange - add response mock
+        url = endpoint + "/x"
+        responses.add(
+            responses.GET,
+            url,
+            json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
+            status=200
+        )
+
+        # act
+        with pytest.raises(APIException) as excinfo:
+            volumes_service.get_by_id('x')
+
+        # assert
+        assert excinfo.value.code == INVALID_REQUEST
+        assert excinfo.value.message == INVALID_REQUEST_MESSAGE
+        assert responses.assert_call_count(url, 1) is True
 
     def test_create_volume_successful(self, volumes_service, endpoint):
         # TODO:
