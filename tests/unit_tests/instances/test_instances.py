@@ -74,27 +74,28 @@ class TestInstancesService:
 
         # act
         instances = instances_service.get()
+        instance = instances[0]
 
         # assert
         assert type(instances) == list
         assert len(instances) == 1
-        assert type(instances[0]) == Instance
-        assert type(instances[0].ssh_key_ids) == list
-        assert instances[0].id == INSTANCE_ID
-        assert instances[0].ssh_key_ids == [SSH_KEY_ID]
-        assert instances[0].status == INSTANCE_STATUS
-        assert instances[0].image == INSTANCE_IMAGE
-        assert instances[0].instance_type == INSTANCE_TYPE
-        assert instances[0].price_per_hour == INSTANCE_PRICE_PER_HOUR
-        assert instances[0].location == INSTANCE_LOCATION
-        assert instances[0].description == INSTANCE_DESCRIPTION
-        assert instances[0].hostname == INSTANCE_HOSTNAME
-        assert instances[0].ip == INSTANCE_IP
-        assert instances[0].created_at == INSTANCE_CREATED_AT
-        assert type(instances[0].cpu) == dict
-        assert type(instances[0].gpu) == dict
-        assert type(instances[0].memory) == dict
-        assert type(instances[0].storage) == dict
+        assert type(instance) == Instance
+        assert type(instance.ssh_key_ids) == list
+        assert instance.id == INSTANCE_ID
+        assert instance.ssh_key_ids == [SSH_KEY_ID]
+        assert instance.status == INSTANCE_STATUS
+        assert instance.image == INSTANCE_IMAGE
+        assert instance.instance_type == INSTANCE_TYPE
+        assert instance.price_per_hour == INSTANCE_PRICE_PER_HOUR
+        assert instance.location == INSTANCE_LOCATION
+        assert instance.description == INSTANCE_DESCRIPTION
+        assert instance.hostname == INSTANCE_HOSTNAME
+        assert instance.ip == INSTANCE_IP
+        assert instance.created_at == INSTANCE_CREATED_AT
+        assert type(instance.cpu) == dict
+        assert type(instance.gpu) == dict
+        assert type(instance.memory) == dict
+        assert type(instance.storage) == dict
         assert responses.assert_call_count(endpoint, 1) is True
 
     def test_get_instances_by_status_successful(self, instances_service, endpoint):
@@ -109,27 +110,28 @@ class TestInstancesService:
 
         # act
         instances = instances_service.get(status='running')
+        instance = instances[0]
 
         # assert
         assert type(instances) == list
         assert len(instances) == 1
-        assert type(instances[0]) == Instance
-        assert type(instances[0].ssh_key_ids) == list
-        assert instances[0].id == INSTANCE_ID
-        assert instances[0].ssh_key_ids == [SSH_KEY_ID]
-        assert instances[0].status == INSTANCE_STATUS
-        assert instances[0].image == INSTANCE_IMAGE
-        assert instances[0].instance_type == INSTANCE_TYPE
-        assert instances[0].price_per_hour == INSTANCE_PRICE_PER_HOUR
-        assert instances[0].location == INSTANCE_LOCATION
-        assert instances[0].description == INSTANCE_DESCRIPTION
-        assert instances[0].hostname == INSTANCE_HOSTNAME
-        assert instances[0].ip == INSTANCE_IP
-        assert instances[0].created_at == INSTANCE_CREATED_AT
-        assert type(instances[0].cpu) == dict
-        assert type(instances[0].gpu) == dict
-        assert type(instances[0].memory) == dict
-        assert type(instances[0].storage) == dict
+        assert type(instance) == Instance
+        assert type(instance.ssh_key_ids) == list
+        assert instance.id == INSTANCE_ID
+        assert instance.ssh_key_ids == [SSH_KEY_ID]
+        assert instance.status == INSTANCE_STATUS
+        assert instance.image == INSTANCE_IMAGE
+        assert instance.instance_type == INSTANCE_TYPE
+        assert instance.price_per_hour == INSTANCE_PRICE_PER_HOUR
+        assert instance.location == INSTANCE_LOCATION
+        assert instance.description == INSTANCE_DESCRIPTION
+        assert instance.hostname == INSTANCE_HOSTNAME
+        assert instance.ip == INSTANCE_IP
+        assert instance.created_at == INSTANCE_CREATED_AT
+        assert type(instance.cpu) == dict
+        assert type(instance.gpu) == dict
+        assert type(instance.memory) == dict
+        assert type(instance.storage) == dict
         assert responses.assert_call_count(url, 1) is True
 
     def test_get_instances_by_status_failed(self, instances_service, endpoint):

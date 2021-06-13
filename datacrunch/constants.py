@@ -33,6 +33,18 @@ class InstanceStatus:
         return
 
 
+class VolumeStatus:
+    ORDERED = "ordered"
+    CREATING = "creating"
+    ATTACHED = "attached"
+    DETACHED = "detached"
+    DELETING = "deleting"
+    DELETED = "deleted"
+
+    def __init__(self):
+        return
+
+
 class ErrorCodes:
     INVALID_REQUEST = "invalid_request"
     UNAUTHORIZED_REQUEST = "unauthorized_request"

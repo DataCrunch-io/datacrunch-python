@@ -151,7 +151,7 @@ class VolumesService:
         :rtype: List[Volume]
         """
         volumes_dict = self._http_client.get(
-            VOLUMES_ENDPOINT, params={'status': status}).json()  
+            VOLUMES_ENDPOINT, params={'status': status}).json()
         volumes = list(map(lambda volume_dict: Volume(
             id=volume_dict['id'],
             status=volume_dict['status'],
