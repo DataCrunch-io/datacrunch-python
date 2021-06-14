@@ -91,6 +91,15 @@ class Volume:
         return self._size
 
     @property
+    def type(self) -> int:
+        """Get the volume type
+
+        :return: volume type
+        :rtype: string
+        """
+        return self._type
+
+    @property
     def is_os_volume(self) -> bool:
         """Return true iff the volume contains an operating system
 
@@ -220,6 +229,7 @@ class VolumesService:
             "location": location
         }
         id = self._http_client.post(VOLUMES_ENDPOINT, json=payload).text
+        print(id)
         volume = self.get_by_id(id)
         return volume
 

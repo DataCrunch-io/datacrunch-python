@@ -3,7 +3,7 @@ import responses  # https://github.com/getsentry/responses
 
 from datacrunch.exceptions import APIException
 from datacrunch.volumes.volumes import VolumesService, Volume
-from datacrunch.constants import VolumeActions, VolumeStatus, ErrorCodes
+from datacrunch.constants import VolumeStatus, VolumeTypes, ErrorCodes
 
 INVALID_REQUEST = ErrorCodes.INVALID_REQUEST
 INVALID_REQUEST_MESSAGE = 'Your existence is invalid'
@@ -110,13 +110,13 @@ class TestVolumesService:
         # arrange - add response mock
         responses.add(
             responses.GET,
-            endpoint + "?status=attached",
+            endpoint + "?status=" + VolumeStatus.ATTACHED,
             json=[NVME_VOLUME],
             status=200
         )
 
         # act
-        volumes = volumes_service.get()
+        volumes = volumes_service.get(status=VolumeStatus.ATTACHED)
         volume_nvme = volumes[0]
 
         # assert
@@ -185,7 +185,7 @@ class TestVolumesService:
             responses.GET,
             url,
             json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
-            status=200
+            status=400
         )
 
         # act
@@ -198,8 +198,25 @@ class TestVolumesService:
         assert responses.assert_call_count(url, 1) is True
 
     def test_create_volume_successful(self, volumes_service, endpoint):
-        # TODO:
-        return
+        # arrange - add response mock
+        responses.add(
+            responses.POST,
+            endpoint,
+            body=NVME_VOL_ID,
+            status=202
+        )
+        responses.add(
+            responses.GET,
+            endpoint + "/" + NVME_VOL_ID,
+            json=NVME_VOLUME,
+            status=200
+        )
+
+        # act
+        volume = volumes_service.create(VolumeTypes.NVMe, NVME_VOL_NAME, NVME_VOL_SIZE)
+
+        # assert
+        assert volume.id == NVME_VOL_ID
 
     def test_create_volume_failed(self, volumes_service, endpoint):
         # TODO:
@@ -243,4 +260,4 @@ class TestVolumesService:
 
     def test_delete_volume_failed(self, volumes_service, endpoint):
         # TODO:
-        retur
+        return

@@ -45,6 +45,14 @@ class VolumeStatus:
         return
 
 
+class VolumeTypes:
+    NVMe = "NVMe"
+    HDD = "HDD"
+
+    def __init__(self):
+        return
+
+
 class ErrorCodes:
     INVALID_REQUEST = "invalid_request"
     UNAUTHORIZED_REQUEST = "unauthorized_request"

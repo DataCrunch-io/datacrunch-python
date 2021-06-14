@@ -8,7 +8,7 @@ from datacrunch.ssh_keys.ssh_keys import SSHKeysService
 from datacrunch.startup_scripts.startup_scripts import StartupScriptsService
 from datacrunch.volume_types.volume_types import VolumeTypesService
 from datacrunch.volumes.volumes import VolumesService
-from datacrunch.constants import Actions, VolumeActions, InstanceStatus, VolumeStatus, ErrorCodes
+from datacrunch.constants import Actions, VolumeActions, InstanceStatus, VolumeStatus, VolumeTypes, ErrorCodes
 from datacrunch.__version__ import VERSION
 
 
@@ -38,6 +38,9 @@ class DataCrunchClient:
 
         self.volume_status: VolumeStatus = VolumeStatus()
         """Possible volume statuses"""
+
+        self.volume_status: VolumeTypes = VolumeTypes()
+        """Available volume types"""
 
         self.error_codes: ErrorCodes = ErrorCodes()
         """Available error codes"""
