@@ -3,7 +3,7 @@ import responses  # https://github.com/getsentry/responses
 
 from datacrunch.exceptions import APIException
 from datacrunch.volumes.volumes import VolumesService, Volume
-from datacrunch.constants import VolumeStatus, VolumeTypes, ErrorCodes
+from datacrunch.constants import VolumeStatus, VolumeTypes, VolumeActions, ErrorCodes
 
 INVALID_REQUEST = ErrorCodes.INVALID_REQUEST
 INVALID_REQUEST_MESSAGE = 'Your existence is invalid'
@@ -219,45 +219,258 @@ class TestVolumesService:
         assert volume.id == NVME_VOL_ID
 
     def test_create_volume_failed(self, volumes_service, endpoint):
-        # TODO:
-        return
+        # arrange - add response mock
+        responses.add(
+            responses.POST,
+            endpoint,
+            json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
+            status=400
+        )
+
+        # act
+        with pytest.raises(APIException) as excinfo:
+            volumes_service.create(VolumeTypes.NVMe, NVME_VOL_NAME, 100000000000000000000000)
+
+        # assert
+        assert excinfo.value.code == INVALID_REQUEST
+        assert excinfo.value.message == INVALID_REQUEST_MESSAGE
+        assert responses.assert_call_count(endpoint, 1) is True
 
     def test_attach_volume_successful(self, volumes_service, endpoint):
-        # TODO:
-        return
+        # arrange - add response mock
+        responses.add(
+            responses.PUT,
+            endpoint,
+            status=202,
+            match=[
+                responses.json_params_matcher({
+                    "id": NVME_VOL_ID,
+                    "action": VolumeActions.ATTACH,
+                    "instance_id": INSTANCE_ID
+                })
+            ]
+        )
+
+        # act
+        result = volumes_service.attach(NVME_VOL_ID, INSTANCE_ID)
+
+        # assert
+        assert result is None
+        assert responses.assert_call_count(endpoint, 1) is True
 
     def test_attach_volume_failed(self, volumes_service, endpoint):
-        # TODO:
-        return
+        # arrange - add response mock
+        responses.add(
+            responses.PUT,
+            endpoint,
+            json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
+            status=400,
+            match=[
+                responses.json_params_matcher({
+                    "id": NVME_VOL_ID,
+                    "action": VolumeActions.ATTACH,
+                    "instance_id": INSTANCE_ID
+                })
+            ]
+        )
+
+        # act
+        with pytest.raises(APIException) as excinfo:
+            volumes_service.attach(NVME_VOL_ID, INSTANCE_ID)
+
+        # assert
+        assert excinfo.value.code == INVALID_REQUEST
+        assert excinfo.value.message == INVALID_REQUEST_MESSAGE
+        assert responses.assert_call_count(endpoint, 1) is True
 
     def test_detach_volume_successful(self, volumes_service, endpoint):
-        # TODO:
-        return
+        # arrange - add response mock
+        responses.add(
+            responses.PUT,
+            endpoint,
+            status=202,
+            match=[
+                responses.json_params_matcher({
+                    "id": NVME_VOL_ID,
+                    "action": VolumeActions.DETACH
+                })
+            ]
+        )
+
+        # act
+        result = volumes_service.detach(NVME_VOL_ID)
+
+        # assert
+        assert result is None
+        assert responses.assert_call_count(endpoint, 1) is True
 
     def test_detach_volume_failed(self, volumes_service, endpoint):
-        # TODO:
-        return
+        # arrange - add response mock
+        responses.add(
+            responses.PUT,
+            endpoint,
+            json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
+            status=400,
+            match=[
+                responses.json_params_matcher({
+                    "id": NVME_VOL_ID,
+                    "action": VolumeActions.DETACH
+                })
+            ]
+        )
+
+        # act
+        with pytest.raises(APIException) as excinfo:
+            volumes_service.detach(NVME_VOL_ID)
+
+        # assert
+        assert excinfo.value.code == INVALID_REQUEST
+        assert excinfo.value.message == INVALID_REQUEST_MESSAGE
+        assert responses.assert_call_count(endpoint, 1) is True
 
     def test_rename_volume_successful(self, volumes_service, endpoint):
-        # TODO:
-        return
+        new_name = "bob"
+
+        # arrange - add response mock
+        responses.add(
+            responses.PUT,
+            endpoint,
+            status=202,
+            match=[
+                responses.json_params_matcher({
+                    "id": NVME_VOL_ID,
+                    "action": VolumeActions.RENAME,
+                    "name": new_name,
+                })
+            ]
+        )
+
+        # act
+        result = volumes_service.rename(NVME_VOL_ID, new_name)
+
+        # assert
+        assert result is None
+        assert responses.assert_call_count(endpoint, 1) is True
 
     def test_rename_volume_failed(self, volumes_service, endpoint):
-        # TODO:
-        return
+        new_name = "bob"
+
+        # arrange - add response mock
+        responses.add(
+            responses.PUT,
+            endpoint,
+            json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
+            status=400,
+            match=[
+                responses.json_params_matcher({
+                    "id": NVME_VOL_ID,
+                    "action": VolumeActions.RENAME,
+                    "name": new_name
+                })
+            ]
+        )
+
+        # act
+        with pytest.raises(APIException) as excinfo:
+            volumes_service.rename(NVME_VOL_ID, new_name)
+
+        # assert
+        assert excinfo.value.code == INVALID_REQUEST
+        assert excinfo.value.message == INVALID_REQUEST_MESSAGE
+        assert responses.assert_call_count(endpoint, 1) is True
 
     def test_increase_volume_size_successful(self, volumes_service, endpoint):
-        # TODO:
-        return
+        new_size = 100000000000000
+
+        # arrange - add response mock
+        responses.add(
+            responses.PUT,
+            endpoint,
+            status=202,
+            match=[
+                responses.json_params_matcher({
+                    "id": NVME_VOL_ID,
+                    "action": VolumeActions.INCREASE_SIZE,
+                    "size": new_size,
+                })
+            ]
+        )
+
+        # act
+        result = volumes_service.increase_size(NVME_VOL_ID, new_size)
+
+        # assert
+        assert result is None
+        assert responses.assert_call_count(endpoint, 1) is True
 
     def test_increase_volume_size_failed(self, volumes_service, endpoint):
-        # TODO:
-        return
+        new_size = 100000000000000
+
+        # arrange - add response mock
+        responses.add(
+            responses.PUT,
+            endpoint,
+            json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
+            status=400,
+            match=[
+                responses.json_params_matcher({
+                    "id": NVME_VOL_ID,
+                    "action": VolumeActions.INCREASE_SIZE,
+                    "size": new_size
+                })
+            ]
+        )
+
+        # act
+        with pytest.raises(APIException) as excinfo:
+            volumes_service.increase_size(NVME_VOL_ID, new_size)
+
+        # assert
+        assert excinfo.value.code == INVALID_REQUEST
+        assert excinfo.value.message == INVALID_REQUEST_MESSAGE
+        assert responses.assert_call_count(endpoint, 1) is True
 
     def test_delete_volume_successful(self, volumes_service, endpoint):
-        # TODO:
-        return
+        # arrange - add response mock
+        responses.add(
+            responses.PUT,
+            endpoint,
+            status=202,
+            match=[
+                responses.json_params_matcher({
+                    "id": NVME_VOL_ID,
+                    "action": VolumeActions.DELETE
+                })
+            ]
+        )
+
+        # act
+        result = volumes_service.delete(NVME_VOL_ID)
+
+        # assert
+        assert result is None
+        assert responses.assert_call_count(endpoint, 1) is True
 
     def test_delete_volume_failed(self, volumes_service, endpoint):
-        # TODO:
-        return
+        # arrange - add response mock
+        responses.add(
+            responses.PUT,
+            endpoint,
+            json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
+            status=400,
+            match=[
+                responses.json_params_matcher({
+                    "id": NVME_VOL_ID,
+                    "action": VolumeActions.DELETE
+                })
+            ]
+        )
+
+        # act
+        with pytest.raises(APIException) as excinfo:
+            volumes_service.delete(NVME_VOL_ID)
+
+        # assert
+        assert excinfo.value.code == INVALID_REQUEST
+        assert excinfo.value.message == INVALID_REQUEST_MESSAGE
+        assert responses.assert_call_count(endpoint, 1) is True

@@ -229,7 +229,6 @@ class VolumesService:
             "location": location
         }
         id = self._http_client.post(VOLUMES_ENDPOINT, json=payload).text
-        print(id)
         volume = self.get_by_id(id)
         return volume
 
