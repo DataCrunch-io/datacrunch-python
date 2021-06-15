@@ -10,6 +10,7 @@ INVALID_REQUEST_MESSAGE = 'Your existence is invalid'
 
 INSTANCE_ID = 'deadc0de-a5d2-4972-ae4e-d429115d055b'
 SSH_KEY_ID = '12345dc1-a5d2-4972-ae4e-d429115d055b'
+OS_VOLUME_ID = '46fc0247-8f65-4d8a-ad73-852a8b3dc1d3'
 
 INSTANCE_TYPE = "1V100.6V"
 INSTANCE_IMAGE = "fastai"
@@ -49,7 +50,8 @@ PAYLOAD = [
         "instance_type": INSTANCE_TYPE,
         "image": INSTANCE_IMAGE,
         "id": INSTANCE_ID,
-        "ssh_key_ids": [SSH_KEY_ID]
+        "ssh_key_ids": [SSH_KEY_ID],
+        "os_volume_id": OS_VOLUME_ID
     }
 ]
 
@@ -244,9 +246,11 @@ class TestInstancesService:
         assert instance.hostname == INSTANCE_HOSTNAME
         assert instance.ip == INSTANCE_IP
         assert instance.created_at == INSTANCE_CREATED_AT
+        assert instance.os_volume_id == OS_VOLUME_ID
         assert type(instance.cpu) == dict
         assert type(instance.gpu) == dict
         assert type(instance.memory) == dict
+        assert type(instance.gpu_memory) == dict
         assert type(instance.storage) == dict
         assert responses.assert_call_count(endpoint, 1) is True
         assert responses.assert_call_count(url, 1) is True
@@ -274,9 +278,6 @@ class TestInstancesService:
         assert excinfo.value.code == INVALID_REQUEST
         assert excinfo.value.message == INVALID_REQUEST_MESSAGE
         assert responses.assert_call_count(endpoint, 1) is True
-
-    def test_create_instance_with_volumes(self, instances_service, endpoint):
-        return
 
     def test_action_successful(self, instances_service, endpoint):
         # arrange - add response mock
