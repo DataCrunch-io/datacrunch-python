@@ -39,6 +39,10 @@ PAYLOAD = [
             "description": "super-duper-memory",
             "size_in_gigabytes": 32
         },
+        "gpu_memory": {
+            "description": "super-duper-memory",
+            "size_in_gigabytes": 20
+        },
         "storage": {
             "description": "super-duper-storage",
             "size_in_gigabytes": 320
