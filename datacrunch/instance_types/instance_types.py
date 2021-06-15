@@ -127,6 +127,23 @@ class InstanceType:
         """
         return self._storage
 
+    def __str__(self) -> str:
+        """Prints the instance type
+
+        :return: instance type string representation
+        :rtype: str
+        """
+        return (f'id: {self._id}\n'
+                f'instance type: {self._instance_type}\n'
+                f'price_per_hour: ${self._price_per_hour}\n'
+                f'description: {self._description}\n'
+                f'cpu: {self._cpu}\n'
+                f'gpu: {self._gpu}\n'
+                f'memory :{self._memory}\n'
+                f'gpu_memory :{self._gpu_memory}\n'
+                f'storage :{self._storage}\n'
+                )
+
 
 class InstanceTypesService:
     """A service for interacting with the instance-types endpoint"""
