@@ -22,6 +22,7 @@ class Instance:
                  memory: dict,
                  storage: dict,
                  os_volume_id: str,
+                 gpu_memory: dict,
                  location: str = "FIN1",
                  startup_script_id: str = None
                  ) -> None:
@@ -57,6 +58,8 @@ class Instance:
         :type storage: dict
         :param id: main OS volume id
         :type id: str
+        :param memory: gpu memory details
+        :type memory: dict
         :param location: datacenter location, defaults to "FIN1"
         :type location: str, optional
         :param startup_script_id: startup script id, defaults to None
@@ -79,6 +82,7 @@ class Instance:
         self._memory = memory
         self._storage = storage
         self._os_volume_id = os_volume_id
+        self._gpu_memory = gpu_memory
 
     @property
     def id(self) -> str:
@@ -233,6 +237,15 @@ class Instance:
         """
         return self._os_volume_id
 
+    @property
+    def gpu_memory(self) -> dict:
+        """Get the instance gpu_memory details
+
+        :return: gpu_memory details
+        :rtype: dict
+        """
+        return self._gpu_memory
+
 
 class InstancesService:
     """A service for interacting with the instances endpoint"""
@@ -267,7 +280,8 @@ class InstancesService:
             gpu=instance_dict['gpu'],
             memory=instance_dict['memory'],
             storage=instance_dict['storage'],
-            os_volume_id=instance_dict['os_volume_id'] if 'os_volume_id' in instance_dict else None
+            os_volume_id=instance_dict['os_volume_id'] if 'os_volume_id' in instance_dict else None,
+            gpu_memory=instance_dict['gpu_memory'] if 'gpu_memory' in instance_dict else None
         ), instances_dict))
         return instances
 
@@ -298,7 +312,9 @@ class InstancesService:
             gpu=instance_dict['gpu'],
             memory=instance_dict['memory'],
             storage=instance_dict['storage'],
-            os_volume_id=instance_dict['os_volume_id'] if 'os_volume_id' in instance_dict else None
+            os_volume_id=instance_dict['os_volume_id'] if 'os_volume_id' in instance_dict else None,
+            gpu_memory=instance_dict['gpu_memory'] if 'gpu_memory' in instance_dict else None
+
         )
         return instance
 
