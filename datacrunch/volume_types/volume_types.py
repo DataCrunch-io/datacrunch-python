@@ -36,6 +36,14 @@ class VolumeType:
         """
         return self._price_per_month_per_gb
 
+    def __str__(self) -> str:
+        """Prints the volume type
+
+        :return: volume type string representation
+        :rtype: str
+        """
+        return f'type: {self._type}\nprice_per_month_per_gb: ${self._price_per_month_per_gb}'
+
 
 class VolumeTypesService:
     """A service for interacting with the volume-types endpoint"""
