@@ -275,6 +275,9 @@ class TestInstancesService:
         assert excinfo.value.message == INVALID_REQUEST_MESSAGE
         assert responses.assert_call_count(endpoint, 1) is True
 
+    def test_create_instance_with_volumes(self, instances_service, endpoint):
+        return
+
     def test_action_successful(self, instances_service, endpoint):
         # arrange - add response mock
         url = endpoint

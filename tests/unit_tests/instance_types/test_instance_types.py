@@ -9,6 +9,8 @@ GPU_DESCRIPTION = "8x NVidia Tesla V100"
 NUMBER_OF_GPUS = 8
 MEMORY_DESCRIPTION = "192GB RAM"
 MEMORY_SIZE = 192
+GPU_MEMORY_DESCRIPTION = "128GB VRAM"
+GPU_MEMORY_SIZE = 128
 STORAGE_DESCRIPTION = "1800GB NVME"
 STORAGE_SIZE = 1800
 INSTANCE_TYPE_DESCRIPTION = "Dedicated Bare metal Server"
@@ -35,6 +37,10 @@ def test_instance_types(http_client):
                 "memory": {
                     "description": MEMORY_DESCRIPTION,
                     "size_in_gigabytes": MEMORY_SIZE
+                },
+                "gpu_memory": {
+                    "description": GPU_MEMORY_DESCRIPTION,
+                    "size_in_gigabytes": GPU_MEMORY_SIZE
                 },
                 "storage": {
                     "description": STORAGE_DESCRIPTION,
@@ -69,8 +75,10 @@ def test_instance_types(http_client):
     assert instance_type.cpu['description'] == CPU_DESCRIPTION
     assert instance_type.gpu['description'] == GPU_DESCRIPTION
     assert instance_type.memory['description'] == MEMORY_DESCRIPTION
+    assert instance_type.gpu_memory['description'] == GPU_MEMORY_DESCRIPTION
     assert instance_type.storage['description'] == STORAGE_DESCRIPTION
     assert instance_type.cpu['number_of_cores'] == NUMBER_OF_CORES
     assert instance_type.gpu['number_of_gpus'] == NUMBER_OF_GPUS
     assert instance_type.memory['size_in_gigabytes'] == MEMORY_SIZE
+    assert instance_type.gpu_memory['size_in_gigabytes'] == GPU_MEMORY_SIZE
     assert instance_type.storage['size_in_gigabytes'] == STORAGE_SIZE
