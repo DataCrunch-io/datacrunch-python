@@ -134,11 +134,10 @@ We use pytest for testing.
 ### Local Manual Testing
 
 ```python
-import os
 from datacrunch.datacrunch import DataCrunchClient
 
 # Get client secret from environment variable
-CLIENT_SECRET = os.environ['DATACRUNCH_CLIENT_SECRET']
+CLIENT_SECRET = 'secret'
 CLIENT_ID = 'Ibk5bdxV64lKAWOqYnvSi'
 
 # Create datcrunch client
