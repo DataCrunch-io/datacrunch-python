@@ -131,6 +131,20 @@ We use pytest for testing.
   pytest ./tests/unit_tests/test_file.py
   ```
 
+### Local Manual Testing
+
+```python
+import os
+from datacrunch.datacrunch import DataCrunchClient
+
+# Get client secret from environment variable
+CLIENT_SECRET = os.environ['DATACRUNCH_CLIENT_SECRET']
+CLIENT_ID = 'Ibk5bdxV64lKAWOqYnvSi'
+
+# Create datcrunch client
+datacrunch = DataCrunchClient(CLIENT_ID, CLIENT_SECRET, base_url='http://localhost:3001/v1')
+```
+
 ### Generating the documentation
 
 ```bash
