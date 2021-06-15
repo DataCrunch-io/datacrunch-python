@@ -1,4 +1,4 @@
-from typing import List, Union, Optional
+from typing import List, Union, Optional, Dict
 
 INSTANCES_ENDPOINT = '/instances'
 
@@ -21,6 +21,7 @@ class Instance:
                  gpu: dict,
                  memory: dict,
                  storage: dict,
+                 os_volume_id: str,
                  location: str = "FIN1",
                  startup_script_id: str = None
                  ) -> None:
@@ -54,6 +55,8 @@ class Instance:
         :type memory: dict
         :param storage: storate details
         :type storage: dict
+        :param id: main OS volume id
+        :type id: str
         :param location: datacenter location, defaults to "FIN1"
         :type location: str, optional
         :param startup_script_id: startup script id, defaults to None
@@ -75,6 +78,7 @@ class Instance:
         self._gpu = gpu
         self._memory = memory
         self._storage = storage
+        self._os_volume_id = os_volume_id
 
     @property
     def id(self) -> str:
@@ -220,6 +224,15 @@ class Instance:
         """
         return self._storage
 
+    @property
+    def os_volume_id(self) -> str:
+        """Get the main os volume id
+
+        :return: main os volume id
+        :rtype: str
+        """
+        return self._os_volume_id
+
 
 class InstancesService:
     """A service for interacting with the instances endpoint"""
@@ -253,7 +266,8 @@ class InstancesService:
             cpu=instance_dict['cpu'],
             gpu=instance_dict['gpu'],
             memory=instance_dict['memory'],
-            storage=instance_dict['storage']
+            storage=instance_dict['storage'],
+            os_volume_id=instance_dict['os_volume_id'] if 'os_volume_id' in instance_dict else None
         ), instances_dict))
         return instances
 
@@ -283,7 +297,8 @@ class InstancesService:
             cpu=instance_dict['cpu'],
             gpu=instance_dict['gpu'],
             memory=instance_dict['memory'],
-            storage=instance_dict['storage']
+            storage=instance_dict['storage'],
+            os_volume_id=instance_dict['os_volume_id'] if 'os_volume_id' in instance_dict else None
         )
         return instance
 
@@ -294,12 +309,13 @@ class InstancesService:
                hostname: str,
                description: str,
                location: str = "FIN1",
-               startup_script_id: str = None) -> Instance:
+               startup_script_id: str = None,
+               volumes: List[Dict] = None) -> Instance:
         """Creates (deploys) a new instance
 
         :param instance_type: instance type. e.g. '8V100.48M'
         :type instance_type: str
-        :param image: instance image type. e.g. 'ubuntu-20.04-cuda-11.0'
+        :param image: instance image type. e.g. 'ubuntu-20.04-cuda-11.0', or existing OS volume id
         :type image: str
         :param ssh_key_ids: list of ssh key ids
         :type ssh_key_ids: list
@@ -311,6 +327,8 @@ class InstancesService:
         :type location: str, optional
         :param startup_script_id: startup script id, defaults to None
         :type startup_script_id: str, optional
+        :param volumes: List of volume data dictionaries to create alongside the instance
+        :type volumes: List[Dict], optional
         :return: the new instance object
         :rtype: id
         """
@@ -321,7 +339,8 @@ class InstancesService:
             "startup_script_id": startup_script_id,
             "hostname": hostname,
             "description": description,
-            "location": location
+            "location": location,
+            "volumes": volumes
         }
         id = self._http_client.post(INSTANCES_ENDPOINT, json=payload).text
         instance = self.get_by_id(id)
