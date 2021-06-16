@@ -28,7 +28,7 @@ class TestDataCrunchClient:
         client = DataCrunchClient("XXXXXXXXXXXXXX", "XXXXXXXXXXXXXX", BASE_URL)
 
         # assert
-        assert client.base_url == BASE_URL
+        assert client.constants.base_url == BASE_URL
 
     def test_client_with_default_base_url(self):
         # arrange - add response mock
@@ -44,7 +44,7 @@ class TestDataCrunchClient:
         client = DataCrunchClient("XXXXXXXXXXXXXX", "XXXXXXXXXXXXXX")
 
         # assert
-        assert client.base_url == DEFAULT_BASE_URL
+        assert client.constants.base_url == DEFAULT_BASE_URL
 
     def test_invalid_client_credentials(self):
         # arrange - add response mock

@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List, Union, Optional, Dict
 
 INSTANCES_ENDPOINT = '/instances'
 
@@ -21,6 +21,8 @@ class Instance:
                  gpu: dict,
                  memory: dict,
                  storage: dict,
+                 os_volume_id: str,
+                 gpu_memory: dict,
                  location: str = "FIN1",
                  startup_script_id: str = None
                  ) -> None:
@@ -54,6 +56,10 @@ class Instance:
         :type memory: dict
         :param storage: storate details
         :type storage: dict
+        :param id: main OS volume id
+        :type id: str
+        :param memory: gpu memory details
+        :type memory: dict
         :param location: datacenter location, defaults to "FIN1"
         :type location: str, optional
         :param startup_script_id: startup script id, defaults to None
@@ -75,6 +81,8 @@ class Instance:
         self._gpu = gpu
         self._memory = memory
         self._storage = storage
+        self._os_volume_id = os_volume_id
+        self._gpu_memory = gpu_memory
 
     @property
     def id(self) -> str:
@@ -220,6 +228,24 @@ class Instance:
         """
         return self._storage
 
+    @property
+    def os_volume_id(self) -> str:
+        """Get the main os volume id
+
+        :return: main os volume id
+        :rtype: str
+        """
+        return self._os_volume_id
+
+    @property
+    def gpu_memory(self) -> dict:
+        """Get the instance gpu_memory details
+
+        :return: gpu_memory details
+        :rtype: dict
+        """
+        return self._gpu_memory
+
 
 class InstancesService:
     """A service for interacting with the instances endpoint"""
@@ -253,7 +279,9 @@ class InstancesService:
             cpu=instance_dict['cpu'],
             gpu=instance_dict['gpu'],
             memory=instance_dict['memory'],
-            storage=instance_dict['storage']
+            storage=instance_dict['storage'],
+            os_volume_id=instance_dict['os_volume_id'] if 'os_volume_id' in instance_dict else None,
+            gpu_memory=instance_dict['gpu_memory'] if 'gpu_memory' in instance_dict else None
         ), instances_dict))
         return instances
 
@@ -283,7 +311,10 @@ class InstancesService:
             cpu=instance_dict['cpu'],
             gpu=instance_dict['gpu'],
             memory=instance_dict['memory'],
-            storage=instance_dict['storage']
+            storage=instance_dict['storage'],
+            os_volume_id=instance_dict['os_volume_id'] if 'os_volume_id' in instance_dict else None,
+            gpu_memory=instance_dict['gpu_memory'] if 'gpu_memory' in instance_dict else None
+
         )
         return instance
 
@@ -294,12 +325,13 @@ class InstancesService:
                hostname: str,
                description: str,
                location: str = "FIN1",
-               startup_script_id: str = None) -> Instance:
+               startup_script_id: str = None,
+               volumes: List[Dict] = None) -> Instance:
         """Creates (deploys) a new instance
 
         :param instance_type: instance type. e.g. '8V100.48M'
         :type instance_type: str
-        :param image: instance image type. e.g. 'ubuntu-20.04-cuda-11.0'
+        :param image: instance image type. e.g. 'ubuntu-20.04-cuda-11.0', or existing OS volume id
         :type image: str
         :param ssh_key_ids: list of ssh key ids
         :type ssh_key_ids: list
@@ -311,6 +343,8 @@ class InstancesService:
         :type location: str, optional
         :param startup_script_id: startup script id, defaults to None
         :type startup_script_id: str, optional
+        :param volumes: List of volume data dictionaries to create alongside the instance
+        :type volumes: List[Dict], optional
         :return: the new instance object
         :rtype: id
         """
@@ -321,29 +355,33 @@ class InstancesService:
             "startup_script_id": startup_script_id,
             "hostname": hostname,
             "description": description,
-            "location": location
+            "location": location,
+            "volumes": volumes
         }
         id = self._http_client.post(INSTANCES_ENDPOINT, json=payload).text
         instance = self.get_by_id(id)
         return instance
 
-    def action(self, id_list: Union[List[str], str], action: str) -> None:
+    def action(self, id_list: Union[List[str], str], action: str, volume_ids: Optional[List[str]] = None) -> None:
         """Performs an action on a list of instances / single instance
 
         :param id_list: list of instance ids, or an instance id
         :type id_list: Union[List[str], str]
         :param action: the action to perform
         :type action: str
+        :param volume_ids: the volume ids to delete
+        :type volume_ids: Optional[List[str]]
         """
         if type(id_list) is str:
             id_list = [id_list]
 
         payload = {
             "id": id_list,
-            "action": action
+            "action": action,
+            "volume_ids": volume_ids
         }
 
-        self._http_client.post(INSTANCES_ENDPOINT + '/action', json=payload)
+        self._http_client.put(INSTANCES_ENDPOINT, json=payload)
         return
 
     def is_available(self, instance_type: str) -> bool:
@@ -354,5 +392,5 @@ class InstancesService:
         :return: True if available to deploy, False otherwise
         :rtype: bool
         """
-        url = INSTANCES_ENDPOINT + f'/availability/{instance_type}'
+        url = f'/instance-availability/{instance_type}'
         return self._http_client.get(url).json()

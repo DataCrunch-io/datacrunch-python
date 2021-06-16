@@ -13,6 +13,7 @@ class InstanceType:
                  cpu: dict,
                  gpu: dict,
                  memory: dict,
+                 gpu_memory: dict,
                  storage: dict) -> None:
         """Initialize an instance type object
 
@@ -29,7 +30,9 @@ class InstanceType:
         :param gpu: gpu details
         :type gpu: dict
         :param memory: memory details
-        :type storage: dict
+        :type memory: dict
+        :param gpu_memory: gpu memory details
+        :type gpu_memory: dict
         :param storage: storage details
         :type storage: dict
         """
@@ -40,6 +43,7 @@ class InstanceType:
         self._cpu = cpu
         self._gpu = gpu
         self._memory = memory
+        self._gpu_memory = gpu_memory
         self._storage = storage
 
     @property
@@ -106,6 +110,15 @@ class InstanceType:
         return self._memory
 
     @property
+    def gpu_memory(self) -> dict:
+        """Get the instance type gpu_memory details
+
+        :return: gpu_memory details
+        :rtype: dict
+        """
+        return self._gpu_memory
+
+    @property
     def storage(self) -> dict:
         """Get the instance type storage details
 
@@ -113,6 +126,23 @@ class InstanceType:
         :rtype: dict
         """
         return self._storage
+
+    def __str__(self) -> str:
+        """Prints the instance type
+
+        :return: instance type string representation
+        :rtype: str
+        """
+        return (f'id: {self._id}\n'
+                f'instance type: {self._instance_type}\n'
+                f'price_per_hour: ${self._price_per_hour}\n'
+                f'description: {self._description}\n'
+                f'cpu: {self._cpu}\n'
+                f'gpu: {self._gpu}\n'
+                f'memory :{self._memory}\n'
+                f'gpu_memory :{self._gpu_memory}\n'
+                f'storage :{self._storage}\n'
+                )
 
 
 class InstanceTypesService:
@@ -136,6 +166,7 @@ class InstanceTypesService:
             cpu=instance_type['cpu'],
             gpu=instance_type['gpu'],
             memory=instance_type['memory'],
+            gpu_memory=instance_type['gpu_memory'],
             storage=instance_type['storage']
         ), instance_types))
 

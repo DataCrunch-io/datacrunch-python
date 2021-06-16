@@ -10,6 +10,7 @@ INVALID_REQUEST_MESSAGE = 'Your existence is invalid'
 
 INSTANCE_ID = 'deadc0de-a5d2-4972-ae4e-d429115d055b'
 SSH_KEY_ID = '12345dc1-a5d2-4972-ae4e-d429115d055b'
+OS_VOLUME_ID = '46fc0247-8f65-4d8a-ad73-852a8b3dc1d3'
 
 INSTANCE_TYPE = "1V100.6V"
 INSTANCE_IMAGE = "fastai"
@@ -38,6 +39,10 @@ PAYLOAD = [
             "description": "super-duper-memory",
             "size_in_gigabytes": 32
         },
+        "gpu_memory": {
+            "description": "super-duper-memory",
+            "size_in_gigabytes": 20
+        },
         "storage": {
             "description": "super-duper-storage",
             "size_in_gigabytes": 320
@@ -49,7 +54,8 @@ PAYLOAD = [
         "instance_type": INSTANCE_TYPE,
         "image": INSTANCE_IMAGE,
         "id": INSTANCE_ID,
-        "ssh_key_ids": [SSH_KEY_ID]
+        "ssh_key_ids": [SSH_KEY_ID],
+        "os_volume_id": OS_VOLUME_ID
     }
 ]
 
@@ -74,27 +80,28 @@ class TestInstancesService:
 
         # act
         instances = instances_service.get()
+        instance = instances[0]
 
         # assert
         assert type(instances) == list
         assert len(instances) == 1
-        assert type(instances[0]) == Instance
-        assert type(instances[0].ssh_key_ids) == list
-        assert instances[0].id == INSTANCE_ID
-        assert instances[0].ssh_key_ids == [SSH_KEY_ID]
-        assert instances[0].status == INSTANCE_STATUS
-        assert instances[0].image == INSTANCE_IMAGE
-        assert instances[0].instance_type == INSTANCE_TYPE
-        assert instances[0].price_per_hour == INSTANCE_PRICE_PER_HOUR
-        assert instances[0].location == INSTANCE_LOCATION
-        assert instances[0].description == INSTANCE_DESCRIPTION
-        assert instances[0].hostname == INSTANCE_HOSTNAME
-        assert instances[0].ip == INSTANCE_IP
-        assert instances[0].created_at == INSTANCE_CREATED_AT
-        assert type(instances[0].cpu) == dict
-        assert type(instances[0].gpu) == dict
-        assert type(instances[0].memory) == dict
-        assert type(instances[0].storage) == dict
+        assert type(instance) == Instance
+        assert type(instance.ssh_key_ids) == list
+        assert instance.id == INSTANCE_ID
+        assert instance.ssh_key_ids == [SSH_KEY_ID]
+        assert instance.status == INSTANCE_STATUS
+        assert instance.image == INSTANCE_IMAGE
+        assert instance.instance_type == INSTANCE_TYPE
+        assert instance.price_per_hour == INSTANCE_PRICE_PER_HOUR
+        assert instance.location == INSTANCE_LOCATION
+        assert instance.description == INSTANCE_DESCRIPTION
+        assert instance.hostname == INSTANCE_HOSTNAME
+        assert instance.ip == INSTANCE_IP
+        assert instance.created_at == INSTANCE_CREATED_AT
+        assert type(instance.cpu) == dict
+        assert type(instance.gpu) == dict
+        assert type(instance.memory) == dict
+        assert type(instance.storage) == dict
         assert responses.assert_call_count(endpoint, 1) is True
 
     def test_get_instances_by_status_successful(self, instances_service, endpoint):
@@ -109,27 +116,28 @@ class TestInstancesService:
 
         # act
         instances = instances_service.get(status='running')
+        instance = instances[0]
 
         # assert
         assert type(instances) == list
         assert len(instances) == 1
-        assert type(instances[0]) == Instance
-        assert type(instances[0].ssh_key_ids) == list
-        assert instances[0].id == INSTANCE_ID
-        assert instances[0].ssh_key_ids == [SSH_KEY_ID]
-        assert instances[0].status == INSTANCE_STATUS
-        assert instances[0].image == INSTANCE_IMAGE
-        assert instances[0].instance_type == INSTANCE_TYPE
-        assert instances[0].price_per_hour == INSTANCE_PRICE_PER_HOUR
-        assert instances[0].location == INSTANCE_LOCATION
-        assert instances[0].description == INSTANCE_DESCRIPTION
-        assert instances[0].hostname == INSTANCE_HOSTNAME
-        assert instances[0].ip == INSTANCE_IP
-        assert instances[0].created_at == INSTANCE_CREATED_AT
-        assert type(instances[0].cpu) == dict
-        assert type(instances[0].gpu) == dict
-        assert type(instances[0].memory) == dict
-        assert type(instances[0].storage) == dict
+        assert type(instance) == Instance
+        assert type(instance.ssh_key_ids) == list
+        assert instance.id == INSTANCE_ID
+        assert instance.ssh_key_ids == [SSH_KEY_ID]
+        assert instance.status == INSTANCE_STATUS
+        assert instance.image == INSTANCE_IMAGE
+        assert instance.instance_type == INSTANCE_TYPE
+        assert instance.price_per_hour == INSTANCE_PRICE_PER_HOUR
+        assert instance.location == INSTANCE_LOCATION
+        assert instance.description == INSTANCE_DESCRIPTION
+        assert instance.hostname == INSTANCE_HOSTNAME
+        assert instance.ip == INSTANCE_IP
+        assert instance.created_at == INSTANCE_CREATED_AT
+        assert type(instance.cpu) == dict
+        assert type(instance.gpu) == dict
+        assert type(instance.memory) == dict
+        assert type(instance.storage) == dict
         assert responses.assert_call_count(url, 1) is True
 
     def test_get_instances_by_status_failed(self, instances_service, endpoint):
@@ -242,9 +250,11 @@ class TestInstancesService:
         assert instance.hostname == INSTANCE_HOSTNAME
         assert instance.ip == INSTANCE_IP
         assert instance.created_at == INSTANCE_CREATED_AT
+        assert instance.os_volume_id == OS_VOLUME_ID
         assert type(instance.cpu) == dict
         assert type(instance.gpu) == dict
         assert type(instance.memory) == dict
+        assert type(instance.gpu_memory) == dict
         assert type(instance.storage) == dict
         assert responses.assert_call_count(endpoint, 1) is True
         assert responses.assert_call_count(url, 1) is True
@@ -275,9 +285,9 @@ class TestInstancesService:
 
     def test_action_successful(self, instances_service, endpoint):
         # arrange - add response mock
-        url = endpoint + '/action'
+        url = endpoint
         responses.add(
-            responses.POST,
+            responses.PUT,
             url,
             status=202
         )
@@ -291,9 +301,9 @@ class TestInstancesService:
 
     def test_action_failed(self, instances_service, endpoint):
         # arrange - add response mock
-        url = endpoint + '/action'
+        url = endpoint
         responses.add(
-            responses.POST,
+            responses.PUT,
             url,
             json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
             status=400
@@ -310,7 +320,7 @@ class TestInstancesService:
 
     def test_is_available_successful(self, instances_service, endpoint):
         # arrange - add response mock
-        url = endpoint + '/availability/' + INSTANCE_TYPE
+        url = instances_service._http_client._base_url + '/instance-availability/' + INSTANCE_TYPE
         responses.add(
             responses.GET,
             url,
@@ -327,7 +337,7 @@ class TestInstancesService:
 
     def test_is_available_failed(self, instances_service, endpoint):
         # arrange - add response mock
-        url = endpoint + '/availability/x'
+        url = instances_service._http_client._base_url + '/instance-availability/x'
         responses.add(
             responses.GET,
             url,

@@ -111,7 +111,8 @@ DataCrunch's Public API documentation [is available here](https://datacrunch.sto
 - Install Dependencies:
 
   ```bash
-  pip3 install -e
+  pip3 install -e .[test]
+  pip3 install -U pytest
   ```
 
 ### Running Tests
@@ -129,6 +130,18 @@ We use pytest for testing.
   ```bash
   pytest ./tests/unit_tests/test_file.py
   ```
+
+### Local Manual Testing
+
+```python
+from datacrunch.datacrunch import DataCrunchClient
+
+CLIENT_SECRET = 'secret'
+CLIENT_ID = 'Ibk5bdxV64lKAWOqYnvSi'
+
+# Create datcrunch client
+datacrunch = DataCrunchClient(CLIENT_ID, CLIENT_SECRET, base_url='http://localhost:3001/v1')
+```
 
 ### Generating the documentation
 

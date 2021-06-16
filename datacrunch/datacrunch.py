@@ -6,7 +6,9 @@ from datacrunch.instance_types.instance_types import InstanceTypesService
 from datacrunch.instances.instances import InstancesService
 from datacrunch.ssh_keys.ssh_keys import SSHKeysService
 from datacrunch.startup_scripts.startup_scripts import StartupScriptsService
-from datacrunch.constants import Actions, InstanceStatus, ErrorCodes
+from datacrunch.volume_types.volume_types import VolumeTypesService
+from datacrunch.volumes.volumes import VolumesService
+from datacrunch.constants import Constants
 from datacrunch.__version__ import VERSION
 
 
@@ -25,26 +27,14 @@ class DataCrunchClient:
         """
 
         # Constants
-        self.actions: Actions = Actions()
-        """Available actions to perform on an instance"""
-
-        self.instance_status: InstanceStatus = InstanceStatus()
-        """Possible instance statuses"""
-
-        self.error_codes: ErrorCodes = ErrorCodes()
-        """Available error codes"""
-
-        self.base_url: str = base_url
-        """DataCrunch's Public API URL"""
-
-        self.version: str = VERSION
-        """Current SDK Version"""
+        self.constants: Constants = Constants(base_url, VERSION)
+        """Constants"""
 
         # Services
         self._authentication: AuthenticationService = AuthenticationService(
-            client_id, client_secret, self.base_url)
+            client_id, client_secret, self.constants.base_url)
         self._http_client: HTTPClient = HTTPClient(
-            self._authentication, self.base_url)
+            self._authentication, self.constants.base_url)
 
         self.balance: BalanceService = BalanceService(self._http_client)
         """Balance service. Get client balance"""
@@ -65,3 +55,10 @@ class DataCrunchClient:
         self.startup_scripts: StartupScriptsService = StartupScriptsService(
             self._http_client)
         """Startup Scripts service"""
+
+        self.volume_types: VolumeTypesService = VolumeTypesService(
+            self._http_client)
+        """Volume type service"""
+
+        self.volumes: VolumesService = VolumesService(self._http_client)
+        """Volume service. Create, attach, detach, get, rename, delete volumes"""

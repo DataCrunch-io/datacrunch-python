@@ -114,6 +114,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+datacrunch_env/
 
 # Spyder project settings
 .spyderproject
