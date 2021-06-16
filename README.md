@@ -136,7 +136,6 @@ We use pytest for testing.
 ```python
 from datacrunch.datacrunch import DataCrunchClient
 
-# Get client secret from environment variable
 CLIENT_SECRET = 'secret'
 CLIENT_ID = 'Ibk5bdxV64lKAWOqYnvSi'
 

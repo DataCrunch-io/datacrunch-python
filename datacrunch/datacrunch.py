@@ -8,7 +8,7 @@ from datacrunch.ssh_keys.ssh_keys import SSHKeysService
 from datacrunch.startup_scripts.startup_scripts import StartupScriptsService
 from datacrunch.volume_types.volume_types import VolumeTypesService
 from datacrunch.volumes.volumes import VolumesService
-from datacrunch.constants import Actions, VolumeActions, InstanceStatus, VolumeStatus, VolumeTypes, ErrorCodes
+from datacrunch.constants import Constants
 from datacrunch.__version__ import VERSION
 
 
@@ -27,35 +27,14 @@ class DataCrunchClient:
         """
 
         # Constants
-        self.actions: Actions = Actions()
-        """Available actions to perform on an instance"""
-
-        self.actions: VolumeActions = VolumeActions()
-        """Available actions to perform on a volume"""
-
-        self.instance_status: InstanceStatus = InstanceStatus()
-        """Possible instance statuses"""
-
-        self.volume_status: VolumeStatus = VolumeStatus()
-        """Possible volume statuses"""
-
-        self.volume_status: VolumeTypes = VolumeTypes()
-        """Available volume types"""
-
-        self.error_codes: ErrorCodes = ErrorCodes()
-        """Available error codes"""
-
-        self.base_url: str = base_url
-        """DataCrunch's Public API URL"""
-
-        self.version: str = VERSION
-        """Current SDK Version"""
+        self.constants: Constants = Constants(base_url, VERSION)
+        """Constants"""
 
         # Services
         self._authentication: AuthenticationService = AuthenticationService(
-            client_id, client_secret, self.base_url)
+            client_id, client_secret, self.constants.base_url)
         self._http_client: HTTPClient = HTTPClient(
-            self._authentication, self.base_url)
+            self._authentication, self.constants.base_url)
 
         self.balance: BalanceService = BalanceService(self._http_client)
         """Balance service. Get client balance"""
