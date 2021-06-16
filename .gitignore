@@ -142,3 +142,4 @@ cython_debug/
 
 # python sphinx docs
 _build/
+testing.py
