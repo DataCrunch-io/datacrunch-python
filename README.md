@@ -145,6 +145,8 @@ datacrunch = DataCrunchClient(CLIENT_ID, CLIENT_SECRET, base_url='http://localho
 
 ### Generating the documentation
 
+If added a new service, create a documentation template under api/services for that service.
+
 ```bash
 cd docs
 make html
