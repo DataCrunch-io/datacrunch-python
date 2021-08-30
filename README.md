@@ -41,7 +41,7 @@ DataCrunch's Public API documentation [is available here](https://datacrunch.sto
 - Install via pip:
 
   ```bash
-  pip install datacrunch
+  pip3 install datacrunch
   ```
 
 - Generate your client credentials - [instructions in the public API docs](https://datacrunch.stoplight.io/docs/datacrunch-public/docs/Overview/Quick-Start-Guide.md).
