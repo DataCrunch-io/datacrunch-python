@@ -81,7 +81,7 @@ DataCrunch's Public API documentation [is available here](https://datacrunch.sto
                                         description='example instance')
 
   # Delete instance
-  datacrunch.instances.action(instance.id, datacrunch.actions.DELETE)
+  datacrunch.instances.action(instance.id, datacrunch.constants.instance_actions.DELETE)
   ```
 
   More examples can be found in the `/examples` folder or in the [documentation](https://datacrunch-python.readthedocs.io/en/latest/).
