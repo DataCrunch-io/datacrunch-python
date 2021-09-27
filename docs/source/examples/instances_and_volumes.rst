@@ -23,11 +23,12 @@ Instances and Volumes
 
     # Get all SSH keys
     ssh_keys = datacrunch.ssh_keys.get()
+    ssh_keys_ids = list(map(lambda ssh_key: ssh_key.id, ssh_keys))
 
     # Create instance with extra attached volumes
     instance_with_extra_volumes = datacrunch.instances.create(instance_type='1V100.6V',
                                                             image='fastai',
-                                                            ssh_key_ids=ssh_keys[0].id,
+                                                            ssh_key_ids=ssh_keys,
                                                             hostname='example',
                                                             description='example instance',
                                                             volumes=[
@@ -38,7 +39,7 @@ Instances and Volumes
     # Create instance with custom OS volume size and name
     instance_with_custom_os_volume = datacrunch.instances.create(instance_type='1V100.6V',
                                                           image='fastai',
-                                                          ssh_key_ids=ssh_keys[0].id,
+                                                          ssh_key_ids=ssh_keys,
                                                           hostname='example',
                                                           description='example instance',
                                                           os_volumes={
@@ -49,7 +50,7 @@ Instances and Volumes
     # Create instance with existing OS volume as an image
     instance_with_existing_os_volume = datacrunch.instances.create(instance_type='1V100.6V',
                                                                 image=EXISTING_OS_VOLUME_ID,
-                                                                ssh_key_ids=ssh_keys[0].id,
+                                                                ssh_key_ids=ssh_keys,
                                                                 hostname='example',
                                                                 description='example instance')
 

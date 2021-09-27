@@ -72,6 +72,7 @@ DataCrunch's Public API documentation [is available here](https://datacrunch.sto
 
   # Get all SSH keys
   ssh_keys = datacrunch.ssh_keys.get()
+  ssh_keys = list(map(lambda key: key.id, ssh_keys))
 
   # Create a new instance
   instance = datacrunch.instances.create(instance_type='1V100.6V',
