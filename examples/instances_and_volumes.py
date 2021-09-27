@@ -26,9 +26,20 @@ instance_with_extra_volumes = datacrunch.instances.create(instance_type='1V100.6
                                                           hostname='example',
                                                           description='example instance',
                                                           volumes=[
-                                                                    {"type": HDD, "name": "volume-1", "size": 95},
-                                                                    {"type": NVMe, "name": "volume-2", "size": 95}
+                                                            {"type": HDD, "name": "volume-1", "size": 95},
+                                                            {"type": NVMe, "name": "volume-2", "size": 95}
                                                           ])
+
+# Create instance with custom OS volume size and name
+instance_with_custom_os_volume = datacrunch.instances.create(instance_type='1V100.6V',
+                                                          image='fastai',
+                                                          ssh_key_ids=ssh_keys[0].id,
+                                                          hostname='example',
+                                                          description='example instance',
+                                                          os_volumes={
+                                                              "name": "OS volume",
+                                                              "size": 95
+                                                          })
 
 # Create instance with existing OS volume as an image
 instance_with_existing_os_volume = datacrunch.instances.create(instance_type='1V100.6V',
