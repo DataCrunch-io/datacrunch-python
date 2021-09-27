@@ -21,6 +21,7 @@ INSTANCE_PRICE_PER_HOUR = 0.60
 INSTANCE_LOCATION = 'FIN1'
 INSTANCE_IP = '1.2.3.4'
 INSTANCE_CREATED_AT = "whatchalookingatboy?"
+INSTANCE_OS_VOLUME = {"name": "os volume", "size": 50}
 
 PAYLOAD = [
     {
@@ -235,6 +236,7 @@ class TestInstancesService:
             ssh_key_ids=[SSH_KEY_ID],
             hostname=INSTANCE_HOSTNAME,
             description=INSTANCE_DESCRIPTION,
+            os_volume=INSTANCE_OS_VOLUME
         )
 
         # assert
