@@ -41,7 +41,7 @@ DataCrunch's Public API documentation [is available here](https://datacrunch.sto
 - Install via pip:
 
   ```bash
-  pip install datacrunch
+  pip3 install datacrunch
   ```
 
 - Generate your client credentials - [instructions in the public API docs](https://datacrunch.stoplight.io/docs/datacrunch-public/docs/Overview/Quick-Start-Guide.md).
@@ -81,7 +81,7 @@ DataCrunch's Public API documentation [is available here](https://datacrunch.sto
                                         description='example instance')
 
   # Delete instance
-  datacrunch.instances.action(instance.id, datacrunch.actions.DELETE)
+  datacrunch.instances.action(instance.id, datacrunch.constants.instance_actions.DELETE)
   ```
 
   More examples can be found in the `/examples` folder or in the [documentation](https://datacrunch-python.readthedocs.io/en/latest/).
@@ -144,6 +144,8 @@ datacrunch = DataCrunchClient(CLIENT_ID, CLIENT_SECRET, base_url='http://localho
 ```
 
 ### Generating the documentation
+
+If added a new service, create a documentation template under api/services for that service.
 
 ```bash
 cd docs

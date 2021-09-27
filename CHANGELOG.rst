@@ -1,6 +1,26 @@
 Changelog
 =========
 
+v1.0.4 (2021-07-01)
+-------------------
+
+* Added constants documentation
+
+v1.0.3 (2021-07-01)
+-------------------
+
+* Added missing volumes documentation
+
+v1.0.2 (2021-06-16)
+-------------------
+
+* Added examples to documentation
+
+v1.0.1 (2021-06-16)
+-------------------
+
+* Update version
+
 v1.0.0 (2021-06-16)
 -------------------
 

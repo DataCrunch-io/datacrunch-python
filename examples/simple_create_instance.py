@@ -20,4 +20,4 @@ instance = datacrunch.instances.create(instance_type='1V100.6V',
                                        description='example instance')
 
 # Delete instance
-datacrunch.instances.action(instance.id, datacrunch.actions.DELETE)
+datacrunch.instances.action(instance.id, datacrunch.constants.instance_actions.DELETE)

@@ -13,6 +13,12 @@ API Exception
 .. autoclass:: datacrunch.exceptions.APIException
    :members:
 
+Constants
+---------
+
+.. autoclass:: datacrunch.constants.Constants
+   :members:
+
 Services API
 ------------
 .. toctree::
