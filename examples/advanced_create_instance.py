@@ -54,7 +54,11 @@ try:
                                                        image='fastai',
                                                        ssh_key_ids=ssh_keys_ids,
                                                        hostname='example',
-                                                       description='large instance')
+                                                       description='large instance',
+                                                       os_volumes={
+                                                            "name": "Large OS volume",
+                                                            "size": 95
+                                                        })
             else:
                 # Deploy a new 4V instance
                 instance = datacrunch.instances.create(instance_type=INSTANCE_TYPE_4V,

@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v1.0.5 (2021-09-27)
+-------------------
+
+* Added an option to set OS volume size and name on instance creation
+
 v1.0.4 (2021-07-01)
 -------------------
 

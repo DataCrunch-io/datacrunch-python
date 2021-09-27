@@ -108,5 +108,6 @@ class StartupScriptsService:
         :rtype: str
         """
         payload = {"name": name, "script": script}
-        id = self._http_client.post(STARTUP_SCRIPTS_ENDPOINT, json=payload).text
+        id = self._http_client.post(
+            STARTUP_SCRIPTS_ENDPOINT, json=payload).text
         return StartupScript(id, name, script)
