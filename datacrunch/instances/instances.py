@@ -326,7 +326,8 @@ class InstancesService:
                description: str,
                location: str = "FIN1",
                startup_script_id: str = None,
-               volumes: List[Dict] = None) -> Instance:
+               volumes: List[Dict] = None,
+               os_volume: Dict = None) -> Instance:
         """Creates (deploys) a new instance
 
         :param instance_type: instance type. e.g. '8V100.48M'
@@ -345,6 +346,8 @@ class InstancesService:
         :type startup_script_id: str, optional
         :param volumes: List of volume data dictionaries to create alongside the instance
         :type volumes: List[Dict], optional
+        :param os_volume: OS volume details, defaults to None
+        :type os_volume: Dict, optional
         :return: the new instance object
         :rtype: id
         """
@@ -356,6 +359,7 @@ class InstancesService:
             "hostname": hostname,
             "description": description,
             "location": location,
+            "os_volume": os_volume,
             "volumes": volumes
         }
         id = self._http_client.post(INSTANCES_ENDPOINT, json=payload).text
