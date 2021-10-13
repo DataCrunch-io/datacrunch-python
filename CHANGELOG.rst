@@ -1,7 +1,12 @@
 Changelog
 =========
 
-v1.0.6 (2021-09-12)
+v1.0.7 (2021-10-13)
+-------------------
+
+* Fixed the previous bug in a different method
+
+v1.0.6 (2021-10-12)
 -------------------
 
 * Fixed a bug where initializing an instance without ssh keys raises an exception
