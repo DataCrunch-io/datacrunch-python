@@ -306,7 +306,7 @@ class InstancesService:
             ip=instance_dict['ip'],
             status=instance_dict['status'],
             created_at=instance_dict['created_at'],
-            ssh_key_ids=instance_dict['ssh_key_ids'],
+            ssh_key_ids=instance_dict['ssh_key_ids'] if 'ssh_key_ids' in instance_dict else [],
             startup_script_id=instance_dict['startup_script_id'] if 'startup_script_id' in instance_dict else None,
             cpu=instance_dict['cpu'],
             gpu=instance_dict['gpu'],
