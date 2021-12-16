@@ -18,6 +18,7 @@ class Volume:
                  target: str = None,
                  location: str = "FIN1",
                  instance_id: str = None,
+                 ssh_key_ids: List[str] = [],
                  ) -> None:
         """Initialize the volume object
 
@@ -41,6 +42,8 @@ class Volume:
         :type location: str, optional
         :param instance_id: the instance id the volume is attached to, None if detached
         :type instance_id: str
+        :param ssh_key_ids: list of ssh keys ids
+        :type ssh_key_ids: List[str]
         """
 
         self._id = id
@@ -53,6 +56,7 @@ class Volume:
         self._target = target
         self._location = location
         self._instance_id = instance_id
+        self._ssh_key_ids = ssh_key_ids
 
     @property
     def id(self) -> str:
@@ -144,6 +148,14 @@ class Volume:
         """
         return self._instance_id
 
+    @property
+    def ssh_key_ids(self) -> List[str]:
+        """Get the SSH key IDs of the instance
+
+        :return: SSH key IDs
+        :rtype: List[str]
+        """
+        return self._ssh_key_ids
 
 class VolumesService:
     """A service for interacting with the volumes endpoint"""
@@ -172,6 +184,7 @@ class VolumesService:
             target=volume_dict['target'] if 'target' in volume_dict else None,
             location=volume_dict['location'],
             instance_id=volume_dict['instance_id'] if 'instance_id' in volume_dict else None,
+            ssh_key_ids=volume_dict['ssh_key_ids'] if 'ssh_key_ids' in volume_dict else [],
         ), volumes_dict))
         return volumes
 
@@ -196,6 +209,7 @@ class VolumesService:
             target=volume_dict['target'] if 'target' in volume_dict else None,
             location=volume_dict['location'],
             instance_id=volume_dict['instance_id'] if 'instance_id' in volume_dict else None,
+            ssh_key_ids=volume_dict['ssh_key_ids'] if 'ssh_key_ids' in volume_dict else [],
         )
         return volume
 

@@ -321,9 +321,9 @@ class InstancesService:
     def create(self,
                instance_type: str,
                image: str,
-               ssh_key_ids: list,
                hostname: str,
                description: str,
+               ssh_key_ids: list = [],
                location: str = "FIN1",
                startup_script_id: str = None,
                volumes: List[Dict] = None) -> Instance:
