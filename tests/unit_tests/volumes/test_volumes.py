@@ -14,12 +14,14 @@ FIN1 = "FIN1"
 NVME = "NVMe"
 HDD = "HDD"
 TARGET_VDA = "vda"
+SSH_KEY_ID = '12345dc1-a5d2-4972-ae4e-d429115d055b'
 
 NVME_VOL_ID = "cf995e26-ce69-4149-84a3-cdd1e100670f"
 NVME_VOL_STATUS = VolumeStatus.ATTACHED
 NVME_VOL_NAME = "Volume-nxC2tf9F"
 NVME_VOL_SIZE = 50
 NVME_VOL_CREATED_AT = "2021-06-02T12:56:49.582Z"
+
 
 HDD_VOL_ID = "ea4edc62-9838-4b7c-bd5b-862f2efec675"
 HDD_VOL_STATUS = VolumeStatus.DETACHED
@@ -37,7 +39,8 @@ NVME_VOLUME = {
     "location": FIN1,
     "is_os_volume": True,
     "created_at": NVME_VOL_CREATED_AT,
-    "target": TARGET_VDA
+    "target": TARGET_VDA,
+    "ssh_key_ids": SSH_KEY_ID
 }
 
 HDD_VOLUME = {
@@ -50,7 +53,8 @@ HDD_VOLUME = {
     "location": FIN1,
     "is_os_volume": False,
     "created_at": HDD_VOL_CREATED_AT,
-    "target": None
+    "target": None,
+    "ssh_key_ids": []
 }
 
 PAYLOAD = [NVME_VOLUME, HDD_VOLUME]
@@ -94,6 +98,7 @@ class TestVolumesService:
         assert volume_nvme.is_os_volume
         assert volume_nvme.created_at == NVME_VOL_CREATED_AT
         assert volume_nvme.target == TARGET_VDA
+        assert volume_nvme.ssh_key_ids == SSH_KEY_ID
 
         assert volume_hdd.id == HDD_VOL_ID
         assert volume_hdd.status == HDD_VOL_STATUS
@@ -105,6 +110,7 @@ class TestVolumesService:
         assert volume_hdd.is_os_volume is False
         assert volume_hdd.created_at == HDD_VOL_CREATED_AT
         assert volume_hdd.target is None
+        assert volume_hdd.ssh_key_ids == []
 
     def test_get_volumes_by_status_successful(self, volumes_service, endpoint):
         # arrange - add response mock

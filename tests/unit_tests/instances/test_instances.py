@@ -283,7 +283,6 @@ class TestInstancesService:
             image=OS_VOLUME_ID,
             hostname=INSTANCE_HOSTNAME,
             description=INSTANCE_DESCRIPTION,
-            os_volume=INSTANCE_OS_VOLUME
         )
 
         # assert
