@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v1.0.8 (2021-12-20)
+-------------------
+
+* Added ssh_key_ids property for Volume entity
+* Added test coverage for ssh_key_ids
+
 v1.0.7 (2021-10-13)
 -------------------
 
