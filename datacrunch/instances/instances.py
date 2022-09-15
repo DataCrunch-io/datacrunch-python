@@ -24,7 +24,8 @@ class Instance:
                  os_volume_id: str,
                  gpu_memory: dict,
                  location: str = "FIN1",
-                 startup_script_id: str = None
+                 startup_script_id: str = None,
+                 is_spot: bool = False
                  ) -> None:
         """Initialize the instance object
 
@@ -64,6 +65,8 @@ class Instance:
         :type location: str, optional
         :param startup_script_id: startup script id, defaults to None
         :type startup_script_id: str, optional
+        :param is_spot: is this a spot instance, defaults to None
+        :type is_spot: bool, optional
         """
         self._id = id
         self._instance_type = instance_type
@@ -83,6 +86,7 @@ class Instance:
         self._storage = storage
         self._os_volume_id = os_volume_id
         self._gpu_memory = gpu_memory
+        self._is_spot = is_spot
 
     @property
     def id(self) -> str:
@@ -246,6 +250,14 @@ class Instance:
         """
         return self._gpu_memory
 
+    @property
+    def is_spot(self) -> bool:
+        """Is this a spot instance
+
+        :return: is spot details
+        :rtype: bool
+        """
+        return self._is_spot
 
 class InstancesService:
     """A service for interacting with the instances endpoint"""
@@ -281,7 +293,8 @@ class InstancesService:
             memory=instance_dict['memory'],
             storage=instance_dict['storage'],
             os_volume_id=instance_dict['os_volume_id'] if 'os_volume_id' in instance_dict else None,
-            gpu_memory=instance_dict['gpu_memory'] if 'gpu_memory' in instance_dict else None
+            gpu_memory=instance_dict['gpu_memory'] if 'gpu_memory' in instance_dict else None,
+            is_spot=instance_dict['is_spot'] if 'is_spot' in instance_dict else False
         ), instances_dict))
         return instances
 
@@ -313,8 +326,8 @@ class InstancesService:
             memory=instance_dict['memory'],
             storage=instance_dict['storage'],
             os_volume_id=instance_dict['os_volume_id'] if 'os_volume_id' in instance_dict else None,
-            gpu_memory=instance_dict['gpu_memory'] if 'gpu_memory' in instance_dict else None
-
+            gpu_memory=instance_dict['gpu_memory'] if 'gpu_memory' in instance_dict else None,
+            is_spot=instance_dict['is_spot'] if 'is_spot' in instance_dict else False
         )
         return instance
 
@@ -327,7 +340,8 @@ class InstancesService:
                location: str = "FIN1",
                startup_script_id: str = None,
                volumes: List[Dict] = None,
-               os_volume: Dict = None) -> Instance:
+               os_volume: Dict = None,
+               is_spot: bool = False) -> Instance:
         """Creates (deploys) a new instance
 
         :param instance_type: instance type. e.g. '8V100.48M'
@@ -348,6 +362,8 @@ class InstancesService:
         :type volumes: List[Dict], optional
         :param os_volume: OS volume details, defaults to None
         :type os_volume: Dict, optional
+        :param is_spot: Is spot instance
+        :type is_spot: bool, optional
         :return: the new instance object
         :rtype: id
         """
@@ -360,7 +376,8 @@ class InstancesService:
             "description": description,
             "location": location,
             "os_volume": os_volume,
-            "volumes": volumes
+            "volumes": volumes,
+            "is_spot": is_spot
         }
         id = self._http_client.post(INSTANCES_ENDPOINT, json=payload).text
         instance = self.get_by_id(id)
