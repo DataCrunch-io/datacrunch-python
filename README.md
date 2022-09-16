@@ -134,6 +134,8 @@ We use pytest for testing.
 
 ### Local Manual Testing
 
+Create this file in the root directory of the project:
+
 ```python
 from datacrunch.datacrunch import DataCrunchClient
 
