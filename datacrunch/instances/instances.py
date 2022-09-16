@@ -1,4 +1,5 @@
 from typing import List, Union, Optional, Dict
+from datacrunch.helpers import stringify_class_object_properties
 
 INSTANCES_ENDPOINT = '/instances'
 
@@ -258,6 +259,14 @@ class Instance:
         :rtype: bool
         """
         return self._is_spot
+
+    def __str__(self) -> str:
+        """Returns a string of the json representation of the instance
+
+        :return: json representation of the instance
+        :rtype: str
+        """
+        return stringify_class_object_properties(self)
 
 class InstancesService:
     """A service for interacting with the instances endpoint"""

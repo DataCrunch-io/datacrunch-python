@@ -1,4 +1,5 @@
 from typing import List
+from datacrunch.helpers import stringify_class_object_properties
 
 IMAGES_ENDPOINT = '/images'
 
@@ -58,6 +59,14 @@ class Image:
         :rtype: List[str]
         """
         return self._details
+
+    def __str__(self) -> str:
+        """Returns a string of the json representation of the image
+
+        :return: json representation of the image
+        :rtype: str
+        """
+        return stringify_class_object_properties(self)
 
 
 class ImagesService:

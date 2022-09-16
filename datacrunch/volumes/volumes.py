@@ -1,5 +1,6 @@
 from typing import List, Union, Optional
 from datacrunch.constants import VolumeActions
+from datacrunch.helpers import stringify_class_object_properties
 
 VOLUMES_ENDPOINT = '/volumes'
 
@@ -156,6 +157,14 @@ class Volume:
         :rtype: List[str]
         """
         return self._ssh_key_ids
+
+    def __str__(self) -> str:
+        """Returns a string of the json representation of the volume
+
+        :return: json representation of the volume
+        :rtype: str
+        """
+        return stringify_class_object_properties(self)
 
 class VolumesService:
     """A service for interacting with the volumes endpoint"""
