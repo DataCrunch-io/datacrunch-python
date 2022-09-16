@@ -37,3 +37,5 @@ def test_images(http_client):
     assert type(images[0].details) == list
     assert images[0].details[0] == "Ubuntu 20.04"
     assert images[0].details[1] == "CUDA 11.0"
+    assert type(images[0].__str__()) == str
+    

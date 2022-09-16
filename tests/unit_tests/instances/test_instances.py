@@ -262,6 +262,7 @@ class TestInstancesService:
         assert type(instance.storage) == dict
         assert responses.assert_call_count(endpoint, 1) is True
         assert responses.assert_call_count(url, 1) is True
+        assert type(instance.__str__()) == str
 
     def test_create_spot_instance_successful(self, instances_service, endpoint):
         # arrange - add response mock
@@ -421,7 +422,7 @@ class TestInstancesService:
         assert excinfo.value.message == INVALID_REQUEST_MESSAGE
         assert responses.assert_call_count(url, 1) is True
 
-    def test_is_available_successful(self, instances_service, endpoint):
+    def test_is_available_successful(self, instances_service):
         # arrange - add response mock
         url = instances_service._http_client._base_url + '/instance-availability/' + INSTANCE_TYPE
         responses.add(
@@ -438,7 +439,7 @@ class TestInstancesService:
         assert is_available is True
         assert responses.assert_call_count(url, 1) is True
 
-    def test_is_available_failed(self, instances_service, endpoint):
+    def test_is_available_failed(self, instances_service):
         # arrange - add response mock
         url = instances_service._http_client._base_url + '/instance-availability/x'
         responses.add(
