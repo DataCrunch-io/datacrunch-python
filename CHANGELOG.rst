@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v1.0.9 (2022-09-16)
+-------------------
+
+* Added is_spot property to the Instance class, now possible to deploy a spot instance
+* Implemented __str__ method for Instance, Volume and Image Classes, now possible to print instances
+
 v1.0.8 (2021-12-20)
 -------------------
 
