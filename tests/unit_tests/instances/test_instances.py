@@ -60,6 +60,8 @@ PAYLOAD = [
     }
 ]
 
+PAYLOAD_SPOT = PAYLOAD
+PAYLOAD_SPOT[0]["is_spot"] = True
 
 class TestInstancesService:
     @pytest.fixture
@@ -260,6 +262,58 @@ class TestInstancesService:
         assert type(instance.storage) == dict
         assert responses.assert_call_count(endpoint, 1) is True
         assert responses.assert_call_count(url, 1) is True
+        assert type(instance.__str__()) == str
+
+    def test_create_spot_instance_successful(self, instances_service, endpoint):
+        # arrange - add response mock
+        # add response mock for the create instance endpoint
+        responses.add(
+            responses.POST,
+            endpoint,
+            body=INSTANCE_ID,
+            status=200
+        )
+        # add response mock for the get instance by id endpoint
+        url = endpoint + '/' + INSTANCE_ID
+        responses.add(
+            responses.GET,
+            url,
+            json=PAYLOAD_SPOT[0],
+            status=200
+        )
+
+        # act
+        instance = instances_service.create(
+            instance_type=INSTANCE_TYPE,
+            image=INSTANCE_IMAGE,
+            ssh_key_ids=[SSH_KEY_ID],
+            hostname=INSTANCE_HOSTNAME,
+            description=INSTANCE_DESCRIPTION,
+            os_volume=INSTANCE_OS_VOLUME
+        )
+
+        # assert
+        assert type(instance) == Instance
+        assert instance.id == INSTANCE_ID
+        assert instance.ssh_key_ids == [SSH_KEY_ID]
+        assert instance.status == INSTANCE_STATUS
+        assert instance.image == INSTANCE_IMAGE
+        assert instance.instance_type == INSTANCE_TYPE
+        assert instance.price_per_hour == INSTANCE_PRICE_PER_HOUR
+        assert instance.location == INSTANCE_LOCATION
+        assert instance.description == INSTANCE_DESCRIPTION
+        assert instance.hostname == INSTANCE_HOSTNAME
+        assert instance.ip == INSTANCE_IP
+        assert instance.created_at == INSTANCE_CREATED_AT
+        assert instance.os_volume_id == OS_VOLUME_ID
+        assert instance.is_spot == True
+        assert type(instance.cpu) == dict
+        assert type(instance.gpu) == dict
+        assert type(instance.memory) == dict
+        assert type(instance.gpu_memory) == dict
+        assert type(instance.storage) == dict
+        assert responses.assert_call_count(endpoint, 1) is True
+        assert responses.assert_call_count(url, 1) is True
 
     def test_create_instance_attached_os_volume_successful(self, instances_service, endpoint):
         # arrange - add response mock
@@ -368,7 +422,7 @@ class TestInstancesService:
         assert excinfo.value.message == INVALID_REQUEST_MESSAGE
         assert responses.assert_call_count(url, 1) is True
 
-    def test_is_available_successful(self, instances_service, endpoint):
+    def test_is_available_successful(self, instances_service):
         # arrange - add response mock
         url = instances_service._http_client._base_url + '/instance-availability/' + INSTANCE_TYPE
         responses.add(
@@ -385,7 +439,7 @@ class TestInstancesService:
         assert is_available is True
         assert responses.assert_call_count(url, 1) is True
 
-    def test_is_available_failed(self, instances_service, endpoint):
+    def test_is_available_failed(self, instances_service):
         # arrange - add response mock
         url = instances_service._http_client._base_url + '/instance-availability/x'
         responses.add(

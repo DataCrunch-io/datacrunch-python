@@ -223,6 +223,7 @@ class TestVolumesService:
 
         # assert
         assert volume.id == NVME_VOL_ID
+        assert type(volume.__str__()) == str
 
     def test_create_volume_failed(self, volumes_service, endpoint):
         # arrange - add response mock
