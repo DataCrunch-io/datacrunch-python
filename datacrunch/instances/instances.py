@@ -350,7 +350,8 @@ class InstancesService:
                startup_script_id: str = None,
                volumes: List[Dict] = None,
                os_volume: Dict = None,
-               is_spot: bool = False) -> Instance:
+               is_spot: bool = False,
+               coupon: str = None) -> Instance:
         """Creates (deploys) a new instance
 
         :param instance_type: instance type. e.g. '8V100.48M'
@@ -373,6 +374,8 @@ class InstancesService:
         :type os_volume: Dict, optional
         :param is_spot: Is spot instance
         :type is_spot: bool, optional
+        :param coupon: coupon code
+        :type is_spot: str, optional
         :return: the new instance object
         :rtype: id
         """
@@ -386,7 +389,8 @@ class InstancesService:
             "location": location,
             "os_volume": os_volume,
             "volumes": volumes,
-            "is_spot": is_spot
+            "is_spot": is_spot,
+            "coupon": coupon
         }
         id = self._http_client.post(INSTANCES_ENDPOINT, json=payload).text
         instance = self.get_by_id(id)

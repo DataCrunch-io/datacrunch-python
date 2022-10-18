@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v1.0.10 (2022-10-18)
+-------------------
+
+* Added support for adding a coupon code when deploying a new instance
+
 v1.0.9 (2022-09-16)
 -------------------
 

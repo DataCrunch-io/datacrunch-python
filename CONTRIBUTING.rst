@@ -36,17 +36,23 @@ Code Contribution:
 
 5. Make your local changes 
 
-6. Run tests::
+6. Install dependencies for test::
+    
+    pip3 install -e .[test]
+
+    pip3 install -U pytest
+
+7. Run tests::
 
     pytest
 
-7. Commit and push::
+8. Commit and push::
 
     git commit .am "Detailed commit message"
 
     git push origin {branch-name}
 
-8. Submit a pull request in GitHub.
+9. Submit a pull request in GitHub.
 
 Pull Request Guidelines
 ------------------------
