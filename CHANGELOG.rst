@@ -1,6 +1,8 @@
 Changelog
 =========
 
+* Added support for checking availability for a spot instance
+
 v1.0.10 (2022-10-18)
 -------------------
 

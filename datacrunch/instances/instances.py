@@ -375,7 +375,7 @@ class InstancesService:
         :param is_spot: Is spot instance
         :type is_spot: bool, optional
         :param coupon: coupon code
-        :type is_spot: str, optional
+        :type coupon: str, optional
         :return: the new instance object
         :rtype: id
         """
@@ -418,13 +418,16 @@ class InstancesService:
         self._http_client.put(INSTANCES_ENDPOINT, json=payload)
         return
 
-    def is_available(self, instance_type: str) -> bool:
+    def is_available(self, instance_type: str, is_spot: bool = None) -> bool:
         """Returns True if a specific instance type is now available for deployment
 
         :param instance_type: instance type
         :type instance_type: str
+        :param is_spot: Is spot instance
+        :type is_spot: bool, optional
         :return: True if available to deploy, False otherwise
         :rtype: bool
         """
-        url = f'/instance-availability/{instance_type}'
+        query_param = 'true' if is_spot else 'false'
+        url = f'/instance-availability/{instance_type}?isSpot={query_param}'
         return self._http_client.get(url).json()
