@@ -439,6 +439,23 @@ class TestInstancesService:
         assert is_available is True
         assert responses.assert_call_count(url, 1) is True
 
+    def test_is_spot_available_successful(self, instances_service):
+        # arrange - add response mock
+        url = instances_service._http_client._base_url + '/instance-availability/' + INSTANCE_TYPE + '?isSpot=true'
+        responses.add(
+            responses.GET,
+            url,
+            json=True,
+            status=200
+        )
+
+        # act
+        is_available = instances_service.is_available(INSTANCE_TYPE, is_spot=True)
+
+        # assert
+        assert is_available is True
+        assert responses.assert_call_count(url, 1) is True
+
     def test_is_available_failed(self, instances_service):
         # arrange - add response mock
         url = instances_service._http_client._base_url + '/instance-availability/x'

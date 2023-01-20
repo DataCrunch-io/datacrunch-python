@@ -428,6 +428,6 @@ class InstancesService:
         :return: True if available to deploy, False otherwise
         :rtype: bool
         """
-        query_param = 'true' if is_spot else 'false'
-        url = f'/instance-availability/{instance_type}?isSpot={query_param}'
+        query_param = '?isSpot=true' if is_spot else ''
+        url = f'/instance-availability/{instance_type}{query_param}'
         return self._http_client.get(url).json()
