@@ -2,6 +2,8 @@ Changelog
 =========
 
 * Added support for checking availability for a spot instance
+* Updated two github actions to run on fixed version of ubuntu because the latest one is missing python 3.6
+* Added more version of python to be used on two github actions 
 
 v1.0.10 (2022-10-18)
 -------------------
