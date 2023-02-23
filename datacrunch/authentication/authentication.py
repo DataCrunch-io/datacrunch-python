@@ -40,7 +40,7 @@ class AuthenticationService:
         }
 
         response = requests.post(
-            url, data=payload, headers=self._generate_headers())
+            url, json=payload, headers=self._generate_headers())
         handle_error(response)
 
         auth_data = response.json()
@@ -56,6 +56,7 @@ class AuthenticationService:
     def refresh(self) -> dict:
         """Authenticate the client using the refresh token - refresh the access token.
 
+        updates the object's tokens, and:
         returns an authentication data dictionary with the following schema:
         {
             "access_token": token str,
@@ -76,10 +77,18 @@ class AuthenticationService:
         }
 
         response = requests.post(
-            url, data=payload, headers=self._generate_headers())
+            url, json=payload, headers=self._generate_headers())
         handle_error(response)
 
-        return response.json()
+        auth_data = response.json()
+
+        self._access_token = auth_data['access_token']
+        self._refresh_token = auth_data['refresh_token']
+        self._scope = auth_data['scope']
+        self._token_type = auth_data['token_type']
+        self._expires_at = time.time() + auth_data['expires_in']
+
+        return auth_data
 
     def _generate_headers(self):
         # get the first 10 chars of the client id
