@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v1.1.1 (2023-02-23)
+-------------------
+
+* Fixed a bug where the authentication refresh token flow did not update the token values
+
 v1.1.0 (2023-01-20)
 -------------------
 
