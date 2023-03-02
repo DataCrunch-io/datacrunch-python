@@ -161,7 +161,7 @@ class InstanceTypesService:
         instance_type_objects = list(map(lambda instance_type: InstanceType(
             id=instance_type['id'],
             instance_type=instance_type['instance_type'],
-            price_per_hour=instance_type['pricePerHour'],
+            price_per_hour=instance_type['price_per_hour'],
             description=instance_type['description'],
             cpu=instance_type['cpu'],
             gpu=instance_type['gpu'],
