@@ -47,7 +47,7 @@ def test_instance_types(http_client):
                     "size_in_gigabytes": STORAGE_SIZE
                 },
                 "description": INSTANCE_TYPE_DESCRIPTION,
-                "pricePerHour": "5.00",
+                "price_per_hour": "5.00",
                 "instance_type": INSTANCE_TYPE
             }
         ],
