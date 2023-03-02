@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v1.1.2 (2023-03-02)
+-------------------
+
+* Fixed bug where the wrong property name was used
+
 v1.1.1 (2023-02-23)
 -------------------
 
