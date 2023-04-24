@@ -349,6 +349,7 @@ class InstancesService:
                location: str = "FIN1",
                startup_script_id: str = None,
                volumes: List[Dict] = None,
+               existing_volumes: List[str] = None,
                os_volume: Dict = None,
                is_spot: bool = False,
                coupon: str = None) -> Instance:
@@ -370,6 +371,8 @@ class InstancesService:
         :type startup_script_id: str, optional
         :param volumes: List of volume data dictionaries to create alongside the instance
         :type volumes: List[Dict], optional
+        :param existing_volumes: List of existing volume ids to attach to the instance
+        :type existing_volumes: List[str], optional
         :param os_volume: OS volume details, defaults to None
         :type os_volume: Dict, optional
         :param is_spot: Is spot instance
@@ -389,6 +392,7 @@ class InstancesService:
             "location": location,
             "os_volume": os_volume,
             "volumes": volumes,
+            "existing_volumes": existing_volumes,
             "is_spot": is_spot,
             "coupon": coupon
         }
