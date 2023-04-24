@@ -1,6 +1,8 @@
 Changelog
 =========
 
+* Added support for deploying a new instance with existing volumes
+
 v1.1.2 (2023-03-02)
 -------------------
 
