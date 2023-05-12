@@ -287,6 +287,29 @@ class VolumesService:
 
         self._http_client.put(VOLUMES_ENDPOINT, json=payload)
         return
+    
+    def clone(self, id: str, name: str, type: str) -> Volume:
+        """Clone a volume
+
+        :param id: volume id
+        :type id: str
+        :param name: new volume name
+        :type name: str
+        :param type: volume type
+        :type type: str, optional
+        :return: the new volume object
+        :rtype: Volume
+        """
+        payload = {
+            "id": id,
+            "action": VolumeActions.CLONE,
+            "name": name,
+            "type": type
+        }
+
+        id = self._http_client.put(VOLUMES_ENDPOINT, json=payload).text
+        volume = self.get_by_id(id)
+        return volume
 
     def rename(self, id_list: Union[List[str], str], name: str) -> None:
         """Rename multiple volumes or single volume
