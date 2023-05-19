@@ -288,7 +288,7 @@ class VolumesService:
         self._http_client.put(VOLUMES_ENDPOINT, json=payload)
         return
     
-    def clone(self, id: str, name: str, type: str) -> Volume:
+    def clone(self, id: str, name: str, type: str = None) -> Volume:
         """Clone a volume
 
         :param id: volume id
@@ -307,9 +307,17 @@ class VolumesService:
             "type": type
         }
 
-        id = self._http_client.put(VOLUMES_ENDPOINT, json=payload).text
-        volume = self.get_by_id(id)
-        return volume
+        ids_array = self._http_client.put(VOLUMES_ENDPOINT, json=payload).text
+
+        # map the IDs into volume objects
+        mapped_volumes = list(map(lambda id: self.get_by_id(id), ids_array))
+
+        # if the array has only one element, return that element
+        if len(mapped_volumes) == 1:
+            return mapped_volumes[0]
+        
+        # otherwise return the volumes array
+        return mapped_volumes
 
     def rename(self, id_list: Union[List[str], str], name: str) -> None:
         """Rename multiple volumes or single volume
