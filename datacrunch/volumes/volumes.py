@@ -307,7 +307,7 @@ class VolumesService:
             "type": type
         }
 
-        ids_array = self._http_client.put(VOLUMES_ENDPOINT, json=payload).text
+        ids_array = self._http_client.put(VOLUMES_ENDPOINT, json=payload).json()
 
         # map the IDs into volume objects
         mapped_volumes = list(map(lambda id: self.get_by_id(id), ids_array))
