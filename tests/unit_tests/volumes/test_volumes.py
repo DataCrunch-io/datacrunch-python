@@ -529,7 +529,7 @@ class TestVolumesService:
 
     def test_clone_volume_without_input_name_successful(self, volumes_service: VolumesService, endpoint):
         # arrange
-        CLONED_VOLUME_NAME = "cloned-volume"
+        CLONED_VOLUME_NAME = "CLONE-" + NVME_VOL_NAME
 
         # mock response for cloning the volume
         responses.add(
