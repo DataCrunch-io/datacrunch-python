@@ -29,6 +29,8 @@ HDD_VOL_NAME = "Volume-iHdL4ysR"
 HDD_VOL_SIZE = 100
 HDD_VOL_CREATED_AT = "2021-06-02T12:56:49.582Z"
 
+RANDOM_VOL_ID = '07d864ee-ba86-451e-85b3-34ef551bd4a2'
+
 NVME_VOLUME = {
     "id": NVME_VOL_ID,
     "status": NVME_VOL_STATUS,
@@ -219,7 +221,8 @@ class TestVolumesService:
         )
 
         # act
-        volume = volumes_service.create(VolumeTypes.NVMe, NVME_VOL_NAME, NVME_VOL_SIZE)
+        volume = volumes_service.create(
+            VolumeTypes.NVMe, NVME_VOL_NAME, NVME_VOL_SIZE)
 
         # assert
         assert volume.id == NVME_VOL_ID
@@ -236,7 +239,8 @@ class TestVolumesService:
 
         # act
         with pytest.raises(APIException) as excinfo:
-            volumes_service.create(VolumeTypes.NVMe, NVME_VOL_NAME, 100000000000000000000000)
+            volumes_service.create(
+                VolumeTypes.NVMe, NVME_VOL_NAME, 100000000000000000000000)
 
         # assert
         assert excinfo.value.code == INVALID_REQUEST
@@ -481,3 +485,85 @@ class TestVolumesService:
         assert excinfo.value.code == INVALID_REQUEST
         assert excinfo.value.message == INVALID_REQUEST_MESSAGE
         assert responses.assert_call_count(endpoint, 1) is True
+
+    def test_clone_volume_with_input_name_successful(self, volumes_service, endpoint):
+        # arrange
+        CLONED_VOLUME_NAME = "cloned-volume"
+
+        # mock response for cloning the volume
+        responses.add(
+            responses.PUT,
+            endpoint,
+            status=202,
+            json=[RANDOM_VOL_ID],
+            match=[
+                responses.json_params_matcher({
+                    "id": NVME_VOL_ID,
+                    "action": VolumeActions.CLONE,
+                    "name": CLONED_VOLUME_NAME,
+                    "type": None
+                })
+            ]
+        )
+
+        # mock object for the cloned volume
+        CLONED_VOL_GET_MOCK = NVME_VOLUME
+        CLONED_VOL_GET_MOCK['id'] = RANDOM_VOL_ID
+        CLONED_VOL_GET_MOCK['name'] = CLONED_VOLUME_NAME
+        CLONED_VOL_GET_MOCK['status'] = VolumeStatus.CLONING
+
+        # mock response for getting the cloned volume
+        responses.add(
+            responses.GET,
+            endpoint + "/" + RANDOM_VOL_ID,
+            status=200,
+            json=CLONED_VOL_GET_MOCK,
+        )
+
+        # act
+        cloned_volume = volumes_service.clone(NVME_VOL_ID, CLONED_VOLUME_NAME)
+
+        # assert
+        assert responses.assert_call_count(endpoint, 1) is True
+        assert cloned_volume.name == CLONED_VOLUME_NAME
+
+    def test_clone_volume_without_input_name_successful(self, volumes_service: VolumesService, endpoint):
+        # arrange
+        CLONED_VOLUME_NAME = "cloned-volume"
+
+        # mock response for cloning the volume
+        responses.add(
+            responses.PUT,
+            endpoint,
+            status=202,
+            json=[RANDOM_VOL_ID],
+            match=[
+                responses.json_params_matcher({
+                    "id": NVME_VOL_ID,
+                    "action": VolumeActions.CLONE,
+                    "name": None,
+                    "type": None
+                })
+            ]
+        )
+
+        # mock object for the cloned volume
+        CLONED_VOL_GET_MOCK = NVME_VOLUME
+        CLONED_VOL_GET_MOCK['id'] = RANDOM_VOL_ID
+        CLONED_VOL_GET_MOCK['name'] = CLONED_VOLUME_NAME
+        CLONED_VOL_GET_MOCK['status'] = VolumeStatus.CLONING
+
+        # mock response for getting the cloned volume
+        responses.add(
+            responses.GET,
+            endpoint + "/" + RANDOM_VOL_ID,
+            status=200,
+            json=CLONED_VOL_GET_MOCK,
+        )
+
+        # act
+        cloned_volume = volumes_service.clone(NVME_VOL_ID)
+
+        # assert
+        assert responses.assert_call_count(endpoint, 1) is True
+        assert cloned_volume.name == CLONED_VOLUME_NAME

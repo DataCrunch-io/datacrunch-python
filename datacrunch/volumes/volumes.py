@@ -59,6 +59,26 @@ class Volume:
         self._instance_id = instance_id
         self._ssh_key_ids = ssh_key_ids
 
+    # overloading of the init method, initializing the Volume from a dictionary
+    def __init__(self, volume_dict) -> None:
+        """Initialize the volume object from a dictionary
+
+        :param volume_dict: volume dictionary
+        :type volume_dict: dict
+        """
+        self._id = volume_dict['id']
+        self._status = volume_dict['status']
+        self._name = volume_dict['name']
+        self._size = volume_dict['size']
+        self._type = volume_dict['type']
+        self._is_os_volume = volume_dict['is_os_volume']
+        self._created_at = volume_dict['created_at']
+        self._target = volume_dict['target'] if 'target' in volume_dict else None
+        self._location = volume_dict['location']
+        self._instance_id = volume_dict['instance_id'] if 'instance_id' in volume_dict else None
+        self._ssh_key_ids = volume_dict['ssh_key_ids'] if 'ssh_key_ids' in volume_dict else [
+        ]
+
     @property
     def id(self) -> str:
         """Get the volume id
@@ -166,6 +186,7 @@ class Volume:
         """
         return stringify_class_object_properties(self)
 
+
 class VolumesService:
     """A service for interacting with the volumes endpoint"""
 
@@ -182,19 +203,8 @@ class VolumesService:
         """
         volumes_dict = self._http_client.get(
             VOLUMES_ENDPOINT, params={'status': status}).json()
-        volumes = list(map(lambda volume_dict: Volume(
-            id=volume_dict['id'],
-            status=volume_dict['status'],
-            name=volume_dict['name'],
-            size=volume_dict['size'],
-            type=volume_dict['type'],
-            is_os_volume=volume_dict['is_os_volume'],
-            created_at=volume_dict['created_at'],
-            target=volume_dict['target'] if 'target' in volume_dict else None,
-            location=volume_dict['location'],
-            instance_id=volume_dict['instance_id'] if 'instance_id' in volume_dict else None,
-            ssh_key_ids=volume_dict['ssh_key_ids'] if 'ssh_key_ids' in volume_dict else [],
-        ), volumes_dict))
+        volumes = list(
+            map(lambda volume_dict: Volume(volume_dict), volumes_dict))
         return volumes
 
     def get_by_id(self, id: str) -> Volume:
@@ -207,20 +217,7 @@ class VolumesService:
         """
         volume_dict = self._http_client.get(
             VOLUMES_ENDPOINT + f'/{id}').json()
-        volume = Volume(
-            id=volume_dict['id'],
-            status=volume_dict['status'],
-            name=volume_dict['name'],
-            size=volume_dict['size'],
-            type=volume_dict['type'],
-            is_os_volume=volume_dict['is_os_volume'],
-            created_at=volume_dict['created_at'],
-            target=volume_dict['target'] if 'target' in volume_dict else None,
-            location=volume_dict['location'],
-            instance_id=volume_dict['instance_id'] if 'instance_id' in volume_dict else None,
-            ssh_key_ids=volume_dict['ssh_key_ids'] if 'ssh_key_ids' in volume_dict else [],
-        )
-        return volume
+        return Volume(volume_dict)
 
     def create(self,
                type: str,
@@ -287,9 +284,9 @@ class VolumesService:
 
         self._http_client.put(VOLUMES_ENDPOINT, json=payload)
         return
-    
-    def clone(self, id: str, name: str, type: str = None) -> Volume:
-        """Clone a volume
+
+    def clone(self, id: str, name: str = None, type: str = None) -> Volume:
+        """Clone a volume or multiple volumes
 
         :param id: volume id
         :type id: str
@@ -297,8 +294,8 @@ class VolumesService:
         :type name: str
         :param type: volume type
         :type type: str, optional
-        :return: the new volume object
-        :rtype: Volume
+        :return: the new volume object, or a list of volume objects if cloned mutliple volumes
+        :rtype: Volume or List[Volume]
         """
         payload = {
             "id": id,
@@ -307,17 +304,20 @@ class VolumesService:
             "type": type
         }
 
-        ids_array = self._http_client.put(VOLUMES_ENDPOINT, json=payload).json()
+        # clone volume(s)
+        volume_ids_array = self._http_client.put(
+            VOLUMES_ENDPOINT, json=payload).json()
 
-        # map the IDs into volume objects
-        mapped_volumes = list(map(lambda id: self.get_by_id(id), ids_array))
+        # map the IDs into Volume objects
+        volumes_array = list(
+            map(lambda volume_id: self.get_by_id(volume_id), volume_ids_array))
 
         # if the array has only one element, return that element
-        if len(mapped_volumes) == 1:
-            return mapped_volumes[0]
-        
+        if len(volumes_array) == 1:
+            return volumes_array[0]
+
         # otherwise return the volumes array
-        return mapped_volumes
+        return volumes_array
 
     def rename(self, id_list: Union[List[str], str], name: str) -> None:
         """Rename multiple volumes or single volume
