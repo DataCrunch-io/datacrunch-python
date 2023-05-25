@@ -54,7 +54,13 @@ datacrunch.volumes.rename(nvme_volume_id, "new-name")
 datacrunch.volumes.increase_size(nvme_volume_id, 300)
 
 # clone volume
-datacrunch.volumes.clonse(nvme_volume_id)
+datacrunch.volumes.clone(nvme_volume_id)
+
+# clone volume and give it a new name and storage type (from NVMe to HDD)
+datacrunch.volumes.clone(nvme_volume_id, name="my-cloned-volume", type=HDD)
+
+# clone multiple volumes at once
+datacrunch.volumes.clone([nvme_volume_id, hdd_volume_id])
 
 # delete volumes
 datacrunch.volumes.delete([nvme_volume_id, hdd_volume_id])
