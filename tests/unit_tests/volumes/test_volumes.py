@@ -72,7 +72,23 @@ class TestVolumesService:
     def endpoint(self, http_client):
         return http_client._base_url + "/volumes"
 
-    def test_get_instances(self, volumes_service, endpoint):
+    def test_initialize_a_volume_object_from_arguments(self):
+        volume = Volume(id=RANDOM_VOL_ID, status=VolumeStatus.DETACHED, instance_id=None, name=HDD_VOL_NAME, size=HDD_VOL_SIZE,
+                        type=HDD, location=FIN1, is_os_volume=False, created_at=HDD_VOL_CREATED_AT, target=None, ssh_key_ids=[])
+
+        assert volume.id == RANDOM_VOL_ID
+        assert volume.status == VolumeStatus.DETACHED
+        assert volume.instance_id == None
+        assert volume.name == HDD_VOL_NAME
+        assert volume.size == HDD_VOL_SIZE
+        assert volume.type == HDD
+        assert volume.location == FIN1
+        assert volume.is_os_volume == False
+        assert volume.created_at == HDD_VOL_CREATED_AT
+        assert volume.target == None
+        assert volume.ssh_key_ids == []
+
+    def test_get_volumes(self, volumes_service, endpoint):
         # arrange - add response mock
         responses.add(
             responses.GET,

@@ -46,7 +46,6 @@ class Volume:
         :param ssh_key_ids: list of ssh keys ids
         :type ssh_key_ids: List[str]
         """
-
         self._id = id
         self._status = status
         self._name = name
