@@ -1,6 +1,11 @@
 Changelog
 =========
 
+* Added support for volume cloning
+
+v1.2.0 (2023-05-25)
+-------------------
+
 * Added support for deploying a new instance with existing volumes
 
 v1.1.2 (2023-03-02)

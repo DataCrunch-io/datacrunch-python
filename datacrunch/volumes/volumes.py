@@ -46,7 +46,6 @@ class Volume:
         :param ssh_key_ids: list of ssh keys ids
         :type ssh_key_ids: List[str]
         """
-
         self._id = id
         self._status = status
         self._name = name
@@ -166,6 +165,7 @@ class Volume:
         """
         return stringify_class_object_properties(self)
 
+
 class VolumesService:
     """A service for interacting with the volumes endpoint"""
 
@@ -193,7 +193,8 @@ class VolumesService:
             target=volume_dict['target'] if 'target' in volume_dict else None,
             location=volume_dict['location'],
             instance_id=volume_dict['instance_id'] if 'instance_id' in volume_dict else None,
-            ssh_key_ids=volume_dict['ssh_key_ids'] if 'ssh_key_ids' in volume_dict else [],
+            ssh_key_ids=volume_dict['ssh_key_ids'] if 'ssh_key_ids' in volume_dict else [
+            ],
         ), volumes_dict))
         return volumes
 
@@ -218,7 +219,8 @@ class VolumesService:
             target=volume_dict['target'] if 'target' in volume_dict else None,
             location=volume_dict['location'],
             instance_id=volume_dict['instance_id'] if 'instance_id' in volume_dict else None,
-            ssh_key_ids=volume_dict['ssh_key_ids'] if 'ssh_key_ids' in volume_dict else [],
+            ssh_key_ids=volume_dict['ssh_key_ids'] if 'ssh_key_ids' in volume_dict else [
+            ],
         )
         return volume
 
@@ -287,6 +289,40 @@ class VolumesService:
 
         self._http_client.put(VOLUMES_ENDPOINT, json=payload)
         return
+
+    def clone(self, id: str, name: str = None, type: str = None) -> Volume:
+        """Clone a volume or multiple volumes
+
+        :param id: volume id or list of volume ids
+        :type id: str or List[str]
+        :param name: new volume name
+        :type name: str
+        :param type: volume type
+        :type type: str, optional
+        :return: the new volume object, or a list of volume objects if cloned mutliple volumes
+        :rtype: Volume or List[Volume]
+        """
+        payload = {
+            "id": id,
+            "action": VolumeActions.CLONE,
+            "name": name,
+            "type": type
+        }
+
+        # clone volume(s)
+        volume_ids_array = self._http_client.put(
+            VOLUMES_ENDPOINT, json=payload).json()
+
+        # map the IDs into Volume objects
+        volumes_array = list(
+            map(lambda volume_id: self.get_by_id(volume_id), volume_ids_array))
+
+        # if the array has only one element, return that element
+        if len(volumes_array) == 1:
+            return volumes_array[0]
+
+        # otherwise return the volumes array
+        return volumes_array
 
     def rename(self, id_list: Union[List[str], str], name: str) -> None:
         """Rename multiple volumes or single volume
