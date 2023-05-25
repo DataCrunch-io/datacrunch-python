@@ -15,6 +15,7 @@ class VolumeActions:
     RENAME = 'rename'
     INCREASE_SIZE = 'increase-size'
     DELETE = 'delete'
+    CLONE = 'clone'
 
     def __init__(self):
         return
@@ -40,6 +41,7 @@ class VolumeStatus:
     DETACHED = "detached"
     DELETING = "deleting"
     DELETED = "deleted"
+    CLONING = 'cloning'
 
     def __init__(self):
         return
