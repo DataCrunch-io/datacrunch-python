@@ -288,8 +288,8 @@ class VolumesService:
     def clone(self, id: str, name: str = None, type: str = None) -> Volume:
         """Clone a volume or multiple volumes
 
-        :param id: volume id
-        :type id: str
+        :param id: volume id or list of volume ids
+        :type id: str or List[str]
         :param name: new volume name
         :type name: str
         :param type: volume type
