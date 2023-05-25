@@ -19,10 +19,12 @@ INSTANCE_ID = '8705bb38-2574-454f-9967-d18b130bf5ee'
 all_volumes = datacrunch.volumes.get()
 
 # Get all attached volumes
-all_attached_volumes = datacrunch.volumes.get(status=datacrunch.constants.volume_status.ATTACHED)
+all_attached_volumes = datacrunch.volumes.get(
+    status=datacrunch.constants.volume_status.ATTACHED)
 
 # Get volume by id
-random_volume = datacrunch.volumes.get_by_id("0c41e387-3dd8-495f-a285-e861527f2f3d")
+random_volume = datacrunch.volumes.get_by_id(
+    "0c41e387-3dd8-495f-a285-e861527f2f3d")
 
 # Create a 200 GB detached NVMe volume
 nvme_volume = datacrunch.volumes.create(type=NVMe,
@@ -50,6 +52,9 @@ datacrunch.volumes.rename(nvme_volume_id, "new-name")
 
 # increase volume size
 datacrunch.volumes.increase_size(nvme_volume_id, 300)
+
+# clone volume
+datacrunch.volumes.clonse(nvme_volume_id)
 
 # delete volumes
 datacrunch.volumes.delete([nvme_volume_id, hdd_volume_id])
