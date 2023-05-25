@@ -72,9 +72,9 @@ class TestVolumesService:
     def endpoint(self, http_client):
         return http_client._base_url + "/volumes"
 
-    def test_initialize_a_volume_object_from_arguments(self):
-        volume = Volume(id=RANDOM_VOL_ID, status=VolumeStatus.DETACHED, instance_id=None, name=HDD_VOL_NAME, size=HDD_VOL_SIZE,
-                        type=HDD, location=FIN1, is_os_volume=False, created_at=HDD_VOL_CREATED_AT, target=None, ssh_key_ids=[])
+    def test_initialize_a_volume(self):
+        volume = Volume(RANDOM_VOL_ID, VolumeStatus.DETACHED, HDD_VOL_NAME, HDD_VOL_SIZE,
+                        HDD, False, HDD_VOL_CREATED_AT)
 
         assert volume.id == RANDOM_VOL_ID
         assert volume.status == VolumeStatus.DETACHED

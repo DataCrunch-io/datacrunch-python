@@ -58,26 +58,6 @@ class Volume:
         self._instance_id = instance_id
         self._ssh_key_ids = ssh_key_ids
 
-    # overloading of the init method, initializing the Volume from a dictionary
-    def __init__(self, volume_dict) -> None:
-        """Initialize the volume object from a dictionary
-
-        :param volume_dict: volume dictionary
-        :type volume_dict: dict
-        """
-        self._id = volume_dict['id']
-        self._status = volume_dict['status']
-        self._name = volume_dict['name']
-        self._size = volume_dict['size']
-        self._type = volume_dict['type']
-        self._is_os_volume = volume_dict['is_os_volume']
-        self._created_at = volume_dict['created_at']
-        self._target = volume_dict['target'] if 'target' in volume_dict else None
-        self._location = volume_dict['location']
-        self._instance_id = volume_dict['instance_id'] if 'instance_id' in volume_dict else None
-        self._ssh_key_ids = volume_dict['ssh_key_ids'] if 'ssh_key_ids' in volume_dict else [
-        ]
-
     @property
     def id(self) -> str:
         """Get the volume id
@@ -202,8 +182,20 @@ class VolumesService:
         """
         volumes_dict = self._http_client.get(
             VOLUMES_ENDPOINT, params={'status': status}).json()
-        volumes = list(
-            map(lambda volume_dict: Volume(volume_dict), volumes_dict))
+        volumes = list(map(lambda volume_dict: Volume(
+            id=volume_dict['id'],
+            status=volume_dict['status'],
+            name=volume_dict['name'],
+            size=volume_dict['size'],
+            type=volume_dict['type'],
+            is_os_volume=volume_dict['is_os_volume'],
+            created_at=volume_dict['created_at'],
+            target=volume_dict['target'] if 'target' in volume_dict else None,
+            location=volume_dict['location'],
+            instance_id=volume_dict['instance_id'] if 'instance_id' in volume_dict else None,
+            ssh_key_ids=volume_dict['ssh_key_ids'] if 'ssh_key_ids' in volume_dict else [
+            ],
+        ), volumes_dict))
         return volumes
 
     def get_by_id(self, id: str) -> Volume:
@@ -216,7 +208,21 @@ class VolumesService:
         """
         volume_dict = self._http_client.get(
             VOLUMES_ENDPOINT + f'/{id}').json()
-        return Volume(volume_dict)
+        volume = Volume(
+            id=volume_dict['id'],
+            status=volume_dict['status'],
+            name=volume_dict['name'],
+            size=volume_dict['size'],
+            type=volume_dict['type'],
+            is_os_volume=volume_dict['is_os_volume'],
+            created_at=volume_dict['created_at'],
+            target=volume_dict['target'] if 'target' in volume_dict else None,
+            location=volume_dict['location'],
+            instance_id=volume_dict['instance_id'] if 'instance_id' in volume_dict else None,
+            ssh_key_ids=volume_dict['ssh_key_ids'] if 'ssh_key_ids' in volume_dict else [
+            ],
+        )
+        return volume
 
     def create(self,
                type: str,
