@@ -170,6 +170,17 @@ class Volume:
         """
         return self._deleted_at
 
+    @classmethod
+    def create_from_dict(cls: 'Volume', volume_dict: dict) -> 'Volume':
+        """Create a Volume object from a dictionary
+
+        :param volume_dict: dictionary representing the volume
+        :type volume_dict: dict
+        :return: Volume
+        :rtype: Volume
+        """
+        return cls(**volume_dict)
+
     def __str__(self) -> str:
         """Returns a string of the json representation of the volume
 
@@ -195,22 +206,7 @@ class VolumesService:
         """
         volumes_dict = self._http_client.get(
             VOLUMES_ENDPOINT, params={'status': status}).json()
-        volumes = list(map(lambda volume_dict: Volume(
-            id=volume_dict['id'],
-            status=volume_dict['status'],
-            name=volume_dict['name'],
-            size=volume_dict['size'],
-            type=volume_dict['type'],
-            is_os_volume=volume_dict['is_os_volume'],
-            created_at=volume_dict['created_at'],
-            target=volume_dict['target'] if 'target' in volume_dict else None,
-            location=volume_dict['location'],
-            instance_id=volume_dict['instance_id'] if 'instance_id' in volume_dict else None,
-            ssh_key_ids=volume_dict['ssh_key_ids'] if 'ssh_key_ids' in volume_dict else [
-            ],
-            deleted_at=volume_dict['deleted_at'] if 'deleted_at' in volume_dict else None,
-        ), volumes_dict))
-        return volumes
+        return list(map(Volume.create_from_dict, volumes_dict))
 
     def get_by_id(self, id: str) -> Volume:
         """Get a specific volume by its
@@ -222,22 +218,8 @@ class VolumesService:
         """
         volume_dict = self._http_client.get(
             VOLUMES_ENDPOINT + f'/{id}').json()
-        volume = Volume(
-            id=volume_dict['id'],
-            status=volume_dict['status'],
-            name=volume_dict['name'],
-            size=volume_dict['size'],
-            type=volume_dict['type'],
-            is_os_volume=volume_dict['is_os_volume'],
-            created_at=volume_dict['created_at'],
-            target=volume_dict['target'] if 'target' in volume_dict else None,
-            location=volume_dict['location'],
-            instance_id=volume_dict['instance_id'] if 'instance_id' in volume_dict else None,
-            ssh_key_ids=volume_dict['ssh_key_ids'] if 'ssh_key_ids' in volume_dict else [
-            ],
-            deleted_at=volume_dict['deleted_at'] if 'deleted_at' in volume_dict else None,
-        )
-        return volume
+
+        return Volume.create_from_dict(volume_dict)
 
     def get_in_trash(self) -> List[Volume]:
         """Get all volumes that are in trash
@@ -249,22 +231,9 @@ class VolumesService:
             VOLUMES_ENDPOINT + '/trash'
         ).json()
 
-        volumes = list(map(lambda volume_dict: Volume(
-            id=volume_dict['id'],
-            status=volume_dict['status'],
-            name=volume_dict['name'],
-            size=volume_dict['size'],
-            type=volume_dict['type'],
-            is_os_volume=volume_dict['is_os_volume'],
-            created_at=volume_dict['created_at'],
-            target=volume_dict['target'] if 'target' in volume_dict else None,
-            location=volume_dict['location'],
-            instance_id=volume_dict['instance_id'] if 'instance_id' in volume_dict else None,
-            ssh_key_ids=volume_dict['ssh_key_ids'] if 'ssh_key_ids' in volume_dict else [
-            ],
-            deleted_at=volume_dict['deleted_at'] if 'deleted_at' in volume_dict else None,
-        ), volumes_dicts))
-        return volumes
+        print(volumes_dicts)
+
+        return list(map(Volume.create_from_dict, volumes_dicts))
 
     def create(self,
                type: str,
