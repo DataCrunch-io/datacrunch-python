@@ -231,8 +231,6 @@ class VolumesService:
             VOLUMES_ENDPOINT + '/trash'
         ).json()
 
-        print(volumes_dicts)
-
         return list(map(Volume.create_from_dict, volumes_dicts))
 
     def create(self,
