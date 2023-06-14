@@ -1,7 +1,11 @@
+import os
 import pytest
 from datacrunch.datacrunch import DataCrunchClient
 
+IN_GITHUB_ACTIONS = os.getenv("GITHUB_ACTIONS") == "true"
 
+
+@pytest.mark.skipif(IN_GITHUB_ACTIONS, reason="Test doesn't work in Github Actions.")
 @pytest.mark.withoutresponses
 class TestVolumes():
 
