@@ -14,8 +14,6 @@ load_dotenv()
 CLIENT_SECRET = os.getenv('DATACRUNCH_CLIENT_SECRET')
 CLIENT_ID = os.getenv('DATACRUNCH_CLIENT_ID')
 
-print(CLIENT_SECRET)
-
 
 @pytest.fixture
 def datacrunch_client():
