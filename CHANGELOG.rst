@@ -1,6 +1,9 @@
 Changelog
 =========
 
+v1.4.0 (2023-06-14)
+-------------------
+
 * Added support for permanent deletion of volumes
 * Added a Volume class method that inits a new Volume instance from a dict
 * Added a few integration tests for permanent deletion of volumes
