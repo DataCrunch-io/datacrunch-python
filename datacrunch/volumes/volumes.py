@@ -20,6 +20,7 @@ class Volume:
                  location: str = "FIN1",
                  instance_id: str = None,
                  ssh_key_ids: List[str] = [],
+                 deleted_at: str = None,
                  ) -> None:
         """Initialize the volume object
 
@@ -45,6 +46,8 @@ class Volume:
         :type instance_id: str
         :param ssh_key_ids: list of ssh keys ids
         :type ssh_key_ids: List[str]
+        :param deleted_at: the time the volume was deleted (UTC), defaults to None
+        :type deleted_at: str, optional
         """
         self._id = id
         self._status = status
@@ -57,6 +60,7 @@ class Volume:
         self._location = location
         self._instance_id = instance_id
         self._ssh_key_ids = ssh_key_ids
+        self._deleted_at = deleted_at
 
     @property
     def id(self) -> str:
@@ -157,6 +161,26 @@ class Volume:
         """
         return self._ssh_key_ids
 
+    @property
+    def deleted_at(self) -> Optional[str]:
+        """Get the time when the volume was deleted (UTC)
+
+        :return: time
+        :rtype: str
+        """
+        return self._deleted_at
+
+    @classmethod
+    def create_from_dict(cls: 'Volume', volume_dict: dict) -> 'Volume':
+        """Create a Volume object from a dictionary
+
+        :param volume_dict: dictionary representing the volume
+        :type volume_dict: dict
+        :return: Volume
+        :rtype: Volume
+        """
+        return cls(**volume_dict)
+
     def __str__(self) -> str:
         """Returns a string of the json representation of the volume
 
@@ -182,21 +206,7 @@ class VolumesService:
         """
         volumes_dict = self._http_client.get(
             VOLUMES_ENDPOINT, params={'status': status}).json()
-        volumes = list(map(lambda volume_dict: Volume(
-            id=volume_dict['id'],
-            status=volume_dict['status'],
-            name=volume_dict['name'],
-            size=volume_dict['size'],
-            type=volume_dict['type'],
-            is_os_volume=volume_dict['is_os_volume'],
-            created_at=volume_dict['created_at'],
-            target=volume_dict['target'] if 'target' in volume_dict else None,
-            location=volume_dict['location'],
-            instance_id=volume_dict['instance_id'] if 'instance_id' in volume_dict else None,
-            ssh_key_ids=volume_dict['ssh_key_ids'] if 'ssh_key_ids' in volume_dict else [
-            ],
-        ), volumes_dict))
-        return volumes
+        return list(map(Volume.create_from_dict, volumes_dict))
 
     def get_by_id(self, id: str) -> Volume:
         """Get a specific volume by its
@@ -208,21 +218,20 @@ class VolumesService:
         """
         volume_dict = self._http_client.get(
             VOLUMES_ENDPOINT + f'/{id}').json()
-        volume = Volume(
-            id=volume_dict['id'],
-            status=volume_dict['status'],
-            name=volume_dict['name'],
-            size=volume_dict['size'],
-            type=volume_dict['type'],
-            is_os_volume=volume_dict['is_os_volume'],
-            created_at=volume_dict['created_at'],
-            target=volume_dict['target'] if 'target' in volume_dict else None,
-            location=volume_dict['location'],
-            instance_id=volume_dict['instance_id'] if 'instance_id' in volume_dict else None,
-            ssh_key_ids=volume_dict['ssh_key_ids'] if 'ssh_key_ids' in volume_dict else [
-            ],
-        )
-        return volume
+
+        return Volume.create_from_dict(volume_dict)
+
+    def get_in_trash(self) -> List[Volume]:
+        """Get all volumes that are in trash
+
+        :return: list of volume details objects
+        :rtype: List[Volume]
+        """
+        volumes_dicts = self._http_client.get(
+            VOLUMES_ENDPOINT + '/trash'
+        ).json()
+
+        return list(map(Volume.create_from_dict, volumes_dicts))
 
     def create(self,
                type: str,
@@ -358,7 +367,7 @@ class VolumesService:
         self._http_client.put(VOLUMES_ENDPOINT, json=payload)
         return
 
-    def delete(self, id_list: Union[List[str], str]) -> None:
+    def delete(self, id_list: Union[List[str], str], is_permanent: bool = False) -> None:
         """Delete multiple volumes or single volume
         Note: if attached to any instances, they need to be shut-down (offline)
 
@@ -368,6 +377,7 @@ class VolumesService:
         payload = {
             "id": id_list,
             "action": VolumeActions.DELETE,
+            "is_permanent": is_permanent
         }
 
         self._http_client.put(VOLUMES_ENDPOINT, json=payload)

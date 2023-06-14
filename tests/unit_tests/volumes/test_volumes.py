@@ -467,7 +467,8 @@ class TestVolumesService:
             match=[
                 responses.json_params_matcher({
                     "id": NVME_VOL_ID,
-                    "action": VolumeActions.DELETE
+                    "action": VolumeActions.DELETE,
+                    "is_permanent": False
                 })
             ]
         )
@@ -489,7 +490,8 @@ class TestVolumesService:
             match=[
                 responses.json_params_matcher({
                     "id": NVME_VOL_ID,
-                    "action": VolumeActions.DELETE
+                    "action": VolumeActions.DELETE,
+                    "is_permanent": False
                 })
             ]
         )
