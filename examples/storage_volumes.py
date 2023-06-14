@@ -62,5 +62,11 @@ datacrunch.volumes.clone(nvme_volume_id, name="my-cloned-volume", type=HDD)
 # clone multiple volumes at once
 datacrunch.volumes.clone([nvme_volume_id, hdd_volume_id])
 
-# delete volumes
+# delete volumes (move to trash for 96h, not permanent)
 datacrunch.volumes.delete([nvme_volume_id, hdd_volume_id])
+
+# get all volumes in trash
+volumes_in_trash = datacrunch.volumes.get_in_trash()
+
+# delete volumes permanently
+datacrunch.volumes.delete([nvme_volume_id, hdd_volume_id], is_permanent=True)
