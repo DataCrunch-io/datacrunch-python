@@ -1,6 +1,9 @@
 Changelog
 =========
 
+v1.4.1 (2023-06-20)
+-------------------
+
 * Fixed a bug where token refresh failed
 
 v1.4.0 (2023-06-14)
