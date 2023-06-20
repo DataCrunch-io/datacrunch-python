@@ -78,7 +78,12 @@ class AuthenticationService:
 
         response = requests.post(
             url, json=payload, headers=self._generate_headers())
-        handle_error(response)
+
+        # if refresh token is also expired, authenticate again:
+        if response.status_code == 401 or response.status_code == 400:
+            return self.authenticate()
+        else:
+            handle_error(response)
 
         auth_data = response.json()
 
@@ -104,4 +109,4 @@ class AuthenticationService:
         :return: True if the access token is expired, otherwise False.
         :rtype: bool
         """
-        return time.time() > self._expires_at
+        return time.time() >= self._expires_at

@@ -1,5 +1,5 @@
 import pytest
-import responses # https://github.com/getsentry/responses
+import responses  # https://github.com/getsentry/responses
 from responses import matchers
 import time
 
@@ -21,6 +21,7 @@ EXPIRES_IN = 3600
 
 ACCESS_TOKEN2 = 'access2'
 REFRESH_TOKEN2 = 'refresh2'
+
 
 class TestAuthenticationService:
 
@@ -78,7 +79,8 @@ class TestAuthenticationService:
         assert excinfo.value.code == INVALID_REQUEST
         assert excinfo.value.message == INVALID_REQUEST_MESSAGE
         assert responses.assert_call_count(endpoint, 1) is True
-        assert responses.calls[0].request.body == f'{{"grant_type": "client_credentials", "client_id": "{CLIENT_ID}", "client_secret": "{CLIENT_SECRET}"}}'.encode()
+        assert responses.calls[0].request.body == f'{{"grant_type": "client_credentials", "client_id": "{CLIENT_ID}", "client_secret": "{CLIENT_SECRET}"}}'.encode(
+        )
 
     def test_refresh_successful(self, authentication_service, endpoint):
         # add a response for the client credentials grant
@@ -92,7 +94,8 @@ class TestAuthenticationService:
                 'token_type': TOKEN_TYPE,
                 'expires_in': EXPIRES_IN
             },
-            match=[matchers.json_params_matcher({"grant_type":"client_credentials", "client_id": CLIENT_ID, "client_secret": CLIENT_SECRET})],
+            match=[matchers.json_params_matcher(
+                {"grant_type": "client_credentials", "client_id": CLIENT_ID, "client_secret": CLIENT_SECRET})],
             status=200
         )
 
@@ -107,12 +110,13 @@ class TestAuthenticationService:
                 'token_type': TOKEN_TYPE,
                 'expires_in': EXPIRES_IN
             },
-            match=[matchers.json_params_matcher({"grant_type":"refresh_token", "refresh_token": REFRESH_TOKEN})],
+            match=[matchers.json_params_matcher(
+                {"grant_type": "refresh_token", "refresh_token": REFRESH_TOKEN})],
             status=200
         )
 
         # act
-        auth_data = authentication_service.authenticate() # authenticate first
+        auth_data = authentication_service.authenticate()  # authenticate first
 
         # assert
         assert type(auth_data) == dict
@@ -121,9 +125,10 @@ class TestAuthenticationService:
         assert authentication_service._scope == SCOPE
         assert authentication_service._token_type == TOKEN_TYPE
         assert authentication_service._expires_at != None
-        assert responses.calls[0].request.body == f'{{"grant_type": "client_credentials", "client_id": "{CLIENT_ID}", "client_secret": "{CLIENT_SECRET}"}}'.encode()
+        assert responses.calls[0].request.body == f'{{"grant_type": "client_credentials", "client_id": "{CLIENT_ID}", "client_secret": "{CLIENT_SECRET}"}}'.encode(
+        )
 
-        auth_data2 = authentication_service.refresh() # refresh
+        auth_data2 = authentication_service.refresh()  # refresh
 
         assert type(auth_data2) == dict
         assert authentication_service._access_token == ACCESS_TOKEN2
@@ -131,7 +136,8 @@ class TestAuthenticationService:
         assert authentication_service._scope == SCOPE
         assert authentication_service._token_type == TOKEN_TYPE
         assert authentication_service._expires_at != None
-        assert responses.calls[1].request.body == f'{{"grant_type": "refresh_token", "refresh_token": "{REFRESH_TOKEN}"}}'.encode()
+        assert responses.calls[1].request.body == f'{{"grant_type": "refresh_token", "refresh_token": "{REFRESH_TOKEN}"}}'.encode(
+        )
         assert responses.assert_call_count(endpoint, 2) is True
 
     def test_refresh_failed(self, authentication_service, endpoint):
@@ -147,7 +153,8 @@ class TestAuthenticationService:
                 'token_type': TOKEN_TYPE,
                 'expires_in': EXPIRES_IN
             },
-            match=[matchers.json_params_matcher({"grant_type":"client_credentials", "client_id": CLIENT_ID, "client_secret": CLIENT_SECRET})],
+            match=[matchers.json_params_matcher(
+                {"grant_type": "client_credentials", "client_id": CLIENT_ID, "client_secret": CLIENT_SECRET})],
             status=200
         )
 
@@ -156,12 +163,13 @@ class TestAuthenticationService:
             responses.POST,
             endpoint,
             json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
-            match=[matchers.json_params_matcher({"grant_type":"refresh_token", "refresh_token": REFRESH_TOKEN})],
-            status=400
+            match=[matchers.json_params_matcher(
+                {"grant_type": "refresh_token", "refresh_token": REFRESH_TOKEN})],
+            status=500
         )
 
         # act
-        authentication_service.authenticate() # authenticate first
+        authentication_service.authenticate()  # authenticate first
 
         with pytest.raises(APIException) as excinfo:
             authentication_service.refresh()
@@ -170,8 +178,10 @@ class TestAuthenticationService:
         assert excinfo.value.code == INVALID_REQUEST
         assert excinfo.value.message == INVALID_REQUEST_MESSAGE
         assert responses.assert_call_count(endpoint, 2) is True
-        assert responses.calls[0].request.body == f'{{"grant_type": "client_credentials", "client_id": "{CLIENT_ID}", "client_secret": "{CLIENT_SECRET}"}}'.encode()
-        assert responses.calls[1].request.body == f'{{"grant_type": "refresh_token", "refresh_token": "{REFRESH_TOKEN}"}}'.encode()
+        assert responses.calls[0].request.body == f'{{"grant_type": "client_credentials", "client_id": "{CLIENT_ID}", "client_secret": "{CLIENT_SECRET}"}}'.encode(
+        )
+        assert responses.calls[1].request.body == f'{{"grant_type": "refresh_token", "refresh_token": "{REFRESH_TOKEN}"}}'.encode(
+        )
 
     def test_is_expired(self, authentication_service, endpoint):
         # arrange
@@ -179,10 +189,12 @@ class TestAuthenticationService:
         future_time = current_time + 3600
 
         # act
-        authentication_service._expires_at = current_time # set the expired_at as current time
+        # set the expired_at as current time
+        authentication_service._expires_at = current_time
         is_expired_current = authentication_service.is_expired()
 
-        authentication_service._expires_at = future_time # set the expired_at as future time
+        # set the expired_at as future time
+        authentication_service._expires_at = future_time
         is_expired_future = authentication_service.is_expired()
 
         # assert
