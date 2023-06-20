@@ -49,10 +49,10 @@ class HTTPClient:
         :return: Response object
         :rtype: requests.Response
         """
+        self._refresh_token_if_expired()
+
         url = self._add_base_url(url)
         headers = self._generate_headers()
-
-        self._refresh_token_if_expired()
 
         response = requests.post(url, json=json, headers=headers, **kwargs)
         handle_error(response)
@@ -76,10 +76,10 @@ class HTTPClient:
         :return: Response object
         :rtype: requests.Response
         """
+        self._refresh_token_if_expired()
+
         url = self._add_base_url(url)
         headers = self._generate_headers()
-
-        self._refresh_token_if_expired()
 
         response = requests.put(url, json=json, headers=headers, **kwargs)
         handle_error(response)
@@ -103,10 +103,10 @@ class HTTPClient:
         :return: Response object
         :rtype: requests.Response
         """
+        self._refresh_token_if_expired()
+
         url = self._add_base_url(url)
         headers = self._generate_headers()
-
-        self._refresh_token_if_expired()
 
         response = requests.get(url, params=params, headers=headers, **kwargs)
         handle_error(response)
@@ -130,10 +130,10 @@ class HTTPClient:
         :return: Response object
         :rtype: requests.Response
         """
+        self._refresh_token_if_expired()
+
         url = self._add_base_url(url)
         headers = self._generate_headers()
-
-        self._refresh_token_if_expired()
 
         response = requests.delete(url, headers=headers, json=json, **kwargs)
         handle_error(response)

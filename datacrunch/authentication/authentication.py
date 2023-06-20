@@ -80,7 +80,7 @@ class AuthenticationService:
             url, json=payload, headers=self._generate_headers())
 
         # if refresh token is also expired, authenticate again:
-        if response.status_code == 400:
+        if response.status_code == 401 or response.status_code == 400:
             return self.authenticate()
         else:
             handle_error(response)
