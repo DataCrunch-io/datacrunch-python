@@ -147,7 +147,7 @@ class HTTPClient:
 
         :raises APIException: an api exception with message and error type code
         """
-        if(self._auth_service.is_expired()):
+        if (self._auth_service.is_expired()):
             # try to refresh. if refresh token has expired, reauthenticate
             try:
                 self._auth_service.refresh()
@@ -182,7 +182,7 @@ class HTTPClient:
         :rtype: str
         """
         # get the first 10 chars of the client id
-        client_id_truncated = self._auth_service._client_id[:10]  
+        client_id_truncated = self._auth_service._client_id[:10]
 
         return f'datacrunch-python-v{self._version}-{client_id_truncated}'
 
