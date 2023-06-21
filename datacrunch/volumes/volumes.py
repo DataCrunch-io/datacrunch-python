@@ -17,7 +17,7 @@ class Volume:
                  is_os_volume: bool,
                  created_at: str,
                  target: str = None,
-                 location: str = "FIN1",
+                 location: str = "FIN-01",
                  instance_id: str = None,
                  ssh_key_ids: List[str] = [],
                  deleted_at: str = None,
@@ -40,7 +40,7 @@ class Volume:
         :type created_at: str
         :param target: target device e.g. vda
         :type target: str, optional
-        :param location: datacenter location, defaults to "FIN1"
+        :param location: datacenter location, defaults to "FIN-01"
         :type location: str, optional
         :param instance_id: the instance id the volume is attached to, None if detached
         :type instance_id: str

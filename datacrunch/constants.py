@@ -55,6 +55,14 @@ class VolumeTypes:
         return
 
 
+class Locations:
+    FIN_01 = "FIN-01"
+    ICE_01 = "ICE-01"
+
+    def __init__(self):
+        return
+
+
 class ErrorCodes:
     INVALID_REQUEST = "invalid_request"
     UNAUTHORIZED_REQUEST = "unauthorized_request"
@@ -84,6 +92,9 @@ class Constants:
 
         self.volume_types: VolumeTypes = VolumeTypes()
         """Available volume types"""
+
+        self.locations: Locations = Locations()
+        """Available locations"""
 
         self.error_codes: ErrorCodes = ErrorCodes()
         """Available error codes"""

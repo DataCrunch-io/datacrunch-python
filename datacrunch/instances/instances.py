@@ -24,7 +24,7 @@ class Instance:
                  storage: dict,
                  os_volume_id: str,
                  gpu_memory: dict,
-                 location: str = "FIN1",
+                 location: str = "FIN-01",
                  startup_script_id: str = None,
                  is_spot: bool = False
                  ) -> None:
@@ -62,7 +62,7 @@ class Instance:
         :type id: str
         :param memory: gpu memory details
         :type memory: dict
-        :param location: datacenter location, defaults to "FIN1"
+        :param location: datacenter location, defaults to "FIN-01"
         :type location: str, optional
         :param startup_script_id: startup script id, defaults to None
         :type startup_script_id: str, optional
@@ -268,6 +268,7 @@ class Instance:
         """
         return stringify_class_object_properties(self)
 
+
 class InstancesService:
     """A service for interacting with the instances endpoint"""
 
@@ -295,7 +296,8 @@ class InstancesService:
             ip=instance_dict['ip'],
             status=instance_dict['status'],
             created_at=instance_dict['created_at'],
-            ssh_key_ids=instance_dict['ssh_key_ids'] if 'ssh_key_ids' in instance_dict else [],
+            ssh_key_ids=instance_dict['ssh_key_ids'] if 'ssh_key_ids' in instance_dict else [
+            ],
             startup_script_id=instance_dict['startup_script_id'] if 'startup_script_id' in instance_dict else None,
             cpu=instance_dict['cpu'],
             gpu=instance_dict['gpu'],
@@ -328,7 +330,8 @@ class InstancesService:
             ip=instance_dict['ip'],
             status=instance_dict['status'],
             created_at=instance_dict['created_at'],
-            ssh_key_ids=instance_dict['ssh_key_ids'] if 'ssh_key_ids' in instance_dict else [],
+            ssh_key_ids=instance_dict['ssh_key_ids'] if 'ssh_key_ids' in instance_dict else [
+            ],
             startup_script_id=instance_dict['startup_script_id'] if 'startup_script_id' in instance_dict else None,
             cpu=instance_dict['cpu'],
             gpu=instance_dict['gpu'],
@@ -346,7 +349,7 @@ class InstancesService:
                hostname: str,
                description: str,
                ssh_key_ids: list = [],
-               location: str = "FIN1",
+               location: str = "FIN-01",
                startup_script_id: str = None,
                volumes: List[Dict] = None,
                existing_volumes: List[str] = None,
@@ -365,7 +368,7 @@ class InstancesService:
         :type hostname: str
         :param description: instance description
         :type description: str
-        :param location: datacenter location, defaults to "FIN1"
+        :param location: datacenter location, defaults to "FIN-01"
         :type location: str, optional
         :param startup_script_id: startup script id, defaults to None
         :type startup_script_id: str, optional
