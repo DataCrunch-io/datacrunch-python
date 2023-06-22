@@ -50,7 +50,7 @@ PAYLOAD = [
         },
         "hostname": INSTANCE_HOSTNAME,
         "description": INSTANCE_DESCRIPTION,
-        "location": INSTANCE_LOCATION,
+        "location_code": INSTANCE_LOCATION,
         "price_per_hour": INSTANCE_PRICE_PER_HOUR,
         "instance_type": INSTANCE_TYPE,
         "image": INSTANCE_IMAGE,
@@ -62,6 +62,7 @@ PAYLOAD = [
 
 PAYLOAD_SPOT = PAYLOAD
 PAYLOAD_SPOT[0]["is_spot"] = True
+
 
 class TestInstancesService:
     @pytest.fixture
@@ -397,7 +398,8 @@ class TestInstancesService:
         )
 
         # act
-        result = instances_service.action(id_list=[INSTANCE_ID], action=Actions.SHUTDOWN)
+        result = instances_service.action(
+            id_list=[INSTANCE_ID], action=Actions.SHUTDOWN)
 
         # assert
         assert result is None
@@ -415,7 +417,8 @@ class TestInstancesService:
 
         # act
         with pytest.raises(APIException) as excinfo:
-            instances_service.action(id_list=[INSTANCE_ID], action="fluxturcate")
+            instances_service.action(
+                id_list=[INSTANCE_ID], action="fluxturcate")
 
         # assert
         assert excinfo.value.code == INVALID_REQUEST
@@ -424,7 +427,8 @@ class TestInstancesService:
 
     def test_is_available_successful(self, instances_service):
         # arrange - add response mock
-        url = instances_service._http_client._base_url + '/instance-availability/' + INSTANCE_TYPE
+        url = instances_service._http_client._base_url + \
+            '/instance-availability/' + INSTANCE_TYPE
         responses.add(
             responses.GET,
             url,
@@ -441,7 +445,8 @@ class TestInstancesService:
 
     def test_is_spot_available_successful(self, instances_service):
         # arrange - add response mock
-        url = instances_service._http_client._base_url + '/instance-availability/' + INSTANCE_TYPE + '?isSpot=true'
+        url = instances_service._http_client._base_url + \
+            '/instance-availability/' + INSTANCE_TYPE + '?isSpot=true'
         responses.add(
             responses.GET,
             url,
@@ -450,7 +455,8 @@ class TestInstancesService:
         )
 
         # act
-        is_available = instances_service.is_available(INSTANCE_TYPE, is_spot=True)
+        is_available = instances_service.is_available(
+            INSTANCE_TYPE, is_spot=True)
 
         # assert
         assert is_available is True

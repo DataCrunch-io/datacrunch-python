@@ -1,5 +1,5 @@
 from typing import List, Union, Optional
-from datacrunch.constants import VolumeActions
+from datacrunch.constants import VolumeActions, Locations
 from datacrunch.helpers import stringify_class_object_properties
 
 VOLUMES_ENDPOINT = '/volumes'
@@ -17,7 +17,7 @@ class Volume:
                  is_os_volume: bool,
                  created_at: str,
                  target: str = None,
-                 location: str = "FIN-01",
+                 location: str = Locations.FIN_01,
                  instance_id: str = None,
                  ssh_key_ids: List[str] = [],
                  deleted_at: str = None,
@@ -260,7 +260,7 @@ class VolumesService:
             "name": name,
             "size": size,
             "instance_id": instance_id,
-            "location": location
+            "location_code": location
         }
         id = self._http_client.post(VOLUMES_ENDPOINT, json=payload).text
         volume = self.get_by_id(id)

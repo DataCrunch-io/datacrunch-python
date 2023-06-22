@@ -1,5 +1,6 @@
 from typing import List, Union, Optional, Dict
 from datacrunch.helpers import stringify_class_object_properties
+from datacrunch.constants import Locations
 
 INSTANCES_ENDPOINT = '/instances'
 
@@ -24,7 +25,7 @@ class Instance:
                  storage: dict,
                  os_volume_id: str,
                  gpu_memory: dict,
-                 location: str = "FIN-01",
+                 location: str = Locations.FIN_01,
                  startup_script_id: str = None,
                  is_spot: bool = False
                  ) -> None:
@@ -392,7 +393,7 @@ class InstancesService:
             "startup_script_id": startup_script_id,
             "hostname": hostname,
             "description": description,
-            "location": location,
+            "location_code": location,
             "os_volume": os_volume,
             "volumes": volumes,
             "existing_volumes": existing_volumes,
