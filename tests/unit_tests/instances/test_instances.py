@@ -50,7 +50,7 @@ PAYLOAD = [
         },
         "hostname": INSTANCE_HOSTNAME,
         "description": INSTANCE_DESCRIPTION,
-        "location_code": INSTANCE_LOCATION,
+        "location": INSTANCE_LOCATION,
         "price_per_hour": INSTANCE_PRICE_PER_HOUR,
         "instance_type": INSTANCE_TYPE,
         "image": INSTANCE_IMAGE,
