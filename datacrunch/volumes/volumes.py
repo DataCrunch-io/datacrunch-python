@@ -238,7 +238,7 @@ class VolumesService:
                name: str,
                size: int,
                instance_id: str = None,
-               location: str = "FIN1",
+               location: str = Locations.FIN_01,
                ) -> Volume:
         """Create new volume
 
@@ -250,7 +250,7 @@ class VolumesService:
         :type size: int
         :param instance_id: Instance id to be attached to, defaults to None
         :type instance_id: str, optional
-        :param location: datacenter location, defaults to "FIN1"
+        :param location: datacenter location, defaults to "FIN-01"
         :type location: str, optional
         :return: the new volume object
         :rtype: Volume

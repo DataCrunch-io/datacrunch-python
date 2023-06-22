@@ -3,7 +3,7 @@ import responses  # https://github.com/getsentry/responses
 
 from datacrunch.exceptions import APIException
 from datacrunch.instances.instances import InstancesService, Instance
-from datacrunch.constants import Actions, ErrorCodes
+from datacrunch.constants import Actions, ErrorCodes, Locations
 
 INVALID_REQUEST = ErrorCodes.INVALID_REQUEST
 INVALID_REQUEST_MESSAGE = 'Your existence is invalid'
@@ -18,7 +18,7 @@ INSTANCE_HOSTNAME = "I'll be your host for today"
 INSTANCE_DESCRIPTION = "hope you enjoy your GPU"
 INSTANCE_STATUS = 'running'
 INSTANCE_PRICE_PER_HOUR = 0.60
-INSTANCE_LOCATION = 'FIN1'
+INSTANCE_LOCATION = Locations.FIN_01
 INSTANCE_IP = '1.2.3.4'
 INSTANCE_CREATED_AT = "whatchalookingatboy?"
 INSTANCE_OS_VOLUME = {"name": "os volume", "size": 50}

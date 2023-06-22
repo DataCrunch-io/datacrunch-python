@@ -350,7 +350,7 @@ class InstancesService:
                hostname: str,
                description: str,
                ssh_key_ids: list = [],
-               location: str = "FIN-01",
+               location: str = Locations.FIN_01,
                startup_script_id: str = None,
                volumes: List[Dict] = None,
                existing_volumes: List[str] = None,
