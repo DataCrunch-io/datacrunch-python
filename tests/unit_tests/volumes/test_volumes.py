@@ -3,14 +3,13 @@ import responses  # https://github.com/getsentry/responses
 
 from datacrunch.exceptions import APIException
 from datacrunch.volumes.volumes import VolumesService, Volume
-from datacrunch.constants import VolumeStatus, VolumeTypes, VolumeActions, ErrorCodes
+from datacrunch.constants import VolumeStatus, VolumeTypes, VolumeActions, ErrorCodes, Locations
 
 INVALID_REQUEST = ErrorCodes.INVALID_REQUEST
 INVALID_REQUEST_MESSAGE = 'Your existence is invalid'
 
 INSTANCE_ID = "4fee633c-b119-4447-af9c-70ba17675fc5"
 
-FIN1 = "FIN1"
 NVME = "NVMe"
 HDD = "HDD"
 TARGET_VDA = "vda"
@@ -39,7 +38,7 @@ NVME_VOLUME = {
     "name": NVME_VOL_NAME,
     "size": NVME_VOL_SIZE,
     "type": NVME,
-    "location": FIN1,
+    "location": Locations.FIN_01,
     "is_os_volume": True,
     "created_at": NVME_VOL_CREATED_AT,
     "target": TARGET_VDA,
@@ -53,7 +52,7 @@ HDD_VOLUME = {
     "name": HDD_VOL_NAME,
     "size": HDD_VOL_SIZE,
     "type": HDD,
-    "location": FIN1,
+    "location": Locations.FIN_01,
     "is_os_volume": False,
     "created_at": HDD_VOL_CREATED_AT,
     "target": None,
@@ -82,7 +81,7 @@ class TestVolumesService:
         assert volume.name == HDD_VOL_NAME
         assert volume.size == HDD_VOL_SIZE
         assert volume.type == HDD
-        assert volume.location == FIN1
+        assert volume.location == Locations.FIN_01
         assert volume.is_os_volume == False
         assert volume.created_at == HDD_VOL_CREATED_AT
         assert volume.target == None
@@ -113,7 +112,7 @@ class TestVolumesService:
         assert volume_nvme.name == NVME_VOL_NAME
         assert volume_nvme.size == NVME_VOL_SIZE
         assert volume_nvme.type == NVME
-        assert volume_nvme.location == FIN1
+        assert volume_nvme.location == Locations.FIN_01
         assert volume_nvme.is_os_volume
         assert volume_nvme.created_at == NVME_VOL_CREATED_AT
         assert volume_nvme.target == TARGET_VDA
@@ -125,7 +124,7 @@ class TestVolumesService:
         assert volume_hdd.name == HDD_VOL_NAME
         assert volume_hdd.size == HDD_VOL_SIZE
         assert volume_hdd.type == HDD
-        assert volume_hdd.location == FIN1
+        assert volume_hdd.location == Locations.FIN_01
         assert volume_hdd.is_os_volume is False
         assert volume_hdd.created_at == HDD_VOL_CREATED_AT
         assert volume_hdd.target is None
@@ -154,7 +153,7 @@ class TestVolumesService:
         assert volume_nvme.name == NVME_VOL_NAME
         assert volume_nvme.size == NVME_VOL_SIZE
         assert volume_nvme.type == NVME
-        assert volume_nvme.location == FIN1
+        assert volume_nvme.location == Locations.FIN_01
         assert volume_nvme.is_os_volume
         assert volume_nvme.created_at == NVME_VOL_CREATED_AT
         assert volume_nvme.target == TARGET_VDA
@@ -198,7 +197,7 @@ class TestVolumesService:
         assert volume_nvme.name == NVME_VOL_NAME
         assert volume_nvme.size == NVME_VOL_SIZE
         assert volume_nvme.type == NVME
-        assert volume_nvme.location == FIN1
+        assert volume_nvme.location == Locations.FIN_01
         assert volume_nvme.is_os_volume
         assert volume_nvme.created_at == NVME_VOL_CREATED_AT
         assert volume_nvme.target == TARGET_VDA
