@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v1.5.10 (2023-06-28)
+-------------------
+
+* Added location constants 
+* Refactored the code to send `location_code` instead of `location` when creating an instance or a volume
+
 v1.4.1 (2023-06-20)
 -------------------
 

@@ -1,5 +1,5 @@
 from typing import List, Union, Optional
-from datacrunch.constants import VolumeActions
+from datacrunch.constants import VolumeActions, Locations
 from datacrunch.helpers import stringify_class_object_properties
 
 VOLUMES_ENDPOINT = '/volumes'
@@ -17,7 +17,7 @@ class Volume:
                  is_os_volume: bool,
                  created_at: str,
                  target: str = None,
-                 location: str = "FIN1",
+                 location: str = Locations.FIN_01,
                  instance_id: str = None,
                  ssh_key_ids: List[str] = [],
                  deleted_at: str = None,
@@ -40,7 +40,7 @@ class Volume:
         :type created_at: str
         :param target: target device e.g. vda
         :type target: str, optional
-        :param location: datacenter location, defaults to "FIN1"
+        :param location: datacenter location, defaults to "FIN-01"
         :type location: str, optional
         :param instance_id: the instance id the volume is attached to, None if detached
         :type instance_id: str
@@ -238,7 +238,7 @@ class VolumesService:
                name: str,
                size: int,
                instance_id: str = None,
-               location: str = "FIN1",
+               location: str = Locations.FIN_01,
                ) -> Volume:
         """Create new volume
 
@@ -250,7 +250,7 @@ class VolumesService:
         :type size: int
         :param instance_id: Instance id to be attached to, defaults to None
         :type instance_id: str, optional
-        :param location: datacenter location, defaults to "FIN1"
+        :param location: datacenter location, defaults to "FIN-01"
         :type location: str, optional
         :return: the new volume object
         :rtype: Volume
@@ -260,7 +260,7 @@ class VolumesService:
             "name": name,
             "size": size,
             "instance_id": instance_id,
-            "location": location
+            "location_code": location
         }
         id = self._http_client.post(VOLUMES_ENDPOINT, json=payload).text
         volume = self.get_by_id(id)
