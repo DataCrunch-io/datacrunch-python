@@ -32,7 +32,7 @@ class HTTPClient:
         self._auth_service = auth_service
         self._auth_service.authenticate()
 
-    def post(self, url: str, json: dict = None, **kwargs) -> requests.Response:
+    def post(self, url: str, json: dict = None, params: dict = None, **kwargs) -> requests.Response:
         """Sends a POST request.
 
         A wrapper for the requests.post method.
@@ -43,6 +43,8 @@ class HTTPClient:
         :type url: str
         :param json: A JSON serializable Python object to send in the body of the Request, defaults to None
         :type json: dict, optional
+        :param params: Dictionary of querystring data to attach to the Request, defaults to None
+        :type params: dict, optional
 
         :raises APIException: an api exception with message and error type code
 
@@ -54,12 +56,13 @@ class HTTPClient:
         url = self._add_base_url(url)
         headers = self._generate_headers()
 
-        response = requests.post(url, json=json, headers=headers, **kwargs)
+        response = requests.post(
+            url, json=json, headers=headers, params=params, **kwargs)
         handle_error(response)
 
         return response
 
-    def put(self, url: str, json: dict = None, **kwargs) -> requests.Response:
+    def put(self, url: str, json: dict = None, params: dict = None, **kwargs) -> requests.Response:
         """Sends a PUT request.
 
         A wrapper for the requests.put method.
@@ -70,6 +73,8 @@ class HTTPClient:
         :type url: str
         :param json: A JSON serializable Python object to send in the body of the Request, defaults to None
         :type json: dict, optional
+        :param params: Dictionary of querystring data to attach to the Request, defaults to None
+        :type params: dict, optional
 
         :raises APIException: an api exception with message and error type code
 
@@ -81,7 +86,8 @@ class HTTPClient:
         url = self._add_base_url(url)
         headers = self._generate_headers()
 
-        response = requests.put(url, json=json, headers=headers, **kwargs)
+        response = requests.put(
+            url, json=json, headers=headers, params=params, **kwargs)
         handle_error(response)
 
         return response
@@ -95,7 +101,7 @@ class HTTPClient:
 
         :param url: relative url of the API endpoint
         :type url: str
-        :param params: Dictionary, list of tuples or bytes to send in the query string for the Request. defaults to None
+        :param params: Dictionary of querystring data to attach to the Request, defaults to None
         :type params: dict, optional
 
         :raises APIException: an api exception with message and error type code
@@ -113,7 +119,7 @@ class HTTPClient:
 
         return response
 
-    def delete(self, url: str, json: dict = None, **kwargs) -> requests.Response:
+    def delete(self, url: str, json: dict = None, params: dict = None, **kwargs) -> requests.Response:
         """Sends a DELETE request.
 
         A wrapper for the requests.delete method.
@@ -124,6 +130,8 @@ class HTTPClient:
         :type url: str
         :param json: A JSON serializable Python object to send in the body of the Request, defaults to None
         :type json: dict, optional
+        :param params: Dictionary of querystring data to attach to the Request, defaults to None
+        :type params: dict, optional
 
         :raises APIException: an api exception with message and error type code
 
@@ -135,7 +143,8 @@ class HTTPClient:
         url = self._add_base_url(url)
         headers = self._generate_headers()
 
-        response = requests.delete(url, headers=headers, json=json, **kwargs)
+        response = requests.delete(
+            url, headers=headers, json=json, params=params, **kwargs)
         handle_error(response)
 
         return response
