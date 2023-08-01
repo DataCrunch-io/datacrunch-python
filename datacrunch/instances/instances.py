@@ -427,7 +427,7 @@ class InstancesService:
         return
 
     # TODO: use enum/const for location_code
-    def is_available(self, instance_type: str, is_spot: bool = None, location_code: str = None) -> bool:
+    def is_available(self, instance_type: str, is_spot: bool = False, location_code: str = None) -> bool:
         """Returns True if a specific instance type is now available for deployment
 
         :param instance_type: instance type
@@ -439,7 +439,7 @@ class InstancesService:
         :return: True if available to deploy, False otherwise
         :rtype: bool
         """
-        is_spot = str(is_spot).lower() if is_spot is not None else None
+        is_spot = str(is_spot).lower()
         query_params = {'isSpot': is_spot, 'location_code': location_code}
         url = f'/instance-availability/{instance_type}'
         return self._http_client.get(url, query_params).json()
