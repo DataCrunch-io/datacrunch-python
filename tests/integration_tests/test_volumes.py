@@ -1,4 +1,5 @@
 import os
+import time
 import pytest
 from datacrunch.datacrunch import DataCrunchClient
 from datacrunch.constants import Locations, VolumeTypes, VolumeStatus
@@ -38,6 +39,9 @@ class TestVolumes():
         # permanently delete the detached volume
         datacrunch_client.volumes.delete(volume.id, is_permanent=True)
 
+        # sleep for 2 seconds
+        time.sleep(2)
+
         # make sure the volume is not in trash
         volumes = datacrunch_client.volumes.get_in_trash()
 
@@ -57,6 +61,9 @@ class TestVolumes():
 
         # delete volume
         datacrunch_client.volumes.delete(volume.id)
+
+        # sleep for 2 seconds
+        time.sleep(2)
 
         # permanently delete the volume
         datacrunch_client.volumes.delete(volume.id, is_permanent=True)
