@@ -56,8 +56,8 @@ class VolumeTypes:
 
 
 class Locations:
-    FIN_01 = "FIN-01"
-    ICE_01 = "ICE-01"
+    FIN_01: str = "FIN-01"
+    ICE_01: str = "ICE-01"
 
     def __init__(self):
         return

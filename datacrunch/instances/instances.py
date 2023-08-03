@@ -426,16 +426,35 @@ class InstancesService:
         self._http_client.put(INSTANCES_ENDPOINT, json=payload)
         return
 
-    def is_available(self, instance_type: str, is_spot: bool = None) -> bool:
+    # TODO: use enum/const for location_code
+    def is_available(self, instance_type: str, is_spot: bool = False, location_code: str = None) -> bool:
         """Returns True if a specific instance type is now available for deployment
 
         :param instance_type: instance type
         :type instance_type: str
         :param is_spot: Is spot instance
         :type is_spot: bool, optional
+        :param location_code: datacenter location, defaults to "FIN-01"
+        :type location_code: str, optional
         :return: True if available to deploy, False otherwise
         :rtype: bool
         """
-        query_param = '?isSpot=true' if is_spot else ''
-        url = f'/instance-availability/{instance_type}{query_param}'
-        return self._http_client.get(url).json()
+        is_spot = str(is_spot).lower()
+        query_params = {'isSpot': is_spot, 'location_code': location_code}
+        url = f'/instance-availability/{instance_type}'
+        return self._http_client.get(url, query_params).json()
+
+    # TODO: use enum/const for location_code
+    def get_availabilities(self, is_spot: bool = None, location_code: str = None) -> bool:
+        """Returns a list of available instance types
+
+        :param is_spot: Is spot instance
+        :type is_spot: bool, optional
+        :param location_code: datacenter location, defaults to "FIN-01"
+        :type location_code: str, optional
+        :return: list of available instance types in every location
+        :rtype: list
+        """
+        is_spot = str(is_spot).lower() if is_spot is not None else None
+        query_params = {'isSpot': is_spot, 'locationCode': location_code}
+        return self._http_client.get('/instance-availability', params=query_params).json()
