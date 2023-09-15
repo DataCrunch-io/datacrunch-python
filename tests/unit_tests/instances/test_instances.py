@@ -428,7 +428,7 @@ class TestInstancesService:
     def test_is_available_successful(self, instances_service):
         # arrange - add response mock
         url = instances_service._http_client._base_url + \
-            '/instance-availability/' + INSTANCE_TYPE
+            '/instance-availability/' + INSTANCE_TYPE + "?isSpot=false"
         responses.add(
             responses.GET,
             url,
@@ -464,7 +464,8 @@ class TestInstancesService:
 
     def test_is_available_failed(self, instances_service):
         # arrange - add response mock
-        url = instances_service._http_client._base_url + '/instance-availability/x'
+        url = instances_service._http_client._base_url + \
+            '/instance-availability/x' + "?isSpot=false"
         responses.add(
             responses.GET,
             url,

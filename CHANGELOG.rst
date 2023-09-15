@@ -1,7 +1,12 @@
 Changelog
 =========
 
-v1.5.10 (2023-06-28)
+v1.6.0 (2023-09-15)
+-------------------
+
+* Added locations endpoint and location code parameter to the availability endpoints
+
+v1.5.0 (2023-06-28)
 -------------------
 
 * Added location constants 

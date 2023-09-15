@@ -9,6 +9,7 @@ from datacrunch.startup_scripts.startup_scripts import StartupScriptsService
 from datacrunch.volume_types.volume_types import VolumeTypesService
 from datacrunch.volumes.volumes import VolumesService
 from datacrunch.constants import Constants
+from datacrunch.locations.locations import LocationsService
 from datacrunch.__version__ import VERSION
 
 
@@ -62,3 +63,7 @@ class DataCrunchClient:
 
         self.volumes: VolumesService = VolumesService(self._http_client)
         """Volume service. Create, attach, detach, get, rename, delete volumes"""
+
+        self.locations: LocationsService = LocationsService(
+            self._http_client)
+        """Locations service. Get locations"""
