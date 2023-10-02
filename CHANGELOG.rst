@@ -1,6 +1,8 @@
 Changelog
 =========
 
+* Added spot price to instance types
+
 v1.6.0 (2023-09-15)
 -------------------
 
