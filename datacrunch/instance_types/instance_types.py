@@ -9,6 +9,7 @@ class InstanceType:
                  id: str,
                  instance_type: str,
                  price_per_hour: float,
+                 spot_price_per_hour: float,
                  description: str,
                  cpu: dict,
                  gpu: dict,
@@ -23,6 +24,8 @@ class InstanceType:
         :type instance_type: str
         :param price_per_hour: price per hour
         :type price_per_hour: float
+        :param spot_price_per_hour: spot price per hour
+        :type spot_price_per_hour: float
         :param description: instance type description
         :type description: str
         :param cpu: cpu details
@@ -39,6 +42,7 @@ class InstanceType:
         self._id = id
         self._instance_type = instance_type
         self._price_per_hour = float(price_per_hour)
+        self._spot_price_per_hour = float(spot_price_per_hour)
         self._description = description
         self._cpu = cpu
         self._gpu = gpu
@@ -72,6 +76,15 @@ class InstanceType:
         :rtype: float
         """
         return self._price_per_hour
+
+    @property
+    def spot_price_per_hour(self) -> float:
+        """Get the instance spot price per hour
+
+        :return: spot price per hour
+        :rtype: float
+        """
+        return self._spot_price_per_hour
 
     @property
     def description(self) -> str:
@@ -136,6 +149,7 @@ class InstanceType:
         return (f'id: {self._id}\n'
                 f'instance type: {self._instance_type}\n'
                 f'price_per_hour: ${self._price_per_hour}\n'
+                f'spot_price_per_hour: ${self._spot_price_per_hour}\n'
                 f'description: {self._description}\n'
                 f'cpu: {self._cpu}\n'
                 f'gpu: {self._gpu}\n'
@@ -162,6 +176,7 @@ class InstanceTypesService:
             id=instance_type['id'],
             instance_type=instance_type['instance_type'],
             price_per_hour=instance_type['price_per_hour'],
+            spot_price_per_hour=instance_type['spot_price'],
             description=instance_type['description'],
             cpu=instance_type['cpu'],
             gpu=instance_type['gpu'],
