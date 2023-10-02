@@ -15,6 +15,7 @@ STORAGE_DESCRIPTION = "1800GB NVME"
 STORAGE_SIZE = 1800
 INSTANCE_TYPE_DESCRIPTION = "Dedicated Bare metal Server"
 PRICE_PER_HOUR = 5.0
+SPOT_PRICE_PER_HOUR = 2.5
 INSTANCE_TYPE = "8V100.48M"
 
 
@@ -48,6 +49,7 @@ def test_instance_types(http_client):
                 },
                 "description": INSTANCE_TYPE_DESCRIPTION,
                 "price_per_hour": "5.00",
+                "spot_price": "2.50",
                 "instance_type": INSTANCE_TYPE
             }
         ],
@@ -67,6 +69,7 @@ def test_instance_types(http_client):
     assert instance_type.id == TYPE_ID
     assert instance_type.description == INSTANCE_TYPE_DESCRIPTION
     assert instance_type.price_per_hour == PRICE_PER_HOUR
+    assert instance_type.spot_price_per_hour == SPOT_PRICE_PER_HOUR
     assert instance_type.instance_type == INSTANCE_TYPE
     assert type(instance_type.cpu) == dict
     assert type(instance_type.gpu) == dict
