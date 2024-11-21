@@ -179,7 +179,21 @@ class Volume:
         :return: Volume
         :rtype: Volume
         """
-        return cls(**volume_dict)
+
+        return cls(
+            id = volume_dict['id'],
+            status = volume_dict['status'],
+            name = volume_dict['name'],
+            size = volume_dict['size'],
+            type = volume_dict['type'],
+            is_os_volume = volume_dict['is_os_volume'],
+            created_at = volume_dict['created_at'],
+            target = volume_dict['target'],
+            location = volume_dict['location'],
+            instance_id = volume_dict['instance_id'],
+            ssh_key_ids = volume_dict['ssh_key_ids'],
+            deleted_at = volume_dict.get('deleted_at'),
+        )
 
     def __str__(self) -> str:
         """Returns a string of the json representation of the volume
