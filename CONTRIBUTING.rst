@@ -64,11 +64,11 @@ Release Guidelines
 ------------------------
 Some steps for releasing a new version:
 
-1. Update the version in `__version__.py`
+1. Update the version in ``__version__.py``
 2. Add an entry to the CHANGELOG.rst file
-3. `git tag vX.Y.Z`
-4. `git push master`
-5. `git push --tags`
+3. ``git tag vX.Y.Z``
+4. ``git push master``
+5. ``git push --tags``
 6. `Draft and publish`_ a new release.
 7. Check that package is automatically published to `PyPI`_ via `GitHub action`_.
 
