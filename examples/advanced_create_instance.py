@@ -55,7 +55,7 @@ try:
                                                        ssh_key_ids=ssh_keys_ids,
                                                        hostname='example',
                                                        description='large instance',
-                                                       os_volumes={
+                                                       os_volume={
                                                             "name": "Large OS volume",
                                                             "size": 95
                                                         })
