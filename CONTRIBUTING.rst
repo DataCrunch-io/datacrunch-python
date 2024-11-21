@@ -66,4 +66,12 @@ Some steps for releasing a new version:
 
 1. Update the version in `__version__.py`
 2. Add an entry to the CHANGELOG.rst file
-3. Push the changes to the `master` branch and add a new release tag.
+3. `git tag vX.Y.Z`
+4. `git push master`
+5. `git push --tags`
+6. `Draft and publish`_ a new release.
+7. Check that package is automatically published to `PyPI`_ via `GitHub action`_.
+
+.. _Draft and publish: https://github.com/DataCrunch-io/datacrunch-python/releases
+.. _PyPI: https://pypi.org/project/datacrunch/
+.. _GitHub action: https://github.com/DataCrunch-io/datacrunch-python/actions/workflows/publish_package.yml
