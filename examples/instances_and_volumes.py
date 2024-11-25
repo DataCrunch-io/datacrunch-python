@@ -36,7 +36,7 @@ instance_with_custom_os_volume = datacrunch.instances.create(instance_type='1V10
                                                           ssh_key_ids=ssh_keys,
                                                           hostname='example',
                                                           description='example instance',
-                                                          os_volumes={
+                                                          os_volume={
                                                               "name": "OS volume",
                                                               "size": 95
                                                           })
