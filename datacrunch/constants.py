@@ -13,7 +13,7 @@ class VolumeActions:
     ATTACH = 'attach'
     DETACH = 'detach'
     RENAME = 'rename'
-    INCREASE_SIZE = 'increase-size'
+    INCREASE_SIZE = 'resize'
     DELETE = 'delete'
     CLONE = 'clone'
 

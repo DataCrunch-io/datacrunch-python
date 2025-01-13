@@ -42,7 +42,7 @@ Instances and Volumes
                                                           ssh_key_ids=ssh_keys,
                                                           hostname='example',
                                                           description='example instance',
-                                                          os_volumes={
+                                                          os_volume={
                                                               "name": "OS volume",
                                                               "size": 95
                                                           })
