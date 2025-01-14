@@ -8,14 +8,14 @@ DataCrunch Python SDK
 
 Welcome to the documentation for the official DataCrunch Python SDK.
 
-The Public API documentation is `available here <https://datacrunch.stoplight.io/docs/datacrunch-public/docs/Overview/Introduction.md>`_
+The Public API documentation is `available here <https://api.datacrunch.io/v1/docs>`_
 
 The Python SDK is open-sourced and can be `found here <https://github.com/DataCrunch-io/datacrunch-python>`_
 
 Basic Examples:
 ---------------
 
-First, get your client credentials - `instructions available here <https://datacrunch.stoplight.io/docs/datacrunch-public/docs/Overview/Quick-Start-Guide.md>`_.
+First, get your client credentials - `instructions available here <https://api.datacrunch.io/v1/docs#description/quick-start-guide>`_.
 
 Deploy a new instance:
 
