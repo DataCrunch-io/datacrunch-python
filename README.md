@@ -34,7 +34,7 @@ The official [DataCrunch.io](https://datacrunch.io) Python SDK.
 
 The SDK's documentation is available on [ReadTheDocs](https://datacrunch-python.readthedocs.io/en/latest/)
 
-DataCrunch's Public API documentation [is available here](https://datacrunch.stoplight.io/docs/datacrunch-public/docs/Overview/Introduction.md).
+DataCrunch's Public API documentation [is available here](https://api.datacrunch.io/v1/docs).
 
 ## Getting Started - Using the SDK:
 
@@ -44,7 +44,7 @@ DataCrunch's Public API documentation [is available here](https://datacrunch.sto
   pip3 install datacrunch
   ```
 
-- Generate your client credentials - [instructions in the public API docs](https://datacrunch.stoplight.io/docs/datacrunch-public/docs/Overview/Quick-Start-Guide.md).
+- Generate your client credentials - [instructions in the public API docs](https://api.datacrunch.io/v1/docs#description/quick-start-guide).
 
 - Add the client secret to an environment variable (don't want it to be hardcoded):
 
