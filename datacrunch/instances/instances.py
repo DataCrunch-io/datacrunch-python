@@ -4,8 +4,8 @@ from datacrunch.constants import Locations
 
 INSTANCES_ENDPOINT = '/instances'
 
-Contract = Literal['DYNAMIC_PRICE', 'FIXED_PRICE']
-Pricing = Literal['LONG_TERM', 'PAY_AS_YOU_GO', 'SPOT']
+Contract = Literal['LONG_TERM', 'PAY_AS_YOU_GO', 'SPOT']
+Pricing = Literal['DYNAMIC_PRICE', 'FIXED_PRICE']
 
 class Instance:
     """An instance model class"""
