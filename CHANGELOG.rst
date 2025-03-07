@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v1.7.2 (2025-03-07)
+-------------------
+
+* Fix type for contract and pricing parameters
+
 v1.7.1 (2025-03-06)
 -------------------
 
