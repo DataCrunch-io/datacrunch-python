@@ -1,9 +1,11 @@
-from typing import List, Union, Optional, Dict
+from typing import List, Union, Optional, Dict, Literal
 from datacrunch.helpers import stringify_class_object_properties
 from datacrunch.constants import Locations
 
 INSTANCES_ENDPOINT = '/instances'
 
+Contract = Literal['LONG_TERM', 'PAY_AS_YOU_GO', 'SPOT']
+Pricing = Literal['DYNAMIC_PRICE', 'FIXED_PRICE']
 
 class Instance:
     """An instance model class"""
@@ -27,7 +29,9 @@ class Instance:
                  gpu_memory: dict,
                  location: str = Locations.FIN_01,
                  startup_script_id: str = None,
-                 is_spot: bool = False
+                 is_spot: bool = False,
+                 contract: Contract = None,
+                 pricing: Pricing = None,
                  ) -> None:
         """Initialize the instance object
 
@@ -89,6 +93,8 @@ class Instance:
         self._os_volume_id = os_volume_id
         self._gpu_memory = gpu_memory
         self._is_spot = is_spot
+        self._contract = contract
+        self._pricing = pricing
 
     @property
     def id(self) -> str:
@@ -261,6 +267,24 @@ class Instance:
         """
         return self._is_spot
 
+    @property
+    def contract(self) -> bool:
+        """Get contract type
+
+        :return: contract type
+        :rtype: str
+        """
+        return self._contract
+
+    @property
+    def pricing(self) -> bool:
+        """Get pricing type
+
+        :return: pricing type
+        :rtype: str
+        """
+        return self._pricing
+
     def __str__(self) -> str:
         """Returns a string of the json representation of the instance
 
@@ -306,7 +330,9 @@ class InstancesService:
             storage=instance_dict['storage'],
             os_volume_id=instance_dict['os_volume_id'] if 'os_volume_id' in instance_dict else None,
             gpu_memory=instance_dict['gpu_memory'] if 'gpu_memory' in instance_dict else None,
-            is_spot=instance_dict['is_spot'] if 'is_spot' in instance_dict else False
+            is_spot=instance_dict['is_spot'] if 'is_spot' in instance_dict else False,
+            contract=instance_dict['contract'] if 'contract' in instance_dict else False,
+            pricing=instance_dict['pricing'] if 'pricing' in instance_dict else False,
         ), instances_dict))
         return instances
 
@@ -340,7 +366,9 @@ class InstancesService:
             storage=instance_dict['storage'],
             os_volume_id=instance_dict['os_volume_id'] if 'os_volume_id' in instance_dict else None,
             gpu_memory=instance_dict['gpu_memory'] if 'gpu_memory' in instance_dict else None,
-            is_spot=instance_dict['is_spot'] if 'is_spot' in instance_dict else False
+            is_spot=instance_dict['is_spot'] if 'is_spot' in instance_dict else False,
+            contract=instance_dict['contract'] if 'contract' in instance_dict else False,
+            pricing=instance_dict['pricing'] if 'pricing' in instance_dict else False,
         )
         return instance
 
@@ -356,6 +384,8 @@ class InstancesService:
                existing_volumes: List[str] = None,
                os_volume: Dict = None,
                is_spot: bool = False,
+               contract: Contract = None,
+               pricing: Pricing = None,
                coupon: str = None) -> Instance:
         """Creates (deploys) a new instance
 
@@ -381,6 +411,10 @@ class InstancesService:
         :type os_volume: Dict, optional
         :param is_spot: Is spot instance
         :type is_spot: bool, optional
+        :param pricing: Pricing type
+        :type pricing: str, optional
+        :param contract: Contract type
+        :type contract: str, optional
         :param coupon: coupon code
         :type coupon: str, optional
         :return: the new instance object
@@ -398,8 +432,12 @@ class InstancesService:
             "volumes": volumes,
             "existing_volumes": existing_volumes,
             "is_spot": is_spot,
-            "coupon": coupon
+            "coupon": coupon,
         }
+        if contract:
+            payload['contract'] = contract
+        if pricing:
+            payload['pricing'] = pricing
         id = self._http_client.post(INSTANCES_ENDPOINT, json=payload).text
         instance = self.get_by_id(id)
         return instance
