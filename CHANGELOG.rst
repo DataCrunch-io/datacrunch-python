@@ -1,6 +1,16 @@
 Changelog
 =========
 
+v1.7.3 (2025-03-07)
+-------------------
+
+* Fix type for contract and pricing parameters
+
+v1.7.1 (2025-03-06)
+-------------------
+
+* Add contract and pricing parameters in datacrunch.instances.create()
+
 v1.7.0 (2024-11-21)
 -------------------
 
