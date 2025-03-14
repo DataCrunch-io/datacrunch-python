@@ -8,6 +8,7 @@ from datacrunch.ssh_keys.ssh_keys import SSHKeysService
 from datacrunch.startup_scripts.startup_scripts import StartupScriptsService
 from datacrunch.volume_types.volume_types import VolumeTypesService
 from datacrunch.volumes.volumes import VolumesService
+from datacrunch.containers.containers import ContainersService
 from datacrunch.constants import Constants
 from datacrunch.locations.locations import LocationsService
 from datacrunch.__version__ import VERSION
@@ -67,3 +68,7 @@ class DataCrunchClient:
         self.locations: LocationsService = LocationsService(
             self._http_client)
         """Locations service. Get locations"""
+
+        self.containers: ContainersService = ContainersService(
+            self._http_client)
+        """Containers service. Deploy, manage, and monitor container deployments"""
