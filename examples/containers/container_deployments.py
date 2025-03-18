@@ -28,6 +28,14 @@ from datacrunch.containers.containers import (
 # Configuration constants
 DEPLOYMENT_NAME = "my-deployment"
 CONTAINER_NAME = "my-app"
+IMAGE_NAME = "your-image-name:version"
+
+# Environment variables
+DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
+DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
+
+# DataCrunch client instance
+datacrunch = None
 
 
 def wait_for_deployment_health(client: DataCrunchClient, deployment_name: str, max_attempts: int = 10, delay: int = 30) -> bool:
@@ -72,15 +80,21 @@ def cleanup_resources(client: DataCrunchClient) -> None:
 def main() -> None:
     """Main function demonstrating deployment lifecycle management."""
     try:
+        # Check required environment variables
+        if not DATACRUNCH_CLIENT_ID or not DATACRUNCH_CLIENT_SECRET:
+            print(
+                "Please set DATACRUNCH_CLIENT_ID and DATACRUNCH_CLIENT_SECRET environment variables")
+            return
+
         # Initialize client
-        client_id = os.environ.get('DATACRUNCH_CLIENT_ID')
-        client_secret = os.environ.get('DATACRUNCH_CLIENT_SECRET')
-        datacrunch = DataCrunchClient(client_id, client_secret)
+        global datacrunch
+        datacrunch = DataCrunchClient(
+            DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET)
 
         # Create container configuration
         container = Container(
             name=CONTAINER_NAME,
-            image='nginx:latest',
+            image=IMAGE_NAME,
             exposed_port=80,
             healthcheck=HealthcheckSettings(
                 enabled=True,

@@ -119,6 +119,36 @@ class HTTPClient:
 
         return response
 
+    def patch(self, url: str, json: dict = None, params: dict = None, **kwargs) -> requests.Response:
+        """Sends a PATCH request.
+
+        A wrapper for the requests.patch method.
+
+        Builds the url, uses custom headers, refresh tokens if needed.
+
+        :param url: relative url of the API endpoint
+        :type url: str
+        :param json: A JSON serializable Python object to send in the body of the Request, defaults to None
+        :type json: dict, optional
+        :param params: Dictionary of querystring data to attach to the Request, defaults to None
+        :type params: dict, optional
+
+        :raises APIException: an api exception with message and error type code
+
+        :return: Response object
+        :rtype: requests.Response
+        """
+        self._refresh_token_if_expired()
+
+        url = self._add_base_url(url)
+        headers = self._generate_headers()
+
+        response = requests.patch(
+            url, json=json, headers=headers, params=params, **kwargs)
+        handle_error(response)
+
+        return response
+
     def delete(self, url: str, json: dict = None, params: dict = None, **kwargs) -> requests.Response:
         """Sends a DELETE request.
 

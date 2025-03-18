@@ -304,33 +304,33 @@ class ContainersService:
         self.client.post(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/restart")
 
-    def get_scaling_options(self, deployment_name: str) -> Dict:
+    def get_scaling_options(self, deployment_name: str) -> ScalingOptions:
         """Get deployment scaling options
 
         :param deployment_name: name of the deployment
         :type deployment_name: str
         :return: scaling options
-        :rtype: Dict
+        :rtype: ScalingOptions
         """
         response = self.client.get(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/scaling")
-        return response.json()
+        return ScalingOptions.from_dict(response.json())
 
-    def update_scaling_options(self, deployment_name: str, scaling_options: Dict) -> Dict:
+    def update_scaling_options(self, deployment_name: str, scaling_options: ScalingOptions) -> ScalingOptions:
         """Update deployment scaling options
 
         :param deployment_name: name of the deployment
         :type deployment_name: str
         :param scaling_options: new scaling options
-        :type scaling_options: Dict
+        :type scaling_options: ScalingOptions
         :return: updated scaling options
-        :rtype: Dict
+        :rtype: ScalingOptions
         """
         response = self.client.patch(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/scaling",
-            scaling_options
+            scaling_options.to_dict()
         )
-        return response.json()
+        return ScalingOptions.from_dict(response.json())
 
     def get_replicas(self, deployment_name: str) -> Dict:
         """Get deployment replicas
