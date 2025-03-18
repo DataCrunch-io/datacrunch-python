@@ -21,6 +21,11 @@ from datacrunch.containers.containers import (
     VolumeMount,
     VolumeMountType,
     ComputeResource,
+    ScalingOptions,
+    ScalingPolicy,
+    ScalingTriggers,
+    QueueLoadScalingTrigger,
+    UtilizationScalingTrigger,
 )
 from datacrunch.exceptions import APIException
 
@@ -407,8 +412,9 @@ class TestContainersService:
             DEPLOYMENT_NAME)
 
         # assert
-        assert scaling_options["min_replica_count"] == 1
-        assert scaling_options["max_replica_count"] == 3
+        assert isinstance(scaling_options, ScalingOptions)
+        assert scaling_options.min_replica_count == 1
+        assert scaling_options.max_replica_count == 3
         assert responses.assert_call_count(url, 1) is True
 
     @responses.activate
@@ -422,17 +428,30 @@ class TestContainersService:
             status=200
         )
 
+        # create scaling options object
+        scaling_options = ScalingOptions(
+            min_replica_count=1,
+            max_replica_count=5,
+            scale_down_policy=ScalingPolicy(delay_seconds=300),
+            scale_up_policy=ScalingPolicy(delay_seconds=60),
+            queue_message_ttl_seconds=3600,
+            concurrent_requests_per_replica=10,
+            scaling_triggers=ScalingTriggers(
+                queue_load=QueueLoadScalingTrigger(threshold=0.75),
+                cpu_utilization=UtilizationScalingTrigger(
+                    enabled=True, threshold=0.8),
+                gpu_utilization=UtilizationScalingTrigger(enabled=False)
+            )
+        )
+
         # act
-        scaling_options = {
-            "min_replica_count": 1,
-            "max_replica_count": 5
-        }
         updated_scaling = containers_service.update_scaling_options(
             DEPLOYMENT_NAME, scaling_options)
 
         # assert
-        assert updated_scaling["min_replica_count"] == 1
-        assert updated_scaling["max_replica_count"] == 3
+        assert isinstance(updated_scaling, ScalingOptions)
+        assert updated_scaling.min_replica_count == 1
+        assert updated_scaling.max_replica_count == 3
         assert responses.assert_call_count(url, 1) is True
 
     @responses.activate
@@ -664,6 +683,26 @@ class TestContainersService:
 
         # assert
         assert responses.assert_call_count(url, 1) is True
+        request = responses.calls[0].request
+        assert "force=False" in request.url
+
+    @responses.activate
+    def test_delete_secret_with_force(self, containers_service, secrets_endpoint):
+        # arrange
+        url = f"{secrets_endpoint}/{SECRET_NAME}"
+        responses.add(
+            responses.DELETE,
+            url,
+            status=200
+        )
+
+        # act
+        containers_service.delete_secret(SECRET_NAME, force=True)
+
+        # assert
+        assert responses.assert_call_count(url, 1) is True
+        request = responses.calls[0].request
+        assert "force=True" in request.url
 
     @responses.activate
     def test_get_registry_credentials(self, containers_service, registry_credentials_endpoint):
@@ -782,25 +821,6 @@ class TestContainersService:
         # assert
         assert responses.assert_call_count(
             registry_credentials_endpoint, 1) is True
-
-    @responses.activate
-    def test_delete_secret_with_force(self, containers_service, secrets_endpoint):
-        # arrange
-        url = f"{secrets_endpoint}/{SECRET_NAME}"
-        responses.add(
-            responses.DELETE,
-            url,
-            status=200
-        )
-
-        # act
-        containers_service.delete_secret(SECRET_NAME, force=True)
-
-        # assert
-        assert responses.assert_call_count(url, 1) is True
-        # Verify the request included force=True parameter
-        request = responses.calls[0].request
-        assert "force=True" in request.url
 
     @responses.activate
     def test_delete_registry_credentials(self, containers_service, registry_credentials_endpoint):
