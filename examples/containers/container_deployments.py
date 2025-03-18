@@ -6,7 +6,6 @@ including creation, monitoring, scaling, and cleanup.
 
 import os
 import time
-from typing import Optional
 
 from datacrunch import DataCrunchClient
 from datacrunch.exceptions import APIException
@@ -22,6 +21,8 @@ from datacrunch.containers.containers import (
     VolumeMount,
     ContainerRegistrySettings,
     Deployment,
+    VolumeMountType,
+    ContainerDeploymentStatus,
 )
 
 # Configuration constants
@@ -44,8 +45,8 @@ def wait_for_deployment_health(client: DataCrunchClient, deployment_name: str, m
     for attempt in range(max_attempts):
         try:
             status = client.containers.get_status(deployment_name)
-            print(f"Deployment status: {status['status']}")
-            if status['status'] == 'healthy':
+            print(f"Deployment status: {status}")
+            if status == ContainerDeploymentStatus.HEALTHY:
                 return True
             time.sleep(delay)
         except APIException as e:
@@ -88,7 +89,7 @@ def main() -> None:
             ),
             volume_mounts=[
                 VolumeMount(
-                    type="scratch",
+                    type=VolumeMountType.SCRATCH,
                     mount_path="/data"
                 )
             ]
