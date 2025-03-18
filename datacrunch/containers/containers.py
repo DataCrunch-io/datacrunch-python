@@ -3,6 +3,7 @@ from dataclasses_json import dataclass_json, config, Undefined  # type: ignore
 from typing import List, Optional, Dict
 from datetime import datetime
 from marshmallow import fields
+from enum import Enum
 
 
 # API endpoints
@@ -10,6 +11,35 @@ CONTAINER_DEPLOYMENTS_ENDPOINT = '/container-deployments'
 SERVERLESS_COMPUTE_RESOURCES_ENDPOINT = '/serverless-compute-resources'
 SECRETS_ENDPOINT = '/secrets'
 CONTAINER_REGISTRY_CREDENTIALS_ENDPOINT = '/container-registry-credentials'
+
+
+class EnvVarType(str, Enum):
+    PLAIN = "plain"
+    SECRET = "secret"
+
+
+class VolumeMountType(str, Enum):
+    SCRATCH = "scratch"
+    SECRET = "secret"
+
+
+class ContainerRegistryType(str, Enum):
+    GCR = "gcr"
+    DOCKERHUB = "dockerhub"
+    GITHUB = "ghcr"
+    AWS_ECR = "aws-ecr"
+    CUSTOM = "custom"
+
+
+class ContainerDeploymentStatus(str, Enum):
+    INITIALIZING = "initializing"
+    HEALTHY = "healthy"
+    DEGRADED = "degraded"
+    UNHEALTHY = "unhealthy"
+    PAUSED = "paused"
+    QUOTA_REACHED = "quota_reached"
+    IMAGE_PULLING = "image_pulling"
+    VERSION_UPDATING = "version_updating"
 
 
 @dataclass_json
@@ -33,21 +63,13 @@ class EntrypointOverridesSettings:
 class EnvVar:
     name: str
     value_or_reference_to_secret: str
-    type: str  # "plain" or "secret"
-
-
-@dataclass_json
-@dataclass
-class AutoupdateSettings:
-    enabled: bool
-    mode: Optional[str] = None  # "latest" or "semantic"
-    tag_filter: Optional[str] = None
+    type: EnvVarType  # "plain" or "secret"
 
 
 @dataclass_json
 @dataclass
 class VolumeMount:
-    type: str  # "scratch" or "secret"
+    type: VolumeMountType  # "scratch" or "secret"
     mount_path: str
 
 
@@ -60,7 +82,6 @@ class Container:
     healthcheck: Optional[HealthcheckSettings] = None
     entrypoint_overrides: Optional[EntrypointOverridesSettings] = None
     env: Optional[List[EnvVar]] = None
-    autoupdate: Optional[AutoupdateSettings] = None
     volume_mounts: Optional[List[VolumeMount]] = None
 
 
@@ -262,17 +283,17 @@ class ContainersService:
         self.client.delete(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}")
 
-    def get_status(self, deployment_name: str) -> Dict:
+    def get_status(self, deployment_name: str) -> ContainerDeploymentStatus:
         """Get deployment status
 
         :param deployment_name: name of the deployment
         :type deployment_name: str
         :return: deployment status
-        :rtype: Dict
+        :rtype: ContainerDeploymentStatus
         """
         response = self.client.get(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/status")
-        return response.json()
+        return ContainerDeploymentStatus(response.json()["status"])
 
     def restart(self, deployment_name: str) -> None:
         """Restart a deployment
@@ -468,13 +489,13 @@ class ContainersService:
         response = self.client.get(CONTAINER_REGISTRY_CREDENTIALS_ENDPOINT)
         return [RegistryCredential.from_dict(credential) for credential in response.json()]
 
-    def add_registry_credentials(self, name: str, registry_type: str, username: str, access_token: str) -> RegistryCredential:
+    def add_registry_credentials(self, name: str, registry_type: ContainerRegistryType, username: str, access_token: str) -> RegistryCredential:
         """Add registry credentials
 
         :param name: name of the credentials
         :type name: str
-        :param registry_type: type of registry (e.g. "dockerhub")
-        :type registry_type: str
+        :param registry_type: type of registry (e.g. ContainerRegistryType.DOCKERHUB)
+        :type registry_type: ContainerRegistryType
         :param username: registry username
         :type username: str
         :param access_token: registry access token
@@ -484,7 +505,7 @@ class ContainersService:
         """
         data = {
             "name": name,
-            "registry_type": registry_type,
+            "registry_type": registry_type.value,
             "username": username,
             "access_token": access_token
         }
