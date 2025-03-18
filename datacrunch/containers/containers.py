@@ -489,29 +489,74 @@ class ContainersService:
         response = self.client.get(CONTAINER_REGISTRY_CREDENTIALS_ENDPOINT)
         return [RegistryCredential.from_dict(credential) for credential in response.json()]
 
-    def add_registry_credentials(self, name: str, registry_type: ContainerRegistryType, username: str, access_token: str) -> RegistryCredential:
+    def add_registry_credentials(
+        self,
+        name: str,
+        registry_type: ContainerRegistryType,
+        username: str = None,
+        access_token: str = None,
+        service_account_key: str = None,
+        docker_config_json: str = None,
+        access_key_id: str = None,
+        secret_access_key: str = None,
+        region: str = None,
+        ecr_repo: str = None
+    ) -> None:
         """Add registry credentials
 
         :param name: name of the credentials
         :type name: str
         :param registry_type: type of registry (e.g. ContainerRegistryType.DOCKERHUB)
         :type registry_type: ContainerRegistryType
-        :param username: registry username
+        :param username: registry username (required for DOCKERHUB and GITHUB)
         :type username: str
-        :param access_token: registry access token
+        :param access_token: registry access token (required for DOCKERHUB and GITHUB)
         :type access_token: str
-        :return: created registry credential
-        :rtype: RegistryCredential
+        :param service_account_key: service account key JSON string (required for GCR)
+        :type service_account_key: str
+        :param docker_config_json: docker config JSON string (required for CUSTOM)
+        :type docker_config_json: str
+        :param access_key_id: AWS access key ID (required for AWS_ECR)
+        :type access_key_id: str
+        :param secret_access_key: AWS secret access key (required for AWS_ECR)
+        :type secret_access_key: str
+        :param region: AWS region (required for AWS_ECR)
+        :type region: str
+        :param ecr_repo: ECR repository URL (required for AWS_ECR)
+        :type ecr_repo: str
         """
         data = {
             "name": name,
-            "registry_type": registry_type.value,
-            "username": username,
-            "access_token": access_token
+            "type": registry_type.value
         }
-        response = self.client.post(
-            CONTAINER_REGISTRY_CREDENTIALS_ENDPOINT, data)
-        return RegistryCredential.from_dict(response.json())
+
+        # Add specific parameters based on registry type
+        if registry_type == ContainerRegistryType.DOCKERHUB or registry_type == ContainerRegistryType.GITHUB:
+            if not username or not access_token:
+                raise ValueError(
+                    f"Username and access_token are required for {registry_type.value} registry type")
+            data["username"] = username
+            data["access_token"] = access_token
+        elif registry_type == ContainerRegistryType.GCR:
+            if not service_account_key:
+                raise ValueError(
+                    "service_account_key is required for GCR registry type")
+            data["service_account_key"] = service_account_key
+        elif registry_type == ContainerRegistryType.AWS_ECR:
+            if not all([access_key_id, secret_access_key, region, ecr_repo]):
+                raise ValueError(
+                    "access_key_id, secret_access_key, region, and ecr_repo are required for AWS_ECR registry type")
+            data["access_key_id"] = access_key_id
+            data["secret_access_key"] = secret_access_key
+            data["region"] = region
+            data["ecr_repo"] = ecr_repo
+        elif registry_type == ContainerRegistryType.CUSTOM:
+            if not docker_config_json:
+                raise ValueError(
+                    "docker_config_json is required for CUSTOM registry type")
+            data["docker_config_json"] = docker_config_json
+
+        self.client.post(CONTAINER_REGISTRY_CREDENTIALS_ENDPOINT, data)
 
     def delete_registry_credentials(self, credentials_name: str) -> None:
         """Delete registry credentials
