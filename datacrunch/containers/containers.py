@@ -459,19 +459,15 @@ class ContainersService:
         response = self.client.get(SECRETS_ENDPOINT)
         return [Secret.from_dict(secret) for secret in response.json()]
 
-    def create_secret(self, name: str, value: str) -> Secret:
+    def create_secret(self, name: str, value: str) -> None:
         """Create a new secret
 
         :param name: name of the secret
         :type name: str
         :param value: value of the secret
         :type value: str
-        :return: created secret
-        :rtype: Secret
         """
-        response = self.client.post(
-            SECRETS_ENDPOINT, {"name": name, "value": value})
-        return Secret.from_dict(response.json())
+        self.client.post(SECRETS_ENDPOINT, {"name": name, "value": value})
 
     def delete_secret(self, secret_name: str, force: bool = False) -> None:
         """Delete a secret
