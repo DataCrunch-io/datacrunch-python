@@ -106,7 +106,7 @@ DEPLOYMENT_DATA = {
             }
         }
     },
-    "created_at": "2023-01-01T00:00:00Z"
+    "created_at": "2023-01-01T00:00:00+00:00"
 }
 
 # Sample compute resources data
@@ -127,7 +127,7 @@ COMPUTE_RESOURCES_DATA = [
 SECRETS_DATA = [
     {
         "name": SECRET_NAME,
-        "created_at": "2023-01-01T00:00:00Z"
+        "created_at": "2023-01-01T00:00:00+00:00"
     }
 ]
 
@@ -135,7 +135,7 @@ SECRETS_DATA = [
 REGISTRY_CREDENTIALS_DATA = [
     {
         "name": REGISTRY_CREDENTIAL_NAME,
-        "created_at": "2023-01-01T00:00:00Z"
+        "created_at": "2023-01-01T00:00:00+00:00"
     }
 ]
 
@@ -150,7 +150,7 @@ REPLICAS_DATA = {
         {
             "id": "replica-1",
             "status": "running",
-            "started_at": "2023-01-01T00:00:00Z"
+            "started_at": "2023-01-01T00:00:00+00:00"
         }
     ]
 }
