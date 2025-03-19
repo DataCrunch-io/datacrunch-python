@@ -444,7 +444,11 @@ class ContainersService:
         :rtype: List[ComputeResource]
         """
         response = self.client.get(SERVERLESS_COMPUTE_RESOURCES_ENDPOINT)
-        return [ComputeResource.from_dict(resource) for resource in response.json()]
+        resources = []
+        for resource_group in response.json():
+            for resource in resource_group:
+                resources.append(ComputeResource.from_dict(resource))
+        return resources
 
     def get_secrets(self) -> List[Secret]:
         """Get all secrets
