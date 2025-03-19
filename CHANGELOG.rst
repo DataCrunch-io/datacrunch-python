@@ -1,6 +1,8 @@
 Changelog
 =========
 
+* Added support for containers
+
 v1.7.3 (2025-03-07)
 -------------------
 
