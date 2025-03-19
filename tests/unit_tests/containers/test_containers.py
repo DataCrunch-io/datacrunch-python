@@ -1,5 +1,6 @@
 import pytest
 import responses  # https://github.com/getsentry/responses
+from responses import matchers
 
 from datacrunch.containers.containers import (
     CONTAINER_DEPLOYMENTS_ENDPOINT,
@@ -657,16 +658,19 @@ class TestContainersService:
         responses.add(
             responses.POST,
             secrets_endpoint,
-            json=SECRETS_DATA[0],
-            status=200
+            status=201,
+            match=[
+                matchers.json_params_matcher(
+                    # The test will now fail if the request body doesn't match the expected JSON structure
+                    {"name": SECRET_NAME, "value": SECRET_VALUE}
+                )
+            ]
         )
 
         # act
-        secret = containers_service.create_secret(SECRET_NAME, SECRET_VALUE)
+        containers_service.create_secret(SECRET_NAME, SECRET_VALUE)
 
         # assert
-        assert type(secret) == Secret
-        assert secret.name == SECRET_NAME
         assert responses.assert_call_count(secrets_endpoint, 1) is True
 
     @responses.activate
