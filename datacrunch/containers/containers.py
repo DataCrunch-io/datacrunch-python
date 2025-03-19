@@ -9,8 +9,8 @@ from enum import Enum
 # API endpoints
 CONTAINER_DEPLOYMENTS_ENDPOINT = '/container-deployments'
 SERVERLESS_COMPUTE_RESOURCES_ENDPOINT = '/serverless-compute-resources'
-SECRETS_ENDPOINT = '/secrets'
 CONTAINER_REGISTRY_CREDENTIALS_ENDPOINT = '/container-registry-credentials'
+SECRETS_ENDPOINT = '/secrets'
 
 
 class EnvVarType(str, Enum):
@@ -478,7 +478,7 @@ class ContainersService:
         :type force: bool
         """
         self.client.delete(
-            f"{SECRETS_ENDPOINT}/{secret_name}", params={"force": force})
+            f"{SECRETS_ENDPOINT}/{secret_name}", params={"force": str(force).lower()})
 
     def get_registry_credentials(self) -> List[RegistryCredential]:
         """Get all registry credentials

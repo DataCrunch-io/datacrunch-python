@@ -35,7 +35,7 @@ DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
 DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
 
 # DataCrunch client instance
-datacrunch = None
+datacrunch_client = None
 
 
 def wait_for_deployment_health(client: DataCrunchClient, deployment_name: str, max_attempts: int = 10, delay: int = 30) -> bool:
@@ -87,8 +87,8 @@ def main() -> None:
             return
 
         # Initialize client
-        global datacrunch
-        datacrunch = DataCrunchClient(
+        global datacrunch_client
+        datacrunch_client = DataCrunchClient(
             DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET)
 
         # Create container configuration
@@ -145,18 +145,19 @@ def main() -> None:
         )
 
         # Create the deployment
-        created_deployment = datacrunch.containers.create(deployment)
+        created_deployment = datacrunch_client.containers.create(deployment)
         print(f"Created deployment: {created_deployment.name}")
 
         # Wait for deployment to be healthy
-        if not wait_for_deployment_health(datacrunch, DEPLOYMENT_NAME):
+        if not wait_for_deployment_health(datacrunch_client, DEPLOYMENT_NAME):
             print("Deployment health check failed")
-            cleanup_resources(datacrunch)
+            cleanup_resources(datacrunch_client)
             return
 
         # Update scaling configuration
         try:
-            deployment = datacrunch.containers.get_by_name(DEPLOYMENT_NAME)
+            deployment = datacrunch_client.containers.get_by_name(
+                DEPLOYMENT_NAME)
             # Create new scaling options with increased replica counts
             deployment.scaling = ScalingOptions(
                 min_replica_count=2,
@@ -177,7 +178,7 @@ def main() -> None:
                     )
                 )
             )
-            updated_deployment = datacrunch.containers.update(
+            updated_deployment = datacrunch_client.containers.update(
                 DEPLOYMENT_NAME, deployment)
             print(f"Updated deployment scaling: {updated_deployment.name}")
         except APIException as e:
@@ -186,32 +187,32 @@ def main() -> None:
         # Demonstrate deployment operations
         try:
             # Pause deployment
-            datacrunch.containers.pause(DEPLOYMENT_NAME)
+            datacrunch_client.containers.pause(DEPLOYMENT_NAME)
             print("Deployment paused")
             time.sleep(60)
 
             # Resume deployment
-            datacrunch.containers.resume(DEPLOYMENT_NAME)
+            datacrunch_client.containers.resume(DEPLOYMENT_NAME)
             print("Deployment resumed")
 
             # Restart deployment
-            datacrunch.containers.restart(DEPLOYMENT_NAME)
+            datacrunch_client.containers.restart(DEPLOYMENT_NAME)
             print("Deployment restarted")
 
             # Purge queue
-            datacrunch.containers.purge_queue(DEPLOYMENT_NAME)
+            datacrunch_client.containers.purge_queue(DEPLOYMENT_NAME)
             print("Queue purged")
         except APIException as e:
             print(f"Error in deployment operations: {e}")
 
         # Clean up
-        cleanup_resources(datacrunch)
+        cleanup_resources(datacrunch_client)
 
     except Exception as e:
         print(f"Unexpected error: {e}")
         # Attempt cleanup even if there was an error
         try:
-            cleanup_resources(datacrunch)
+            cleanup_resources(datacrunch_client)
         except Exception as cleanup_error:
             print(f"Error during cleanup after failure: {cleanup_error}")
 

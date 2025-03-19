@@ -94,19 +94,19 @@ def main() -> None:
             return
 
         # Initialize client
-        client = DataCrunchClient(
+        datacrunch_client = DataCrunchClient(
             DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET)
 
         # Verify deployment exists
-        if not check_deployment_exists(client, DEPLOYMENT_NAME):
+        if not check_deployment_exists(datacrunch_client, DEPLOYMENT_NAME):
             print(f"Deployment {DEPLOYMENT_NAME} does not exist.")
             return
 
         # Update scaling options using the API
-        update_deployment_scaling(client, DEPLOYMENT_NAME)
+        update_deployment_scaling(datacrunch_client, DEPLOYMENT_NAME)
 
         # Get current scaling options
-        scaling_options = client.containers.get_scaling_options(
+        scaling_options = datacrunch_client.containers.get_scaling_options(
             DEPLOYMENT_NAME)
         print(f"\nCurrent scaling configuration:")
         print(f"Min replicas: {scaling_options.min_replica_count}")

@@ -7,11 +7,11 @@ DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
 DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
 
 # Initialize DataCrunch client
-client = DataCrunchClient(client_id=DATACRUNCH_CLIENT_ID,
-                          client_secret=DATACRUNCH_CLIENT_SECRET)
+datacrunch_client = DataCrunchClient(client_id=DATACRUNCH_CLIENT_ID,
+                                     client_secret=DATACRUNCH_CLIENT_SECRET)
 
 # Example 1: DockerHub Credentials
-client.containers.add_registry_credentials(
+datacrunch_client.containers.add_registry_credentials(
     name="my-dockerhub-creds",
     registry_type=ContainerRegistryType.DOCKERHUB,
     username="your-dockerhub-username",
@@ -20,7 +20,7 @@ client.containers.add_registry_credentials(
 print("Created DockerHub credentials")
 
 # Example 2: GitHub Container Registry Credentials
-client.containers.add_registry_credentials(
+datacrunch_client.containers.add_registry_credentials(
     name="my-github-creds",
     registry_type=ContainerRegistryType.GITHUB,
     username="your-github-username",
@@ -43,7 +43,7 @@ gcr_service_account_key = """{
   "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/your-service-account%40your-project.iam.gserviceaccount.com"
 }"""
 
-client.containers.add_registry_credentials(
+datacrunch_client.containers.add_registry_credentials(
     name="my-gcr-creds",
     registry_type=ContainerRegistryType.GCR,
     service_account_key=gcr_service_account_key
@@ -51,7 +51,7 @@ client.containers.add_registry_credentials(
 print("Created GCR credentials")
 
 # Example 4: AWS ECR Credentials
-client.containers.add_registry_credentials(
+datacrunch_client.containers.add_registry_credentials(
     name="my-aws-ecr-creds",
     registry_type=ContainerRegistryType.AWS_ECR,
     access_key_id="your-aws-access-key-id",
@@ -70,9 +70,17 @@ custom_docker_config = """{
   }
 }"""
 
-client.containers.add_registry_credentials(
+datacrunch_client.containers.add_registry_credentials(
     name="my-custom-registry-creds",
     registry_type=ContainerRegistryType.CUSTOM,
     docker_config_json=custom_docker_config
 )
 print("Created Custom registry credentials")
+
+# Delete all registry credentials
+datacrunch_client.containers.delete_registry_credentials('my-dockerhub-creds')
+datacrunch_client.containers.delete_registry_credentials('my-github-creds')
+datacrunch_client.containers.delete_registry_credentials('my-gcr-creds')
+datacrunch_client.containers.delete_registry_credentials('my-aws-ecr-creds')
+datacrunch_client.containers.delete_registry_credentials(
+    'my-custom-registry-creds')

@@ -684,7 +684,7 @@ class TestContainersService:
         # assert
         assert responses.assert_call_count(url, 1) is True
         request = responses.calls[0].request
-        assert "force=False" in request.url
+        assert "force=false" in request.url
 
     @responses.activate
     def test_delete_secret_with_force(self, containers_service, secrets_endpoint):
@@ -702,7 +702,7 @@ class TestContainersService:
         # assert
         assert responses.assert_call_count(url, 1) is True
         request = responses.calls[0].request
-        assert "force=True" in request.url
+        assert "force=true" in request.url
 
     @responses.activate
     def test_get_registry_credentials(self, containers_service, registry_credentials_endpoint):
