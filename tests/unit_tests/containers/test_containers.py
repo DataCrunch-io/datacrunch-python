@@ -671,7 +671,7 @@ class TestContainersService:
     @responses.activate
     def test_delete_secret(self, containers_service, secrets_endpoint):
         # arrange - add response mock
-        url = f"{secrets_endpoint}/{SECRET_NAME}/?force=false"
+        url = f"{secrets_endpoint}/{SECRET_NAME}?force=false"
         responses.add(
             responses.DELETE,
             url,
@@ -689,7 +689,7 @@ class TestContainersService:
     @responses.activate
     def test_delete_secret_with_force(self, containers_service, secrets_endpoint):
         # arrange
-        url = f"{secrets_endpoint}/{SECRET_NAME}/?force=true"
+        url = f"{secrets_endpoint}/{SECRET_NAME}?force=true"
         responses.add(
             responses.DELETE,
             url,
