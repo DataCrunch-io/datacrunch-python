@@ -52,7 +52,7 @@ def wait_for_deployment_health(client: DataCrunchClient, deployment_name: str, m
     """
     for attempt in range(max_attempts):
         try:
-            status = client.containers.get_status(deployment_name)
+            status = client.containers.get_deployment_status(deployment_name)
             print(f"Deployment status: {status}")
             if status == ContainerDeploymentStatus.HEALTHY:
                 return True
@@ -71,7 +71,7 @@ def cleanup_resources(client: DataCrunchClient) -> None:
     """
     try:
         # Delete deployment
-        client.containers.delete(DEPLOYMENT_NAME)
+        client.containers.delete_deployment(DEPLOYMENT_NAME)
         print("Deployment deleted")
     except APIException as e:
         print(f"Error during cleanup: {e}")
@@ -145,7 +145,8 @@ def main() -> None:
         )
 
         # Create the deployment
-        created_deployment = datacrunch_client.containers.create(deployment)
+        created_deployment = datacrunch_client.containers.create_deployment(
+            deployment)
         print(f"Created deployment: {created_deployment.name}")
 
         # Wait for deployment to be healthy
@@ -156,7 +157,7 @@ def main() -> None:
 
         # Update scaling configuration
         try:
-            deployment = datacrunch_client.containers.get_by_name(
+            deployment = datacrunch_client.containers.get_deployment_by_name(
                 DEPLOYMENT_NAME)
             # Create new scaling options with increased replica counts
             deployment.scaling = ScalingOptions(
@@ -178,7 +179,7 @@ def main() -> None:
                     )
                 )
             )
-            updated_deployment = datacrunch_client.containers.update(
+            updated_deployment = datacrunch_client.containers.update_deployment(
                 DEPLOYMENT_NAME, deployment)
             print(f"Updated deployment scaling: {updated_deployment.name}")
         except APIException as e:
@@ -187,20 +188,21 @@ def main() -> None:
         # Demonstrate deployment operations
         try:
             # Pause deployment
-            datacrunch_client.containers.pause(DEPLOYMENT_NAME)
+            datacrunch_client.containers.pause_deployment(DEPLOYMENT_NAME)
             print("Deployment paused")
             time.sleep(60)
 
             # Resume deployment
-            datacrunch_client.containers.resume(DEPLOYMENT_NAME)
+            datacrunch_client.containers.resume_deployment(DEPLOYMENT_NAME)
             print("Deployment resumed")
 
             # Restart deployment
-            datacrunch_client.containers.restart(DEPLOYMENT_NAME)
+            datacrunch_client.containers.restart_deployment(DEPLOYMENT_NAME)
             print("Deployment restarted")
 
             # Purge queue
-            datacrunch_client.containers.purge_queue(DEPLOYMENT_NAME)
+            datacrunch_client.containers.purge_deployment_queue(
+                DEPLOYMENT_NAME)
             print("Queue purged")
         except APIException as e:
             print(f"Error in deployment operations: {e}")

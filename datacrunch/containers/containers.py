@@ -63,13 +63,13 @@ class EntrypointOverridesSettings:
 class EnvVar:
     name: str
     value_or_reference_to_secret: str
-    type: EnvVarType  # "plain" or "secret"
+    type: EnvVarType
 
 
 @dataclass_json
 @dataclass
 class VolumeMount:
-    type: VolumeMountType  # "scratch" or "secret"
+    type: VolumeMountType
     mount_path: str
 
 
@@ -220,7 +220,7 @@ class ContainersService:
         """
         self.client = http_client
 
-    def get(self) -> List[Deployment]:
+    def get_deployments(self) -> List[Deployment]:
         """Get all deployments
 
         :return: list of deployments
@@ -229,7 +229,7 @@ class ContainersService:
         response = self.client.get(CONTAINER_DEPLOYMENTS_ENDPOINT)
         return [Deployment.from_dict(deployment, infer_missing=True) for deployment in response.json()]
 
-    def get_by_name(self, deployment_name: str) -> Deployment:
+    def get_deployment_by_name(self, deployment_name: str) -> Deployment:
         """Get a deployment by name
 
         :param deployment_name: name of the deployment
@@ -241,7 +241,7 @@ class ContainersService:
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}")
         return Deployment.from_dict(response.json(), infer_missing=True)
 
-    def create(
+    def create_deployment(
         self,
         deployment: Deployment
     ) -> Deployment:
@@ -258,7 +258,7 @@ class ContainersService:
         )
         return Deployment.from_dict(response.json(), infer_missing=True)
 
-    def update(self, deployment_name: str, deployment: Deployment) -> Deployment:
+    def update_deployment(self, deployment_name: str, deployment: Deployment) -> Deployment:
         """Update an existing deployment
 
         :param deployment_name: name of the deployment to update
@@ -274,7 +274,7 @@ class ContainersService:
         )
         return Deployment.from_dict(response.json(), infer_missing=True)
 
-    def delete(self, deployment_name: str) -> None:
+    def delete_deployment(self, deployment_name: str) -> None:
         """Delete a deployment
 
         :param deployment_name: name of the deployment to delete
@@ -283,7 +283,7 @@ class ContainersService:
         self.client.delete(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}")
 
-    def get_status(self, deployment_name: str) -> ContainerDeploymentStatus:
+    def get_deployment_status(self, deployment_name: str) -> ContainerDeploymentStatus:
         """Get deployment status
 
         :param deployment_name: name of the deployment
@@ -295,7 +295,7 @@ class ContainersService:
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/status")
         return ContainerDeploymentStatus(response.json()["status"])
 
-    def restart(self, deployment_name: str) -> None:
+    def restart_deployment(self, deployment_name: str) -> None:
         """Restart a deployment
 
         :param deployment_name: name of the deployment to restart
@@ -304,7 +304,7 @@ class ContainersService:
         self.client.post(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/restart")
 
-    def get_scaling_options(self, deployment_name: str) -> ScalingOptions:
+    def get_deployment_scaling_options(self, deployment_name: str) -> ScalingOptions:
         """Get deployment scaling options
 
         :param deployment_name: name of the deployment
@@ -316,7 +316,7 @@ class ContainersService:
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/scaling")
         return ScalingOptions.from_dict(response.json())
 
-    def update_scaling_options(self, deployment_name: str, scaling_options: ScalingOptions) -> ScalingOptions:
+    def update_deployment_scaling_options(self, deployment_name: str, scaling_options: ScalingOptions) -> ScalingOptions:
         """Update deployment scaling options
 
         :param deployment_name: name of the deployment
@@ -332,7 +332,7 @@ class ContainersService:
         )
         return ScalingOptions.from_dict(response.json())
 
-    def get_replicas(self, deployment_name: str) -> Dict:
+    def get_deployment_replicas(self, deployment_name: str) -> Dict:
         """Get deployment replicas
 
         :param deployment_name: name of the deployment
@@ -344,7 +344,7 @@ class ContainersService:
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/replicas")
         return response.json()
 
-    def purge_queue(self, deployment_name: str) -> None:
+    def purge_deployment_queue(self, deployment_name: str) -> None:
         """Purge deployment queue
 
         :param deployment_name: name of the deployment
@@ -353,7 +353,7 @@ class ContainersService:
         self.client.post(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/purge-queue")
 
-    def pause(self, deployment_name: str) -> None:
+    def pause_deployment(self, deployment_name: str) -> None:
         """Pause a deployment
 
         :param deployment_name: name of the deployment to pause
@@ -362,7 +362,7 @@ class ContainersService:
         self.client.post(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/pause")
 
-    def resume(self, deployment_name: str) -> None:
+    def resume_deployment(self, deployment_name: str) -> None:
         """Resume a deployment
 
         :param deployment_name: name of the deployment to resume
@@ -371,7 +371,7 @@ class ContainersService:
         self.client.post(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/resume")
 
-    def get_environment_variables(self, deployment_name: str) -> Dict:
+    def get_deployment_environment_variables(self, deployment_name: str) -> Dict:
         """Get deployment environment variables
 
         :param deployment_name: name of the deployment
@@ -383,7 +383,7 @@ class ContainersService:
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/environment-variables")
         return response.json()
 
-    def add_environment_variables(self, deployment_name: str, container_name: str, env_vars: List[Dict]) -> Dict:
+    def add_deployment_environment_variables(self, deployment_name: str, container_name: str, env_vars: List[Dict]) -> Dict:
         """Add environment variables to a container
 
         :param deployment_name: name of the deployment
@@ -401,7 +401,7 @@ class ContainersService:
         )
         return response.json()
 
-    def update_environment_variables(self, deployment_name: str, container_name: str, env_vars: List[Dict]) -> Dict:
+    def update_deployment_environment_variables(self, deployment_name: str, container_name: str, env_vars: List[Dict]) -> Dict:
         """Update environment variables of a container
 
         :param deployment_name: name of the deployment
@@ -419,7 +419,7 @@ class ContainersService:
         )
         return response.json()
 
-    def delete_environment_variables(self, deployment_name: str, container_name: str, env_var_names: List[str]) -> Dict:
+    def delete_deployment_environment_variables(self, deployment_name: str, container_name: str, env_var_names: List[str]) -> Dict:
         """Delete environment variables from a container
 
         :param deployment_name: name of the deployment

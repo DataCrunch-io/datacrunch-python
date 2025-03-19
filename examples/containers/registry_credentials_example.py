@@ -54,10 +54,10 @@ print("Created GCR credentials")
 datacrunch_client.containers.add_registry_credentials(
     name="my-aws-ecr-creds",
     registry_type=ContainerRegistryType.AWS_ECR,
-    access_key_id="your-aws-access-key-id",
-    secret_access_key="your-aws-secret-access-key",
-    region="us-west-2",
-    ecr_repo="123456789012.dkr.ecr.us-west-2.amazonaws.com"
+    access_key_id="AKIAEXAMPLE123456",
+    secret_access_key="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+    region="eu-north-1",
+    ecr_repo="887841266746.dkr.ecr.eu-north-1.amazonaws.com"
 )
 print("Created AWS ECR credentials")
 

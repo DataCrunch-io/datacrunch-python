@@ -47,7 +47,7 @@ CONTAINERS_API_URL = f'https://containers.datacrunch.io/{DEPLOYMENT_NAME}'
 datacrunch_client = None
 
 
-def wait_for_deployment_health(client: DataCrunchClient, deployment_name: str, max_attempts: int = 20, delay: int = 30) -> bool:
+def wait_for_deployment_health(datacrunch_client: DataCrunchClient, deployment_name: str, max_attempts: int = 20, delay: int = 30) -> bool:
     """Wait for deployment to reach healthy status.
 
     Args:
@@ -62,7 +62,8 @@ def wait_for_deployment_health(client: DataCrunchClient, deployment_name: str, m
     print(f"Waiting for deployment to be healthy (may take several minutes to download model)...")
     for attempt in range(max_attempts):
         try:
-            status = client.containers.get_status(deployment_name)
+            status = datacrunch_client.containers.get_deployment_status(
+                deployment_name)
             print(
                 f"Attempt {attempt+1}/{max_attempts} - Deployment status: {status}")
             if status == ContainerDeploymentStatus.HEALTHY:
@@ -74,7 +75,7 @@ def wait_for_deployment_health(client: DataCrunchClient, deployment_name: str, m
     return False
 
 
-def cleanup_resources(client: DataCrunchClient) -> None:
+def cleanup_resources(datacrunch_client: DataCrunchClient) -> None:
     """Clean up all created resources.
 
     Args:
@@ -82,7 +83,7 @@ def cleanup_resources(client: DataCrunchClient) -> None:
     """
     try:
         # Delete deployment
-        client.containers.delete(DEPLOYMENT_NAME)
+        datacrunch_client.containers.delete_deployment(DEPLOYMENT_NAME)
         print("Deployment deleted")
     except APIException as e:
         print(f"Error during cleanup: {e}")

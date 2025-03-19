@@ -200,7 +200,7 @@ class TestContainersService:
         )
 
         # act
-        deployments = containers_service.get()
+        deployments = containers_service.get_deployments()
         deployment = deployments[0]
 
         # assert
@@ -226,7 +226,7 @@ class TestContainersService:
         )
 
         # act
-        deployment = containers_service.get_by_name(DEPLOYMENT_NAME)
+        deployment = containers_service.get_deployment_by_name(DEPLOYMENT_NAME)
 
         # assert
         assert type(deployment) == Deployment
@@ -249,7 +249,7 @@ class TestContainersService:
 
         # act
         with pytest.raises(APIException) as excinfo:
-            containers_service.get_by_name("nonexistent")
+            containers_service.get_deployment_by_name("nonexistent")
 
         # assert
         assert excinfo.value.code == INVALID_REQUEST
@@ -294,7 +294,7 @@ class TestContainersService:
         )
 
         # act
-        created_deployment = containers_service.create(deployment)
+        created_deployment = containers_service.create_deployment(deployment)
 
         # assert
         assert type(created_deployment) == Deployment
@@ -335,7 +335,7 @@ class TestContainersService:
         )
 
         # act
-        updated_deployment = containers_service.update(
+        updated_deployment = containers_service.update_deployment(
             DEPLOYMENT_NAME, deployment)
 
         # assert
@@ -357,7 +357,7 @@ class TestContainersService:
         )
 
         # act
-        containers_service.delete(DEPLOYMENT_NAME)
+        containers_service.delete_deployment(DEPLOYMENT_NAME)
 
         # assert
         assert responses.assert_call_count(url, 1) is True
@@ -374,7 +374,7 @@ class TestContainersService:
         )
 
         # act
-        status = containers_service.get_status(DEPLOYMENT_NAME)
+        status = containers_service.get_deployment_status(DEPLOYMENT_NAME)
 
         # assert
         assert status == ContainerDeploymentStatus.HEALTHY
@@ -391,13 +391,13 @@ class TestContainersService:
         )
 
         # act
-        containers_service.restart(DEPLOYMENT_NAME)
+        containers_service.restart_deployment(DEPLOYMENT_NAME)
 
         # assert
         assert responses.assert_call_count(url, 1) is True
 
     @responses.activate
-    def test_get_scaling_options(self, containers_service, deployments_endpoint):
+    def test_get_deployment_scaling_options(self, containers_service, deployments_endpoint):
         # arrange - add response mock
         url = f"{deployments_endpoint}/{DEPLOYMENT_NAME}/scaling"
         responses.add(
@@ -408,7 +408,7 @@ class TestContainersService:
         )
 
         # act
-        scaling_options = containers_service.get_scaling_options(
+        scaling_options = containers_service.get_deployment_scaling_options(
             DEPLOYMENT_NAME)
 
         # assert
@@ -418,7 +418,7 @@ class TestContainersService:
         assert responses.assert_call_count(url, 1) is True
 
     @responses.activate
-    def test_update_scaling_options(self, containers_service, deployments_endpoint):
+    def test_update_deployment_scaling_options(self, containers_service, deployments_endpoint):
         # arrange - add response mock
         url = f"{deployments_endpoint}/{DEPLOYMENT_NAME}/scaling"
         responses.add(
@@ -445,7 +445,7 @@ class TestContainersService:
         )
 
         # act
-        updated_scaling = containers_service.update_scaling_options(
+        updated_scaling = containers_service.update_deployment_scaling_options(
             DEPLOYMENT_NAME, scaling_options)
 
         # assert
@@ -455,7 +455,7 @@ class TestContainersService:
         assert responses.assert_call_count(url, 1) is True
 
     @responses.activate
-    def test_get_replicas(self, containers_service, deployments_endpoint):
+    def test_get_deployment_replicas(self, containers_service, deployments_endpoint):
         # arrange - add response mock
         url = f"{deployments_endpoint}/{DEPLOYMENT_NAME}/replicas"
         responses.add(
@@ -466,7 +466,7 @@ class TestContainersService:
         )
 
         # act
-        replicas = containers_service.get_replicas(DEPLOYMENT_NAME)
+        replicas = containers_service.get_deployment_replicas(DEPLOYMENT_NAME)
 
         # assert
         assert "replicas" in replicas
@@ -475,7 +475,7 @@ class TestContainersService:
         assert responses.assert_call_count(url, 1) is True
 
     @responses.activate
-    def test_purge_queue(self, containers_service, deployments_endpoint):
+    def test_purge_deployment_queue(self, containers_service, deployments_endpoint):
         # arrange - add response mock
         url = f"{deployments_endpoint}/{DEPLOYMENT_NAME}/purge-queue"
         responses.add(
@@ -485,7 +485,7 @@ class TestContainersService:
         )
 
         # act
-        containers_service.purge_queue(DEPLOYMENT_NAME)
+        containers_service.purge_deployment_queue(DEPLOYMENT_NAME)
 
         # assert
         assert responses.assert_call_count(url, 1) is True
@@ -501,7 +501,7 @@ class TestContainersService:
         )
 
         # act
-        containers_service.pause(DEPLOYMENT_NAME)
+        containers_service.pause_deployment(DEPLOYMENT_NAME)
 
         # assert
         assert responses.assert_call_count(url, 1) is True
@@ -517,13 +517,13 @@ class TestContainersService:
         )
 
         # act
-        containers_service.resume(DEPLOYMENT_NAME)
+        containers_service.resume_deployment(DEPLOYMENT_NAME)
 
         # assert
         assert responses.assert_call_count(url, 1) is True
 
     @responses.activate
-    def test_get_environment_variables(self, containers_service, deployments_endpoint):
+    def test_get_deployment_environment_variables(self, containers_service, deployments_endpoint):
         # arrange - add response mock
         url = f"{deployments_endpoint}/{DEPLOYMENT_NAME}/environment-variables"
         responses.add(
@@ -534,7 +534,7 @@ class TestContainersService:
         )
 
         # act
-        env_vars = containers_service.get_environment_variables(
+        env_vars = containers_service.get_deployment_environment_variables(
             DEPLOYMENT_NAME)
 
         # assert
@@ -544,7 +544,7 @@ class TestContainersService:
         assert responses.assert_call_count(url, 1) is True
 
     @responses.activate
-    def test_add_environment_variables(self, containers_service, deployments_endpoint):
+    def test_add_deployment_environment_variables(self, containers_service, deployments_endpoint):
         # arrange - add response mock
         url = f"{deployments_endpoint}/{DEPLOYMENT_NAME}/environment-variables"
         responses.add(
@@ -557,7 +557,7 @@ class TestContainersService:
         # act
         env_vars = [{"name": ENV_VAR_NAME,
                      "value_or_reference_to_secret": ENV_VAR_VALUE, "type": "plain"}]
-        result = containers_service.add_environment_variables(
+        result = containers_service.add_deployment_environment_variables(
             DEPLOYMENT_NAME, CONTAINER_NAME, env_vars)
 
         # assert
@@ -566,7 +566,7 @@ class TestContainersService:
         assert responses.assert_call_count(url, 1) is True
 
     @responses.activate
-    def test_update_environment_variables(self, containers_service, deployments_endpoint):
+    def test_update_deployment_environment_variables(self, containers_service, deployments_endpoint):
         # arrange - add response mock
         url = f"{deployments_endpoint}/{DEPLOYMENT_NAME}/environment-variables"
         responses.add(
@@ -579,7 +579,7 @@ class TestContainersService:
         # act
         env_vars = [{"name": ENV_VAR_NAME,
                      "value_or_reference_to_secret": ENV_VAR_VALUE, "type": "plain"}]
-        result = containers_service.update_environment_variables(
+        result = containers_service.update_deployment_environment_variables(
             DEPLOYMENT_NAME, CONTAINER_NAME, env_vars)
 
         # assert
@@ -588,7 +588,7 @@ class TestContainersService:
         assert responses.assert_call_count(url, 1) is True
 
     @responses.activate
-    def test_delete_environment_variables(self, containers_service, deployments_endpoint):
+    def test_delete_deployment_environment_variables(self, containers_service, deployments_endpoint):
         # arrange - add response mock
         url = f"{deployments_endpoint}/{DEPLOYMENT_NAME}/environment-variables"
         responses.add(
@@ -599,7 +599,7 @@ class TestContainersService:
         )
 
         # act
-        result = containers_service.delete_environment_variables(
+        result = containers_service.delete_deployment_environment_variables(
             DEPLOYMENT_NAME, CONTAINER_NAME, [ENV_VAR_NAME])
 
         # assert

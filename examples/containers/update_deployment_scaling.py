@@ -34,7 +34,7 @@ def check_deployment_exists(client: DataCrunchClient, deployment_name: str) -> b
         bool: True if deployment exists, False otherwise
     """
     try:
-        client.containers.get_by_name(deployment_name)
+        client.containers.get_deployment_by_name(deployment_name)
         return True
     except APIException as e:
         print(f"Error: {e}")
@@ -71,7 +71,7 @@ def update_deployment_scaling(client: DataCrunchClient, deployment_name: str) ->
         )
 
         # Update scaling options
-        updated_options = client.containers.update_scaling_options(
+        updated_options = client.containers.update_deployment_scaling_options(
             deployment_name, scaling_options)
         print(f"Updated deployment scaling options")
         print(f"New min replicas: {updated_options.min_replica_count}")
@@ -106,7 +106,7 @@ def main() -> None:
         update_deployment_scaling(datacrunch_client, DEPLOYMENT_NAME)
 
         # Get current scaling options
-        scaling_options = datacrunch_client.containers.get_scaling_options(
+        scaling_options = datacrunch_client.containers.get_deployment_scaling_options(
             DEPLOYMENT_NAME)
         print(f"\nCurrent scaling configuration:")
         print(f"Min replicas: {scaling_options.min_replica_count}")
