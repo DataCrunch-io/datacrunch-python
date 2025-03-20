@@ -1,8 +1,6 @@
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config, Undefined  # type: ignore
 from typing import List, Optional, Dict
-from datetime import datetime
-from marshmallow import fields
 from enum import Enum
 
 
@@ -244,15 +242,7 @@ class Deployment:
     is_spot: bool = False
     endpoint_base_url: Optional[str] = None
     scaling: Optional[ScalingOptions] = None
-    created_at: Optional[datetime] = field(
-        default=None,
-        metadata=config(
-            encoder=lambda x: x.isoformat() if x is not None else None,
-            decoder=lambda x: datetime.fromisoformat(
-                x) if x is not None else None,
-            mm_field=fields.DateTime(format='iso')
-        )
-    )
+    created_at: Optional[str] = None
 
 
 @dataclass_json
@@ -266,13 +256,7 @@ class ReplicaInfo:
     """
     id: str
     status: str
-    started_at: datetime = field(
-        metadata=config(
-            encoder=datetime.isoformat,
-            decoder=datetime.fromisoformat,
-            mm_field=fields.DateTime(format='iso')
-        )
-    )
+    started_at: str
 
 
 @dataclass_json
@@ -280,13 +264,7 @@ class ReplicaInfo:
 class Secret:
     """A secret model class"""
     name: str
-    created_at: datetime = field(
-        metadata=config(
-            encoder=datetime.isoformat,
-            decoder=datetime.fromisoformat,
-            mm_field=fields.DateTime(format='iso')
-        )
-    )
+    created_at: str
 
 
 @dataclass_json
@@ -294,13 +272,7 @@ class Secret:
 class RegistryCredential:
     """A container registry credential model class"""
     name: str
-    created_at: datetime = field(
-        metadata=config(
-            encoder=datetime.isoformat,
-            decoder=datetime.fromisoformat,
-            mm_field=fields.DateTime(format='iso')
-        )
-    )
+    created_at: str
 
 
 class ContainersService:
