@@ -45,6 +45,12 @@ class ContainerDeploymentStatus(str, Enum):
 @dataclass_json
 @dataclass
 class HealthcheckSettings:
+    """Settings for container health checking.
+
+    :param enabled: Whether health checking is enabled
+    :param port: Port number to perform health check on
+    :param path: HTTP path to perform health check on
+    """
     enabled: bool
     port: Optional[int] = None
     path: Optional[str] = None
@@ -53,6 +59,12 @@ class HealthcheckSettings:
 @dataclass_json
 @dataclass
 class EntrypointOverridesSettings:
+    """Settings for overriding container entrypoint and command.
+
+    :param enabled: Whether entrypoint overrides are enabled
+    :param entrypoint: List of strings forming the entrypoint command
+    :param cmd: List of strings forming the command arguments
+    """
     enabled: bool
     entrypoint: Optional[List[str]] = None
     cmd: Optional[List[str]] = None
@@ -61,6 +73,12 @@ class EntrypointOverridesSettings:
 @dataclass_json
 @dataclass
 class EnvVar:
+    """Environment variable configuration for containers.
+
+    :param name: Name of the environment variable
+    :param value_or_reference_to_secret: Direct value or reference to a secret
+    :param type: Type of the environment variable
+    """
     name: str
     value_or_reference_to_secret: str
     type: EnvVarType
@@ -69,6 +87,11 @@ class EnvVar:
 @dataclass_json
 @dataclass
 class VolumeMount:
+    """Volume mount configuration for containers.
+
+    :param type: Type of volume mount
+    :param mount_path: Path where the volume should be mounted in the container
+    """
     type: VolumeMountType
     mount_path: str
 
@@ -76,6 +99,16 @@ class VolumeMount:
 @dataclass_json
 @dataclass
 class Container:
+    """Container configuration for deployments.
+
+    :param name: Name of the container
+    :param image: Container image to use
+    :param exposed_port: Port to expose from the container
+    :param healthcheck: Optional health check configuration
+    :param entrypoint_overrides: Optional entrypoint override settings
+    :param env: Optional list of environment variables
+    :param volume_mounts: Optional list of volume mounts
+    """
     name: str
     image: str
     exposed_port: int
@@ -88,12 +121,21 @@ class Container:
 @dataclass_json
 @dataclass
 class ContainerRegistryCredentials:
+    """Credentials for accessing a container registry.
+
+    :param name: Name of the credentials
+    """
     name: str
 
 
 @dataclass_json
 @dataclass
 class ContainerRegistrySettings:
+    """Settings for container registry access.
+
+    :param is_private: Whether the registry is private
+    :param credentials: Optional credentials for accessing private registry
+    """
     is_private: bool
     credentials: Optional[ContainerRegistryCredentials] = None
 
@@ -101,6 +143,12 @@ class ContainerRegistrySettings:
 @dataclass_json
 @dataclass
 class ComputeResource:
+    """Compute resource configuration.
+
+    :param name: Name of the compute resource
+    :param size: Size of the compute resource
+    :param is_available: Whether the compute resource is currently available
+    """
     name: str
     size: int
     # Made optional since it's only used in API responses
@@ -110,18 +158,31 @@ class ComputeResource:
 @dataclass_json
 @dataclass
 class ScalingPolicy:
+    """Policy for controlling scaling behavior.
+
+    :param delay_seconds: Number of seconds to wait before applying scaling action
+    """
     delay_seconds: int
 
 
 @dataclass_json
 @dataclass
 class QueueLoadScalingTrigger:
+    """Trigger for scaling based on queue load.
+
+    :param threshold: Queue load threshold that triggers scaling
+    """
     threshold: float
 
 
 @dataclass_json
 @dataclass
 class UtilizationScalingTrigger:
+    """Trigger for scaling based on resource utilization.
+
+    :param enabled: Whether this trigger is enabled
+    :param threshold: Utilization threshold that triggers scaling
+    """
     enabled: bool
     threshold: Optional[float] = None
 
@@ -129,6 +190,12 @@ class UtilizationScalingTrigger:
 @dataclass_json
 @dataclass
 class ScalingTriggers:
+    """Collection of triggers that can cause scaling actions.
+
+    :param queue_load: Optional trigger based on queue load
+    :param cpu_utilization: Optional trigger based on CPU utilization
+    :param gpu_utilization: Optional trigger based on GPU utilization
+    """
     queue_load: Optional[QueueLoadScalingTrigger] = None
     cpu_utilization: Optional[UtilizationScalingTrigger] = None
     gpu_utilization: Optional[UtilizationScalingTrigger] = None
@@ -137,6 +204,16 @@ class ScalingTriggers:
 @dataclass_json
 @dataclass
 class ScalingOptions:
+    """Configuration for automatic scaling behavior.
+
+    :param min_replica_count: Minimum number of replicas to maintain
+    :param max_replica_count: Maximum number of replicas allowed
+    :param scale_down_policy: Policy for scaling down replicas
+    :param scale_up_policy: Policy for scaling up replicas
+    :param queue_message_ttl_seconds: Time-to-live for queue messages in seconds
+    :param concurrent_requests_per_replica: Number of concurrent requests each replica can handle
+    :param scaling_triggers: Configuration for various scaling triggers
+    """
     min_replica_count: int
     max_replica_count: int
     scale_down_policy: ScalingPolicy
@@ -149,6 +226,17 @@ class ScalingOptions:
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Deployment:
+    """Configuration for a container deployment.
+
+    :param name: Name of the deployment
+    :param container_registry_settings: Settings for accessing container registry
+    :param containers: List of containers in the deployment
+    :param compute: Compute resource configuration
+    :param is_spot: Whether is spot deployment
+    :param endpoint_base_url: Optional base URL for the deployment endpoint
+    :param scaling: Optional scaling configuration
+    :param created_at: Timestamp when the deployment was created
+    """
     name: str
     container_registry_settings: ContainerRegistrySettings
     containers: List[Container]
@@ -170,6 +258,12 @@ class Deployment:
 @dataclass_json
 @dataclass
 class ReplicaInfo:
+    """Information about a deployment replica.
+
+    :param id: Unique identifier of the replica
+    :param status: Current status of the replica
+    :param started_at: Timestamp when the replica was started
+    """
     id: str
     status: str
     started_at: datetime = field(
@@ -332,13 +426,13 @@ class ContainersService:
         )
         return ScalingOptions.from_dict(response.json())
 
-    def get_deployment_replicas(self, deployment_name: str) -> ReplicaInfo:
+    def get_deployment_replicas(self, deployment_name: str) -> List[ReplicaInfo]:
         """Get deployment replicas
 
         :param deployment_name: name of the deployment
         :type deployment_name: str
-        :return: replicas information
-        :rtype: ReplicaInfo
+        :return: list of replicas information
+        :rtype: List[ReplicaInfo]
         """
         response = self.client.get(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/replicas")
