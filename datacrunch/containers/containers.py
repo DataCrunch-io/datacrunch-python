@@ -332,17 +332,17 @@ class ContainersService:
         )
         return ScalingOptions.from_dict(response.json())
 
-    def get_deployment_replicas(self, deployment_name: str) -> Dict:
+    def get_deployment_replicas(self, deployment_name: str) -> ReplicaInfo:
         """Get deployment replicas
 
         :param deployment_name: name of the deployment
         :type deployment_name: str
         :return: replicas information
-        :rtype: Dict
+        :rtype: ReplicaInfo
         """
         response = self.client.get(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/replicas")
-        return response.json()
+        return [ReplicaInfo.from_dict(replica) for replica in response.json()["list"]]
 
     def purge_deployment_queue(self, deployment_name: str) -> None:
         """Purge deployment queue
@@ -371,19 +371,25 @@ class ContainersService:
         self.client.post(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/resume")
 
-    def get_deployment_environment_variables(self, deployment_name: str) -> Dict:
+    def get_deployment_environment_variables(self, deployment_name: str) -> Dict[str, List[EnvVar]]:
         """Get deployment environment variables
 
         :param deployment_name: name of the deployment
         :type deployment_name: str
-        :return: environment variables
-        :rtype: Dict
+        :return: dictionary mapping container names to their environment variables
+        :rtype: Dict[str, List[EnvVar]]
         """
         response = self.client.get(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/environment-variables")
-        return response.json()
+        result = {}
+        for item in response.json():
+            container_name = item["container_name"]
+            env_vars = item["env"]
+            result[container_name] = [EnvVar.from_dict(
+                env_var) for env_var in env_vars]
+        return result
 
-    def add_deployment_environment_variables(self, deployment_name: str, container_name: str, env_vars: List[Dict]) -> Dict:
+    def add_deployment_environment_variables(self, deployment_name: str, container_name: str, env_vars: List[EnvVar]) -> Dict[str, List[EnvVar]]:
         """Add environment variables to a container
 
         :param deployment_name: name of the deployment
@@ -391,17 +397,24 @@ class ContainersService:
         :param container_name: name of the container
         :type container_name: str
         :param env_vars: environment variables to add
-        :type env_vars: List[Dict]
+        :type env_vars: List[EnvVar]
         :return: updated environment variables
-        :rtype: Dict
+        :rtype: Dict[str, List[EnvVar]]
         """
         response = self.client.post(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/environment-variables",
-            {"container_name": container_name, "env": env_vars}
+            {"container_name": container_name, "env": [
+                env_var.to_dict() for env_var in env_vars]}
         )
-        return response.json()
+        result = {}
+        for item in response.json():
+            container_name = item["container_name"]
+            env_vars = item["env"]
+            result[container_name] = [EnvVar.from_dict(
+                env_var) for env_var in env_vars]
+        return result
 
-    def update_deployment_environment_variables(self, deployment_name: str, container_name: str, env_vars: List[Dict]) -> Dict:
+    def update_deployment_environment_variables(self, deployment_name: str, container_name: str, env_vars: List[EnvVar]) -> Dict[str, List[EnvVar]]:
         """Update environment variables of a container
 
         :param deployment_name: name of the deployment
@@ -409,17 +422,24 @@ class ContainersService:
         :param container_name: name of the container
         :type container_name: str
         :param env_vars: updated environment variables
-        :type env_vars: List[Dict]
+        :type env_vars: List[EnvVar]
         :return: updated environment variables
-        :rtype: Dict
+        :rtype: Dict[str, List[EnvVar]] 
         """
         response = self.client.patch(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/environment-variables",
-            {"container_name": container_name, "env": env_vars}
+            {"container_name": container_name, "env": [
+                env_var.to_dict() for env_var in env_vars]}
         )
-        return response.json()
+        result = {}
+        item = response.json()
+        container_name = item["container_name"]
+        env_vars = item["env"]
+        result[container_name] = [EnvVar.from_dict(
+            env_var) for env_var in env_vars]
+        return result
 
-    def delete_deployment_environment_variables(self, deployment_name: str, container_name: str, env_var_names: List[str]) -> Dict:
+    def delete_deployment_environment_variables(self, deployment_name: str, container_name: str, env_var_names: List[str]) -> Dict[str, List[EnvVar]]:
         """Delete environment variables from a container
 
         :param deployment_name: name of the deployment
@@ -429,13 +449,19 @@ class ContainersService:
         :param env_var_names: names of environment variables to delete
         :type env_var_names: List[str]
         :return: remaining environment variables
-        :rtype: Dict
+        :rtype: Dict[str, List[EnvVar]]
         """
         response = self.client.delete(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/environment-variables",
             {"container_name": container_name, "env": env_var_names}
         )
-        return response.json()
+        result = {}
+        for item in response.json():
+            container_name = item["container_name"]
+            env_vars = item["env"]
+            result[container_name] = [EnvVar.from_dict(
+                env_var) for env_var in env_vars]
+        return result
 
     def get_compute_resources(self) -> List[ComputeResource]:
         """Get available compute resources
