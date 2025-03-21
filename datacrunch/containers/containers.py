@@ -1,5 +1,5 @@
-from dataclasses import dataclass, field
-from dataclasses_json import dataclass_json, config, Undefined  # type: ignore
+from dataclasses import dataclass
+from dataclasses_json import dataclass_json, Undefined  # type: ignore
 from typing import List, Optional, Dict
 from enum import Enum
 
@@ -273,6 +273,79 @@ class RegistryCredential:
     """A container registry credential model class"""
     name: str
     created_at: str
+
+
+@dataclass_json
+@dataclass
+class BaseRegistryCredentials:
+    """Base class for registry credentials"""
+    name: str
+    type: ContainerRegistryType
+
+
+@dataclass_json
+@dataclass
+class DockerHubCredentials(BaseRegistryCredentials):
+    """Credentials for DockerHub registry"""
+    username: str
+    access_token: str
+
+    def __init__(self, name: str, username: str, access_token: str):
+        super().__init__(name=name, type=ContainerRegistryType.DOCKERHUB)
+        self.username = username
+        self.access_token = access_token
+
+
+@dataclass_json
+@dataclass
+class GithubCredentials(BaseRegistryCredentials):
+    """Credentials for GitHub Container Registry"""
+    username: str
+    access_token: str
+
+    def __init__(self, name: str, username: str, access_token: str):
+        super().__init__(name=name, type=ContainerRegistryType.GITHUB)
+        self.username = username
+        self.access_token = access_token
+
+
+@dataclass_json
+@dataclass
+class GCRCredentials(BaseRegistryCredentials):
+    """Credentials for Google Container Registry"""
+    service_account_key: str
+
+    def __init__(self, name: str, service_account_key: str):
+        super().__init__(name=name, type=ContainerRegistryType.GCR)
+        self.service_account_key = service_account_key
+
+
+@dataclass_json
+@dataclass
+class AWSECRCredentials(BaseRegistryCredentials):
+    """Credentials for AWS Elastic Container Registry"""
+    access_key_id: str
+    secret_access_key: str
+    region: str
+    ecr_repo: str
+
+    def __init__(self, name: str, access_key_id: str, secret_access_key: str, region: str, ecr_repo: str):
+        super().__init__(name=name, type=ContainerRegistryType.AWS_ECR)
+        self.access_key_id = access_key_id
+        self.secret_access_key = secret_access_key
+        self.region = region
+        self.ecr_repo = ecr_repo
+
+
+@dataclass_json
+@dataclass
+class CustomRegistryCredentials(BaseRegistryCredentials):
+    """Credentials for custom container registries"""
+    docker_config_json: str
+
+    def __init__(self, name: str, docker_config_json: str):
+        super().__init__(name=name, type=ContainerRegistryType.CUSTOM)
+        self.docker_config_json = docker_config_json
 
 
 class ContainersService:
@@ -581,73 +654,13 @@ class ContainersService:
         response = self.client.get(CONTAINER_REGISTRY_CREDENTIALS_ENDPOINT)
         return [RegistryCredential.from_dict(credential) for credential in response.json()]
 
-    def add_registry_credentials(
-        self,
-        name: str,
-        registry_type: ContainerRegistryType,
-        username: str = None,
-        access_token: str = None,
-        service_account_key: str = None,
-        docker_config_json: str = None,
-        access_key_id: str = None,
-        secret_access_key: str = None,
-        region: str = None,
-        ecr_repo: str = None
-    ) -> None:
+    def add_registry_credentials(self, credentials: BaseRegistryCredentials) -> None:
         """Add registry credentials
 
-        :param name: name of the credentials
-        :type name: str
-        :param registry_type: type of registry (e.g. ContainerRegistryType.DOCKERHUB)
-        :type registry_type: ContainerRegistryType
-        :param username: registry username (required for DOCKERHUB and GITHUB)
-        :type username: str
-        :param access_token: registry access token (required for DOCKERHUB and GITHUB)
-        :type access_token: str
-        :param service_account_key: service account key JSON string (required for GCR)
-        :type service_account_key: str
-        :param docker_config_json: docker config JSON string (required for CUSTOM)
-        :type docker_config_json: str
-        :param access_key_id: AWS access key ID (required for AWS_ECR)
-        :type access_key_id: str
-        :param secret_access_key: AWS secret access key (required for AWS_ECR)
-        :type secret_access_key: str
-        :param region: AWS region (required for AWS_ECR)
-        :type region: str
-        :param ecr_repo: ECR repository URL (required for AWS_ECR)
-        :type ecr_repo: str
+        :param credentials: Registry credentials object
+        :type credentials: BaseRegistryCredentials
         """
-        data = {
-            "name": name,
-            "type": registry_type.value
-        }
-
-        # Add specific parameters based on registry type
-        if registry_type == ContainerRegistryType.DOCKERHUB or registry_type == ContainerRegistryType.GITHUB:
-            if not username or not access_token:
-                raise ValueError(
-                    f"Username and access_token are required for {registry_type.value} registry type")
-            data["username"] = username
-            data["access_token"] = access_token
-        elif registry_type == ContainerRegistryType.GCR:
-            if not service_account_key:
-                raise ValueError(
-                    "service_account_key is required for GCR registry type")
-            data["service_account_key"] = service_account_key
-        elif registry_type == ContainerRegistryType.AWS_ECR:
-            if not all([access_key_id, secret_access_key, region, ecr_repo]):
-                raise ValueError(
-                    "access_key_id, secret_access_key, region, and ecr_repo are required for AWS_ECR registry type")
-            data["access_key_id"] = access_key_id
-            data["secret_access_key"] = secret_access_key
-            data["region"] = region
-            data["ecr_repo"] = ecr_repo
-        elif registry_type == ContainerRegistryType.CUSTOM:
-            if not docker_config_json:
-                raise ValueError(
-                    "docker_config_json is required for CUSTOM registry type")
-            data["docker_config_json"] = docker_config_json
-
+        data = credentials.to_dict()
         self.client.post(CONTAINER_REGISTRY_CREDENTIALS_ENDPOINT, data)
 
     def delete_registry_credentials(self, credentials_name: str) -> None:

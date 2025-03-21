@@ -27,6 +27,10 @@ from datacrunch.containers.containers import (
     ScalingTriggers,
     QueueLoadScalingTrigger,
     UtilizationScalingTrigger,
+    DockerHubCredentials,
+    GCRCredentials,
+    AWSECRCredentials,
+    CustomRegistryCredentials,
 )
 from datacrunch.exceptions import APIException
 
@@ -740,27 +744,17 @@ class TestContainersService:
         )
 
         # act
-        containers_service.add_registry_credentials(
-            REGISTRY_CREDENTIAL_NAME,
-            ContainerRegistryType.DOCKERHUB,
-            "username",
-            "token"
+        creds = DockerHubCredentials(
+            name=REGISTRY_CREDENTIAL_NAME,
+            username="username",
+            access_token="token"
         )
+        containers_service.add_registry_credentials(creds)
 
         # assert
         assert responses.assert_call_count(
             registry_credentials_endpoint, 1) is True
-
-    @responses.activate
-    def test_add_registry_credentials_validation_error(self, containers_service):
-        # act & assert
-        with pytest.raises(ValueError) as excinfo:
-            containers_service.add_registry_credentials(
-                REGISTRY_CREDENTIAL_NAME,
-                ContainerRegistryType.DOCKERHUB,
-                # Missing username and token
-            )
-        assert "Username and access_token are required" in str(excinfo.value)
+        assert responses.calls[0].request.body == '{"name": "test-credential", "registry_type": "dockerhub", "username": "username", "access_token": "token"}'
 
     @responses.activate
     def test_add_registry_credentials_gcr(self, containers_service, registry_credentials_endpoint):
@@ -773,15 +767,16 @@ class TestContainersService:
 
         # act
         service_account_key = '{"key": "value"}'
-        containers_service.add_registry_credentials(
-            REGISTRY_CREDENTIAL_NAME,
-            ContainerRegistryType.GCR,
+        creds = GCRCredentials(
+            name=REGISTRY_CREDENTIAL_NAME,
             service_account_key=service_account_key
         )
+        containers_service.add_registry_credentials(creds)
 
         # assert
         assert responses.assert_call_count(
             registry_credentials_endpoint, 1) is True
+        assert responses.calls[0].request.body == '{"name": "test-credential", "registry_type": "gcr", "service_account_key": {"key": "value"}}'
 
     @responses.activate
     def test_add_registry_credentials_aws_ecr(self, containers_service, registry_credentials_endpoint):
@@ -793,18 +788,19 @@ class TestContainersService:
         )
 
         # act
-        containers_service.add_registry_credentials(
-            REGISTRY_CREDENTIAL_NAME,
-            ContainerRegistryType.AWS_ECR,
+        creds = AWSECRCredentials(
+            name=REGISTRY_CREDENTIAL_NAME,
             access_key_id="test-key",
             secret_access_key="test-secret",
             region="us-west-2",
             ecr_repo="test.ecr.aws.com"
         )
+        containers_service.add_registry_credentials(creds)
 
         # assert
         assert responses.assert_call_count(
             registry_credentials_endpoint, 1) is True
+        assert responses.calls[0].request.body == '{"name": "test-credential", "registry_type": "aws-ecr", "access_key_id": "test-key", "secret_access_key": "test-secret", "region": "us-west-2", "ecr_repo": "test.ecr.aws.com"}'
 
     @responses.activate
     def test_add_registry_credentials_custom(self, containers_service, registry_credentials_endpoint):
@@ -817,15 +813,16 @@ class TestContainersService:
 
         # act
         docker_config = '{"auths": {"registry.example.com": {"auth": "base64-encoded"}}}'
-        containers_service.add_registry_credentials(
-            REGISTRY_CREDENTIAL_NAME,
-            ContainerRegistryType.CUSTOM,
+        creds = CustomRegistryCredentials(
+            name=REGISTRY_CREDENTIAL_NAME,
             docker_config_json=docker_config
         )
+        containers_service.add_registry_credentials(creds)
 
         # assert
         assert responses.assert_call_count(
             registry_credentials_endpoint, 1) is True
+        assert responses.calls[0].request.body == '{"name": "test-credential", "registry_type": "custom", "docker_config_json": {"auths": {"registry.example.com": {"auth": "base64-encoded"}}}}'
 
     @responses.activate
     def test_delete_registry_credentials(self, containers_service, registry_credentials_endpoint):

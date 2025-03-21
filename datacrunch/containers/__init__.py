@@ -21,4 +21,10 @@ from .containers import (
     Secret,
     RegistryCredential,
     ContainersService,
+    BaseRegistryCredentials,
+    DockerHubCredentials,
+    GithubCredentials,
+    GCRCredentials,
+    AWSECRCredentials,
+    CustomRegistryCredentials,
 )
