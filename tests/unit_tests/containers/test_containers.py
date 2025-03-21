@@ -10,7 +10,6 @@ from datacrunch.containers.containers import (
     Container,
     ContainerDeploymentStatus,
     ContainerRegistrySettings,
-    ContainerRegistryType,
     ContainersService,
     Deployment,
     EnvVar,
@@ -31,6 +30,7 @@ from datacrunch.containers.containers import (
     GCRCredentials,
     AWSECRCredentials,
     CustomRegistryCredentials,
+    ReplicaInfo,
 )
 from datacrunch.exceptions import APIException
 
@@ -151,7 +151,7 @@ DEPLOYMENT_STATUS_DATA = {
 
 # Sample replicas data
 REPLICAS_DATA = {
-    "replicas": [
+    "list": [
         {
             "id": "replica-1",
             "status": "running",
@@ -160,17 +160,18 @@ REPLICAS_DATA = {
     ]
 }
 
+
 # Sample environment variables data
-ENV_VARS_DATA = {
+ENV_VARS_DATA = [{
     "container_name": CONTAINER_NAME,
     "env": [
         {
-            "name": "ENV_VAR1",
-            "value_or_reference_to_secret": "value1",
+            "name": ENV_VAR_NAME,
+            "value_or_reference_to_secret": ENV_VAR_VALUE,
             "type": "plain"
         }
     ]
-}
+}]
 
 
 class TestContainersService:
@@ -474,9 +475,9 @@ class TestContainersService:
         replicas = containers_service.get_deployment_replicas(DEPLOYMENT_NAME)
 
         # assert
-        assert "replicas" in replicas
-        assert len(replicas["replicas"]) == 1
-        assert replicas["replicas"][0]["id"] == "replica-1"
+        assert len(replicas) == 1
+        assert replicas[0] == ReplicaInfo(
+            "replica-1", "running", "2023-01-01T00:00:00+00:00")
         assert responses.assert_call_count(url, 1) is True
 
     @responses.activate
@@ -543,9 +544,11 @@ class TestContainersService:
             DEPLOYMENT_NAME)
 
         # assert
-        assert env_vars["container_name"] == CONTAINER_NAME
-        assert len(env_vars["env"]) == 1
-        assert env_vars["env"][0]["name"] == "ENV_VAR1"
+        assert env_vars[CONTAINER_NAME] == [EnvVar(
+            name=ENV_VAR_NAME,
+            value_or_reference_to_secret=ENV_VAR_VALUE,
+            type=EnvVarType.PLAIN
+        )]
         assert responses.assert_call_count(url, 1) is True
 
     @responses.activate
@@ -560,14 +563,20 @@ class TestContainersService:
         )
 
         # act
-        env_vars = [{"name": ENV_VAR_NAME,
-                     "value_or_reference_to_secret": ENV_VAR_VALUE, "type": "plain"}]
+        env_vars = [EnvVar(
+            name=ENV_VAR_NAME,
+            value_or_reference_to_secret=ENV_VAR_VALUE,
+            type=EnvVarType.PLAIN
+        )]
         result = containers_service.add_deployment_environment_variables(
             DEPLOYMENT_NAME, CONTAINER_NAME, env_vars)
 
         # assert
-        assert result["container_name"] == CONTAINER_NAME
-        assert len(result["env"]) == 1
+        assert result[CONTAINER_NAME] == [EnvVar(
+            name=ENV_VAR_NAME,
+            value_or_reference_to_secret=ENV_VAR_VALUE,
+            type=EnvVarType.PLAIN
+        )]
         assert responses.assert_call_count(url, 1) is True
 
     @responses.activate
@@ -577,19 +586,25 @@ class TestContainersService:
         responses.add(
             responses.PATCH,
             url,
-            json=ENV_VARS_DATA,
+            json=ENV_VARS_DATA[0],
             status=200
         )
 
         # act
-        env_vars = [{"name": ENV_VAR_NAME,
-                     "value_or_reference_to_secret": ENV_VAR_VALUE, "type": "plain"}]
+        env_vars = [EnvVar(
+            name=ENV_VAR_NAME,
+            value_or_reference_to_secret=ENV_VAR_VALUE,
+            type=EnvVarType.PLAIN
+        )]
         result = containers_service.update_deployment_environment_variables(
             DEPLOYMENT_NAME, CONTAINER_NAME, env_vars)
 
         # assert
-        assert result["container_name"] == CONTAINER_NAME
-        assert len(result["env"]) == 1
+        assert result[CONTAINER_NAME] == [EnvVar(
+            name=ENV_VAR_NAME,
+            value_or_reference_to_secret=ENV_VAR_VALUE,
+            type=EnvVarType.PLAIN
+        )]
         assert responses.assert_call_count(url, 1) is True
 
     @responses.activate
@@ -599,7 +614,7 @@ class TestContainersService:
         responses.add(
             responses.DELETE,
             url,
-            json={"container_name": CONTAINER_NAME, "env": []},
+            json=[],  # remaining env variables should be empty after deletion
             status=200
         )
 
@@ -608,8 +623,7 @@ class TestContainersService:
             DEPLOYMENT_NAME, CONTAINER_NAME, [ENV_VAR_NAME])
 
         # assert
-        assert result["container_name"] == CONTAINER_NAME
-        assert len(result["env"]) == 0
+        assert len(result) == 0
         assert responses.assert_call_count(url, 1) is True
 
     @responses.activate
@@ -736,6 +750,8 @@ class TestContainersService:
 
     @responses.activate
     def test_add_registry_credentials(self, containers_service, registry_credentials_endpoint):
+        USERNAME = "username"
+        ACCESS_TOKEN = "token"
         # arrange - add response mock
         responses.add(
             responses.POST,
@@ -746,15 +762,16 @@ class TestContainersService:
         # act
         creds = DockerHubCredentials(
             name=REGISTRY_CREDENTIAL_NAME,
-            username="username",
-            access_token="token"
+            username=USERNAME,
+            access_token=ACCESS_TOKEN
         )
         containers_service.add_registry_credentials(creds)
 
         # assert
         assert responses.assert_call_count(
             registry_credentials_endpoint, 1) is True
-        assert responses.calls[0].request.body == '{"name": "test-credential", "registry_type": "dockerhub", "username": "username", "access_token": "token"}'
+        assert responses.calls[0].request.body.decode(
+            'utf-8') == '{"name": "test-credential", "type": "dockerhub", "username": "username", "access_token": "token"}'
 
     @responses.activate
     def test_add_registry_credentials_gcr(self, containers_service, registry_credentials_endpoint):
@@ -776,7 +793,8 @@ class TestContainersService:
         # assert
         assert responses.assert_call_count(
             registry_credentials_endpoint, 1) is True
-        assert responses.calls[0].request.body == '{"name": "test-credential", "registry_type": "gcr", "service_account_key": {"key": "value"}}'
+        assert responses.calls[0].request.body.decode(
+            'utf-8') == '{"name": "test-credential", "type": "gcr", "service_account_key": "{\\"key\\": \\"value\\"}"}'
 
     @responses.activate
     def test_add_registry_credentials_aws_ecr(self, containers_service, registry_credentials_endpoint):
@@ -800,7 +818,8 @@ class TestContainersService:
         # assert
         assert responses.assert_call_count(
             registry_credentials_endpoint, 1) is True
-        assert responses.calls[0].request.body == '{"name": "test-credential", "registry_type": "aws-ecr", "access_key_id": "test-key", "secret_access_key": "test-secret", "region": "us-west-2", "ecr_repo": "test.ecr.aws.com"}'
+        assert responses.calls[0].request.body.decode(
+            'utf-8') == '{"name": "test-credential", "type": "aws-ecr", "access_key_id": "test-key", "secret_access_key": "test-secret", "region": "us-west-2", "ecr_repo": "test.ecr.aws.com"}'
 
     @responses.activate
     def test_add_registry_credentials_custom(self, containers_service, registry_credentials_endpoint):
@@ -822,7 +841,8 @@ class TestContainersService:
         # assert
         assert responses.assert_call_count(
             registry_credentials_endpoint, 1) is True
-        assert responses.calls[0].request.body == '{"name": "test-credential", "registry_type": "custom", "docker_config_json": {"auths": {"registry.example.com": {"auth": "base64-encoded"}}}}'
+        assert responses.calls[0].request.body.decode(
+            'utf-8') == '{"name": "test-credential", "type": "custom", "docker_config_json": "{\\"auths\\": {\\"registry.example.com\\": {\\"auth\\": \\"base64-encoded\\"}}}"}'
 
     @responses.activate
     def test_delete_registry_credentials(self, containers_service, registry_credentials_endpoint):
