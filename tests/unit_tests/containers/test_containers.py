@@ -27,6 +27,7 @@ from datacrunch.containers.containers import (
     QueueLoadScalingTrigger,
     UtilizationScalingTrigger,
     DockerHubCredentials,
+    GithubCredentials,
     GCRCredentials,
     AWSECRCredentials,
     CustomRegistryCredentials,
@@ -614,16 +615,20 @@ class TestContainersService:
         responses.add(
             responses.DELETE,
             url,
-            json=[],  # remaining env variables should be empty after deletion
+            json=ENV_VARS_DATA,
             status=200
         )
 
         # act
         result = containers_service.delete_deployment_environment_variables(
-            DEPLOYMENT_NAME, CONTAINER_NAME, [ENV_VAR_NAME])
+            DEPLOYMENT_NAME, CONTAINER_NAME, ["random-env-var-name"])
 
         # assert
-        assert len(result) == 0
+        assert result == {CONTAINER_NAME: [EnvVar(
+            name=ENV_VAR_NAME,
+            value_or_reference_to_secret=ENV_VAR_VALUE,
+            type=EnvVarType.PLAIN
+        )]}
         assert responses.assert_call_count(url, 1) is True
 
     @responses.activate
@@ -772,6 +777,29 @@ class TestContainersService:
             registry_credentials_endpoint, 1) is True
         assert responses.calls[0].request.body.decode(
             'utf-8') == '{"name": "test-credential", "type": "dockerhub", "username": "username", "access_token": "token"}'
+
+    @responses.activate
+    def test_add_registry_credentials_github(self, containers_service, registry_credentials_endpoint):
+        # arrange
+        responses.add(
+            responses.POST,
+            registry_credentials_endpoint,
+            status=201
+        )
+
+        # act
+        creds = GithubCredentials(
+            name=REGISTRY_CREDENTIAL_NAME,
+            username="test-username",
+            access_token="test-token"
+        )
+        containers_service.add_registry_credentials(creds)
+
+        # assert
+        assert responses.assert_call_count(
+            registry_credentials_endpoint, 1) is True
+        assert responses.calls[0].request.body.decode(
+            'utf-8') == '{"name": "test-credential", "type": "ghcr", "username": "test-username", "access_token": "test-token"}'
 
     @responses.activate
     def test_add_registry_credentials_gcr(self, containers_service, registry_credentials_endpoint):
