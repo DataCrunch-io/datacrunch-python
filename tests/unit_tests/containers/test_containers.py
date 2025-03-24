@@ -275,7 +275,6 @@ class TestContainersService:
             status=200
         )
 
-        # create deployment object
         container = Container(
             image="nginx:latest",
             exposed_port=80,
@@ -293,6 +292,7 @@ class TestContainersService:
         container_registry_settings = ContainerRegistrySettings(
             is_private=False)
 
+        # create deployment object
         deployment = Deployment(
             name=DEPLOYMENT_NAME,
             container_registry_settings=container_registry_settings,
@@ -324,7 +324,7 @@ class TestContainersService:
         )
 
         # create deployment object
-        container = Container(
+        container = ContainerInfo(
             name=CONTAINER_NAME,
             image="nginx:latest",
             exposed_port=80
@@ -335,7 +335,7 @@ class TestContainersService:
 
         compute = ComputeResource(name=COMPUTE_RESOURCE_NAME, size=1)
 
-        deployment = Deployment(
+        deployment = DeploymentInfo(
             name=DEPLOYMENT_NAME,
             container_registry_settings=container_registry_settings,
             containers=[container],
@@ -347,7 +347,7 @@ class TestContainersService:
             DEPLOYMENT_NAME, deployment)
 
         # assert
-        assert type(updated_deployment) == Deployment
+        assert type(updated_deployment) == DeploymentInfo
         assert updated_deployment.name == DEPLOYMENT_NAME
         assert len(updated_deployment.containers) == 1
         assert updated_deployment.containers[0].name == CONTAINER_NAME
