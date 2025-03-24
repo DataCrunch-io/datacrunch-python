@@ -206,7 +206,6 @@ def main() -> None:
 
         # Create container configuration
         container = Container(
-            name=CONTAINER_NAME,
             image=IMAGE_URL,
             exposed_port=30000,
             healthcheck=HealthcheckSettings(

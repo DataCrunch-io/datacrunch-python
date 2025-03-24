@@ -97,9 +97,31 @@ class VolumeMount:
 @dataclass_json
 @dataclass
 class Container:
-    """Container configuration for deployments.
+    """Container configuration for deployment creation and updates.
+    This class omits the name field which is managed by the system.
 
-    :param name: Name of the container
+    :param image: Container image to use
+    :param exposed_port: Port to expose from the container
+    :param healthcheck: Optional health check configuration
+    :param entrypoint_overrides: Optional entrypoint override settings
+    :param env: Optional list of environment variables
+    :param volume_mounts: Optional list of volume mounts
+    """
+    image: str
+    exposed_port: int
+    healthcheck: Optional[HealthcheckSettings] = None
+    entrypoint_overrides: Optional[EntrypointOverridesSettings] = None
+    env: Optional[List[EnvVar]] = None
+    volume_mounts: Optional[List[VolumeMount]] = None
+
+
+@dataclass_json
+@dataclass
+class ContainerInfo:
+    """Container configuration for deployments.
+    This class is read-only and includes the system-managed name field.
+
+    :param name: Name of the container (system-managed)
     :param image: Container image to use
     :param exposed_port: Port to expose from the container
     :param healthcheck: Optional health check configuration
@@ -114,6 +136,24 @@ class Container:
     entrypoint_overrides: Optional[EntrypointOverridesSettings] = None
     env: Optional[List[EnvVar]] = None
     volume_mounts: Optional[List[VolumeMount]] = None
+
+    @classmethod
+    def from_container(cls, name: str, container: Container) -> 'ContainerInfo':
+        """Create a ContainerInfo from a Container and a name.
+
+        :param name: Name of the container
+        :param container: Container specification
+        :return: ContainerInfo instance
+        """
+        return cls(
+            name=name,
+            image=container.image,
+            exposed_port=container.exposed_port,
+            healthcheck=container.healthcheck,
+            entrypoint_overrides=container.entrypoint_overrides,
+            env=container.env,
+            volume_mounts=container.volume_mounts
+        )
 
 
 @dataclass_json
@@ -224,7 +264,31 @@ class ScalingOptions:
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Deployment:
+    """Configuration for creating or updating a container deployment.
+    This class uses Container instead of ContainerInfo to prevent name setting.
+
+    :param name: Name of the deployment
+    :param container_registry_settings: Settings for accessing container registry
+    :param containers: List of container specifications in the deployment
+    :param compute: Compute resource configuration
+    :param is_spot: Whether is spot deployment
+    :param endpoint_base_url: Optional base URL for the deployment endpoint
+    :param scaling: Optional scaling configuration
+    """
+    name: str
+    container_registry_settings: ContainerRegistrySettings
+    containers: List[Container]
+    compute: ComputeResource
+    is_spot: bool = False
+    endpoint_base_url: Optional[str] = None
+    scaling: Optional[ScalingOptions] = None
+
+
+@dataclass_json(undefined=Undefined.EXCLUDE)
+@dataclass
+class DeploymentInfo:
     """Configuration for a container deployment.
+    This class is read-only and includes system-managed fields.
 
     :param name: Name of the deployment
     :param container_registry_settings: Settings for accessing container registry
@@ -237,7 +301,7 @@ class Deployment:
     """
     name: str
     container_registry_settings: ContainerRegistrySettings
-    containers: List[Container]
+    containers: List[ContainerInfo]
     compute: ComputeResource
     is_spot: bool = False
     endpoint_base_url: Optional[str] = None
@@ -359,59 +423,59 @@ class ContainersService:
         """
         self.client = http_client
 
-    def get_deployments(self) -> List[Deployment]:
+    def get_deployments(self) -> List[DeploymentInfo]:
         """Get all deployments
 
         :return: list of deployments
-        :rtype: List[Deployment]
+        :rtype: List[DeploymentInfo]
         """
         response = self.client.get(CONTAINER_DEPLOYMENTS_ENDPOINT)
-        return [Deployment.from_dict(deployment, infer_missing=True) for deployment in response.json()]
+        return [DeploymentInfo.from_dict(deployment, infer_missing=True) for deployment in response.json()]
 
-    def get_deployment_by_name(self, deployment_name: str) -> Deployment:
+    def get_deployment_by_name(self, deployment_name: str) -> DeploymentInfo:
         """Get a deployment by name
 
         :param deployment_name: name of the deployment
         :type deployment_name: str
         :return: deployment
-        :rtype: Deployment
+        :rtype: DeploymentInfo
         """
         response = self.client.get(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}")
-        return Deployment.from_dict(response.json(), infer_missing=True)
+        return DeploymentInfo.from_dict(response.json(), infer_missing=True)
 
     def create_deployment(
         self,
         deployment: Deployment
-    ) -> Deployment:
+    ) -> DeploymentInfo:
         """Create a new deployment
 
         :param deployment: deployment configuration
         :type deployment: Deployment
         :return: created deployment
-        :rtype: Deployment
+        :rtype: DeploymentInfo
         """
         response = self.client.post(
             CONTAINER_DEPLOYMENTS_ENDPOINT,
             deployment.to_dict()
         )
-        return Deployment.from_dict(response.json(), infer_missing=True)
+        return DeploymentInfo.from_dict(response.json(), infer_missing=True)
 
-    def update_deployment(self, deployment_name: str, deployment: Deployment) -> Deployment:
+    def update_deployment(self, deployment_name: str, deployment: DeploymentInfo) -> DeploymentInfo:
         """Update an existing deployment
 
         :param deployment_name: name of the deployment to update
         :type deployment_name: str
         :param deployment: updated deployment
-        :type deployment: Deployment
+        :type deployment: DeploymentInfo
         :return: updated deployment
-        :rtype: Deployment
+        :rtype: DeploymentInfo
         """
         response = self.client.patch(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}",
             deployment.to_dict()
         )
-        return Deployment.from_dict(response.json(), infer_missing=True)
+        return DeploymentInfo.from_dict(response.json(), infer_missing=True)
 
     def delete_deployment(self, deployment_name: str) -> None:
         """Delete a deployment
