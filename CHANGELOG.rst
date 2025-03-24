@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v1.8.1 (2025-03-24)
+-------------------
+
+* Remove container name from deployment creation
+
 v1.8.0 (2025-03-24)
 -------------------
 
