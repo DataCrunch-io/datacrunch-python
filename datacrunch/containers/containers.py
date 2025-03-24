@@ -49,7 +49,7 @@ class HealthcheckSettings:
     :param port: Port number to perform health check on
     :param path: HTTP path to perform health check on
     """
-    enabled: bool
+    enabled: bool = True
     port: Optional[int] = None
     path: Optional[str] = None
 
@@ -63,7 +63,7 @@ class EntrypointOverridesSettings:
     :param entrypoint: List of strings forming the entrypoint command
     :param cmd: List of strings forming the command arguments
     """
-    enabled: bool
+    enabled: bool = True
     entrypoint: Optional[List[str]] = None
     cmd: Optional[List[str]] = None
 
