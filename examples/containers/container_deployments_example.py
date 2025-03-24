@@ -27,7 +27,6 @@ from datacrunch.containers.containers import (
 
 # Configuration constants
 DEPLOYMENT_NAME = "my-deployment"
-CONTAINER_NAME = "my-app"
 IMAGE_NAME = "your-image-name:version"
 
 # Environment variables
@@ -93,7 +92,6 @@ def main() -> None:
 
         # Create container configuration
         container = Container(
-            name=CONTAINER_NAME,
             image=IMAGE_NAME,
             exposed_port=80,
             healthcheck=HealthcheckSettings(
