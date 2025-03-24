@@ -137,24 +137,6 @@ class ContainerInfo:
     env: Optional[List[EnvVar]] = None
     volume_mounts: Optional[List[VolumeMount]] = None
 
-    @classmethod
-    def from_container(cls, name: str, container: Container) -> 'ContainerInfo':
-        """Create a ContainerInfo from a Container and a name.
-
-        :param name: Name of the container
-        :param container: Container specification
-        :return: ContainerInfo instance
-        """
-        return cls(
-            name=name,
-            image=container.image,
-            exposed_port=container.exposed_port,
-            healthcheck=container.healthcheck,
-            entrypoint_overrides=container.entrypoint_overrides,
-            env=container.env,
-            volume_mounts=container.volume_mounts
-        )
-
 
 @dataclass_json
 @dataclass
