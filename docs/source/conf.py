@@ -12,16 +12,18 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+import datetime
+from recommonmark.parser import CommonMarkParser
+from datacrunch.__version__ import VERSION
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../../'))
-from datacrunch.__version__ import VERSION
-from recommonmark.parser import CommonMarkParser
 
 # -- Project information -----------------------------------------------------
+current_year = datetime.datetime.now().year
 
 project = 'DataCrunch Python SDK'
-copyright = '2021, DataCrunch.io'
+copyright = f'{current_year}, DataCrunch.io'
 author = 'DataCrunch.io'
 
 # The short X.Y version
@@ -68,7 +70,7 @@ master_doc = 'index'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -90,12 +92,15 @@ html_theme = 'alabaster'
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {
+    'page_width': '1900px',
+    'body_min_width': '1400px',
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = []
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.

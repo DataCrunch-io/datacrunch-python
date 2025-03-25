@@ -13,6 +13,13 @@ All the examples code can be also found in the repository `Examples folder <http
 
 .. toctree::
    :maxdepth: 3
-   :glob:
+   :caption: Contents:
 
-   examples/*
+   examples/containers/index
+   examples/advanced_create_instance
+   examples/instances_and_volumes
+   examples/instance_actions
+   examples/simple_create_instance
+   examples/ssh_keys
+   examples/startup_scripts
+   examples/storage_volumes

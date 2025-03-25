@@ -2,6 +2,7 @@ Changelog
 =========
 
 v1.8.2 (2025-03-25)
+-------------------
 
 * Added missing packages to setup requirements
 
