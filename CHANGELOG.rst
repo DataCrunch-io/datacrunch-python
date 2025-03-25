@@ -1,6 +1,8 @@
 Changelog
 =========
 
+v1.8.2 (2025-03-25)
+
 * Added missing packages to setup requirements
 
 v1.8.1 (2025-03-24) [YANKED]
