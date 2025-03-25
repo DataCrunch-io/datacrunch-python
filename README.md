@@ -1,34 +1,12 @@
 # DataCrunch Python SDK
 
-<p>
-  <a href='https://github.com/DataCrunch-io/datacrunch-python/actions?query=workflow%3A%22Unit+Tests%22+branch%3Amaster'>
-    <img src='https://github.com/DataCrunch-io/datacrunch-python/workflows/Unit%20Tests/badge.svg'></img>
-  </a>
-
-  <a href='https://github.com/DataCrunch-io/datacrunch-python/actions?query=workflow%3A%22Code+Style%22+branch%3Amaster'>
-    <img src='https://github.com/DataCrunch-io/datacrunch-python/workflows/Code%20Style/badge.svg'></img>
-  </a>
-
-  <a href="https://codecov.io/gh/DataCrunch-io/datacrunch-python">
-    <img src="https://codecov.io/gh/DataCrunch-io/datacrunch-python/branch/master/graph/badge.svg?token=5X5KTYSSPK"/>
-  </a>
-
-  <a href='https://datacrunch-python.readthedocs.io/en/latest/'>
-    <img src='https://readthedocs.org/projects/datacrunch-python/badge/?version=latest'></img>
-  </a>
-
-  <a href='https://github.com/DataCrunch-io/datacrunch-python/blob/master/LICENSE'>
-    <img src='https://img.shields.io/github/license/DataCrunch-io/datacrunch-python'></img>
-  </a>
-
-  <a href='https://pypi.org/project/datacrunch/'>
-    <img src='https://img.shields.io/pypi/v/datacrunch?logo=python'></img>
-  </a>
-
-  <a href='https://pypi.org/project/datacrunch/'>
-    <img src='https://img.shields.io/pypi/pyversions/datacrunch'></img>
-  </a>
-</p>
+[<img src='https://github.com/DataCrunch-io/datacrunch-python/workflows/Unit%20Tests/badge.svg'>](https://github.com/DataCrunch-io/datacrunch-python/actions?query=workflow%3A%22Unit+Tests%22+branch%3Amaster)
+[<img src='https://github.com/DataCrunch-io/datacrunch-python/workflows/Code%20Style/badge.svg'>](https://github.com/DataCrunch-io/datacrunch-python/actions?query=workflow%3A%22Code+Style%22+branch%3Amaster)
+[<img src="https://codecov.io/gh/DataCrunch-io/datacrunch-python/branch/master/graph/badge.svg?token=5X5KTYSSPK">](https://codecov.io/gh/DataCrunch-io/datacrunch-python)
+[<img src='https://readthedocs.org/projects/datacrunch-python/badge/?version=latest'>](https://datacrunch-python.readthedocs.io/en/latest/)
+[<img src='https://img.shields.io/github/license/DataCrunch-io/datacrunch-python'>](https://github.com/DataCrunch-io/datacrunch-python/blob/master/LICENSE)
+[<img src='https://img.shields.io/pypi/v/datacrunch?logo=python'>](https://pypi.org/project/datacrunch/)
+[<img src='https://img.shields.io/pypi/pyversions/datacrunch'>](https://pypi.org/project/datacrunch/)
 
 The official [DataCrunch.io](https://datacrunch.io) Python SDK.
 
