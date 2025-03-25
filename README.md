@@ -150,4 +150,4 @@ autopep8 file.py --in-place
 
 ## Contact
 
-You can [contact us here](https://datacrunch.io/contact/), or send a message / open an issue in the repo.
+You can [contact us here](https://datacrunch.io/contact), or open an issue in the repo.
