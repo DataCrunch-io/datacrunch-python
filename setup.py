@@ -17,7 +17,10 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/DataCrunch-io",
     packages=setuptools.find_packages(),
-    install_requires=['requests>=2.25.1,<3'],
+    install_requires=[
+        'requests>=2.25.1,<3',
+        'dataclasses_json>=0.6.7'
+    ],
     extras_require={
         'dev': [''],
         'test': ['pytest>=6.2.1,<7',
@@ -27,17 +30,16 @@ setuptools.setup(
     },
     classifiers=[
         "Programming Language :: Python :: 3",
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Natural Language :: English"
     ],
-    python_requires='>=3.6',
+    python_requires='>=3.9',
 )
