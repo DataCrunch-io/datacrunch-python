@@ -1,13 +1,15 @@
 Changelog
 =========
 
-v1.8.1 (2025-03-24)
--------------------
+* Added missing packages to setup requirements
+
+v1.8.1 (2025-03-24) [YANKED]
+----------------------------
 
 * Remove container name from deployment creation
 
-v1.8.0 (2025-03-24)
--------------------
+v1.8.0 (2025-03-24) [YANKED]
+----------------------------
 
 * Added support for containers
 

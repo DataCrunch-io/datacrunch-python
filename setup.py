@@ -17,7 +17,11 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/DataCrunch-io",
     packages=setuptools.find_packages(),
-    install_requires=['requests>=2.25.1,<3'],
+    install_requires=[
+        'requests>=2.25.1,<3',
+        'dataclasses_json>=0.6.7',
+        'dataclasses;python_version<"3.7"'
+    ],
     extras_require={
         'dev': [''],
         'test': ['pytest>=6.2.1,<7',
