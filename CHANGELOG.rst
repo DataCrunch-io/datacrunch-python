@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v1.8.4 (2025-03-25)
+-------------------
+
+* Added readthedocs configuration file
+
 v1.8.3 (2025-03-25)
 -------------------
 
