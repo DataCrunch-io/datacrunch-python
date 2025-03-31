@@ -17,7 +17,7 @@ from datacrunch.__version__ import VERSION
 class DataCrunchClient:
     """Client for interacting with DataCrunch's public API"""
 
-    def __init__(self, client_id: str, client_secret: str, base_url: str = "https://api.datacrunch.io/v1") -> None:
+    def __init__(self, client_id: str, client_secret: str, base_url: str = "https://api.datacrunch.io/v1", inference_key: str = None) -> None:
         """The DataCrunch client
 
         :param client_id: client id
@@ -26,6 +26,8 @@ class DataCrunchClient:
         :type client_secret: str
         :param base_url: base url for all the endpoints, optional, defaults to "https://api.datacrunch.io/v1"
         :type base_url: str, optional
+        :param inference_key: inference key, optional
+        :type inference_key: str, optional
         """
 
         # Constants
@@ -70,5 +72,5 @@ class DataCrunchClient:
         """Locations service. Get locations"""
 
         self.containers: ContainersService = ContainersService(
-            self._http_client)
+            self._http_client, inference_key)
         """Containers service. Deploy, manage, and monitor container deployments"""

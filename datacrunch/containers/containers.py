@@ -1,7 +1,10 @@
+import requests
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json, Undefined  # type: ignore
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Any
 from enum import Enum
+
+from datacrunch.http_client.http_client import HTTPClient
 
 
 # API endpoints
@@ -256,39 +259,44 @@ class Deployment:
     :param is_spot: Whether is spot deployment
     :param endpoint_base_url: Optional base URL for the deployment endpoint
     :param scaling: Optional scaling configuration
+    :param created_at: Optional timestamp when the deployment was created
+    :param inference_key: Optional inference key for the deployment
     """
     name: str
     container_registry_settings: ContainerRegistrySettings
-    containers: List[Container]
-    compute: ComputeResource
-    is_spot: bool = False
-    endpoint_base_url: Optional[str] = None
-    scaling: Optional[ScalingOptions] = None
-
-
-@dataclass_json(undefined=Undefined.EXCLUDE)
-@dataclass
-class DeploymentInfo:
-    """Configuration for a container deployment.
-    This class is read-only and includes system-managed fields.
-
-    :param name: Name of the deployment
-    :param container_registry_settings: Settings for accessing container registry
-    :param containers: List of containers in the deployment
-    :param compute: Compute resource configuration
-    :param is_spot: Whether is spot deployment
-    :param endpoint_base_url: Optional base URL for the deployment endpoint
-    :param scaling: Optional scaling configuration
-    :param created_at: Timestamp when the deployment was created
-    """
-    name: str
-    container_registry_settings: ContainerRegistrySettings
-    containers: List[ContainerInfo]
+    containers: List[Container] | List[ContainerInfo]
     compute: ComputeResource
     is_spot: bool = False
     endpoint_base_url: Optional[str] = None
     scaling: Optional[ScalingOptions] = None
     created_at: Optional[str] = None
+
+    inference_key: Optional[str] = None
+
+    @classmethod
+    def from_dict_with_inference_key(cls, data: Dict[str, Any], inference_key: str = None, **kwargs) -> 'Deployment':
+        """Create a Deployment instance from a dictionary with an inference key.
+
+        :param data: Dictionary containing deployment data
+        :param inference_key: inference key to set on the deployment
+        :param **kwargs: Additional arguments to pass to from_dict
+        :return: Deployment instance
+        """
+        deployment = cls.from_dict(data, **kwargs)
+        deployment._inference_key = inference_key
+        return deployment
+
+    def run_sync(self, data: Dict[str, Any], path: str = "", timeout_seconds: int = 60 * 5):
+        if self._inference_key is None:
+            raise ValueError("Inference key is not set")  # TODO: review this
+
+        # TODO: create a request object
+        return requests.post(
+            url=f"{self.endpoint_base_url}{path}",
+            json=data,
+            headers={"Authorization": f"Bearer {self._inference_key}"},
+            timeout=timeout_seconds
+        )
 
 
 @dataclass_json
@@ -397,67 +405,71 @@ class CustomRegistryCredentials(BaseRegistryCredentials):
 class ContainersService:
     """Service for managing container deployments"""
 
-    def __init__(self, http_client) -> None:
+    def __init__(self, http_client: HTTPClient, inference_key: str = None) -> None:
         """Initialize the containers service
 
         :param http_client: HTTP client for making API requests
         :type http_client: Any
         """
         self.client = http_client
+        self._inference_key = inference_key
 
-    def get_deployments(self) -> List[DeploymentInfo]:
+    def get_deployments(self) -> List[Deployment]:
         """Get all deployments
 
         :return: list of deployments
-        :rtype: List[DeploymentInfo]
+        :rtype: List[Deployment]
         """
         response = self.client.get(CONTAINER_DEPLOYMENTS_ENDPOINT)
-        return [DeploymentInfo.from_dict(deployment, infer_missing=True) for deployment in response.json()]
+        return [Deployment.from_dict(deployment, infer_missing=True) for deployment in response.json()]
 
-    def get_deployment_by_name(self, deployment_name: str) -> DeploymentInfo:
+    def get_deployment_by_name(self, deployment_name: str) -> Deployment:
         """Get a deployment by name
 
         :param deployment_name: name of the deployment
         :type deployment_name: str
         :return: deployment
-        :rtype: DeploymentInfo
+        :rtype: Deployment
         """
         response = self.client.get(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}")
-        return DeploymentInfo.from_dict(response.json(), infer_missing=True)
+        return Deployment.from_dict_with_inference_key(response.json(), self._inference_key)
+
+    # Function alias
+    get_deployment = get_deployment_by_name
 
     def create_deployment(
         self,
         deployment: Deployment
-    ) -> DeploymentInfo:
+    ) -> Deployment:
         """Create a new deployment
 
         :param deployment: deployment configuration
         :type deployment: Deployment
         :return: created deployment
-        :rtype: DeploymentInfo
+        :rtype: Deployment
         """
         response = self.client.post(
             CONTAINER_DEPLOYMENTS_ENDPOINT,
             deployment.to_dict()
         )
-        return DeploymentInfo.from_dict(response.json(), infer_missing=True)
+        return Deployment.from_dict(response.json(), infer_missing=True)
 
-    def update_deployment(self, deployment_name: str, deployment: DeploymentInfo) -> DeploymentInfo:
+    def update_deployment(self, deployment_name: str, deployment: Deployment) -> Deployment:
         """Update an existing deployment
 
         :param deployment_name: name of the deployment to update
         :type deployment_name: str
         :param deployment: updated deployment
-        :type deployment: DeploymentInfo
+        :type deployment: Deployment
         :return: updated deployment
-        :rtype: DeploymentInfo
+        :rtype: Deployment
         """
         response = self.client.patch(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}",
             deployment.to_dict()
         )
-        return DeploymentInfo.from_dict(response.json(), infer_missing=True)
+        return Deployment.from_dict(response.json(), infer_missing=True)
 
     def delete_deployment(self, deployment_name: str) -> None:
         """Delete a deployment
@@ -660,6 +672,9 @@ class ContainersService:
             for resource in resource_group:
                 resources.append(ComputeResource.from_dict(resource))
         return resources
+
+    # Function alias
+    get_gpus = get_compute_resources
 
     def get_secrets(self) -> List[Secret]:
         """Get all secrets
