@@ -1,11 +1,11 @@
 import requests
-from requests.structures import CaseInsensitiveDict
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json, Undefined  # type: ignore
 from typing import List, Optional, Dict, Any
 from enum import Enum
 
 from datacrunch.http_client.http_client import HTTPClient
+from datacrunch.InferenceClient.inference_client import InferenceClient, InferenceResponse
 
 
 # API endpoints
@@ -238,7 +238,6 @@ class Deployment:
     :param endpoint_base_url: Optional base URL for the deployment endpoint
     :param scaling: Optional scaling configuration
     :param created_at: Optional timestamp when the deployment was created
-    :param inference_key: Optional inference key for the deployment
     """
     name: str
     container_registry_settings: ContainerRegistrySettings
@@ -249,13 +248,13 @@ class Deployment:
     scaling: Optional[ScalingOptions] = None
     created_at: Optional[str] = None
 
-    _inference_key: Optional[str] = None
+    _inference_client: Optional[InferenceClient] = None
 
     def __str__(self):
         """String representation of the deployment, excluding sensitive information."""
-        # Get all attributes except _inference_key
+        # Get all attributes except _inference_client
         attrs = {k: v for k, v in self.__dict__.items() if k !=
-                 '_inference_key'}
+                 '_inference_client'}
         # Format each attribute
         attr_strs = [f"{k}={repr(v)}" for k, v in attrs.items()]
         return f"Deployment({', '.join(attr_strs)})"
@@ -265,38 +264,47 @@ class Deployment:
         return self.__str__()
 
     @classmethod
-    def from_dict_with_inference_key(cls, data: Dict[str, Any], inference_key: str = None, **kwargs) -> 'Deployment':
+    def from_dict_with_inference_key(cls, data: Dict[str, Any], inference_key: str = None) -> 'Deployment':
         """Create a Deployment instance from a dictionary with an inference key.
 
         :param data: Dictionary containing deployment data
         :param inference_key: inference key to set on the deployment
-        :param **kwargs: Additional arguments to pass to from_dict
         :return: Deployment instance
         """
         deployment = Deployment.from_dict(data, infer_missing=True)
-        deployment._inference_key = inference_key
+        if inference_key and deployment.endpoint_base_url:
+            deployment._inference_client = InferenceClient(
+                inference_key=inference_key,
+                endpoint_base_url=deployment.endpoint_base_url
+            )
         return deployment
 
-    def run_sync(self, data: Dict[str, Any], path: str = "", timeout_seconds: int = 60 * 5):
-        if self._inference_key is None:
-            # TODO: do something better
-            raise ValueError("Inference key is not set")
+    def set_inference_client(self, inference_key: str) -> None:
+        """Set the inference client for this deployment.
 
-        response = requests.post(
-            url=f"{self.endpoint_base_url}{path}",
-            json=data,
-            headers={"Authorization": f"Bearer {self._inference_key}"},
-            timeout=timeout_seconds
+        :param inference_key: The inference key to use for authentication
+        :type inference_key: str
+        :raises ValueError: If endpoint_base_url is not set
+        """
+        if self.endpoint_base_url is None:
+            raise ValueError(
+                "Endpoint base URL must be set to use inference client")
+        self._inference_client = InferenceClient(
+            inference_key=inference_key,
+            endpoint_base_url=self.endpoint_base_url
         )
 
-        return InferenceResponse(
-            body=response.json(),
-            headers=response.headers,
-            status_code=response.status_code,
-            status_text=response.reason
-        )
+    def run_sync(self, data: Dict[str, Any], path: str = "", timeout_seconds: int = 60 * 5) -> InferenceResponse:
+        if self._inference_client is None:
+            if self.endpoint_base_url is None:
+                raise ValueError(
+                    "Endpoint base URL must be set to use run_sync")
+            raise ValueError(
+                "Inference client not initialized. Use from_dict_with_inference_key or set_inference_client to initialize inference capabilities.")
+        return self._inference_client.run_sync(data, path, timeout_seconds)
 
     def health(self):
+        # TODO: use inference client?
         healthcheck_path = "health"
         if self.containers and self.containers[0].healthcheck and self.containers[0].healthcheck.path:
             healthcheck_path = self.containers[0].healthcheck.path.lstrip('/')
@@ -308,15 +316,6 @@ class Deployment:
         return response  # TODO: agree on response format
     # Function alias
     healthcheck = health
-
-
-@dataclass_json(undefined=Undefined.EXCLUDE)
-@dataclass
-class InferenceResponse:
-    body: Any
-    headers: CaseInsensitiveDict[str]
-    status_code: int
-    status_text: str
 
 
 @dataclass_json
