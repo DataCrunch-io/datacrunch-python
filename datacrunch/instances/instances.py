@@ -349,7 +349,7 @@ class InstancesService:
         instance = Instance(
             id=instance_dict['id'],
             instance_type=instance_dict['instance_type'],
-            image=instance_dict['image'],
+            image=instance_dict['image'] if 'image' in instance_dict else None,
             price_per_hour=instance_dict['price_per_hour'] if 'price_per_hour' in instance_dict else None,
             location=instance_dict['location'],
             hostname=instance_dict['hostname'],
