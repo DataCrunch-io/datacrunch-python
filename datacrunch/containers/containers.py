@@ -1,4 +1,5 @@
 import requests
+from requests.structures import CaseInsensitiveDict
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json, Undefined  # type: ignore
 from typing import List, Optional, Dict, Any
@@ -101,10 +102,10 @@ class VolumeMount:
 @dataclass
 class Container:
     """Container configuration for deployment creation and updates.
-    This class omits the name field which is managed by the system.
 
     :param image: Container image to use
     :param exposed_port: Port to expose from the container
+    :param name: Name of the container (system-managed, read-only)
     :param healthcheck: Optional health check configuration
     :param entrypoint_overrides: Optional entrypoint override settings
     :param env: Optional list of environment variables
@@ -112,29 +113,7 @@ class Container:
     """
     image: str
     exposed_port: int
-    healthcheck: Optional[HealthcheckSettings] = None
-    entrypoint_overrides: Optional[EntrypointOverridesSettings] = None
-    env: Optional[List[EnvVar]] = None
-    volume_mounts: Optional[List[VolumeMount]] = None
-
-
-@dataclass_json
-@dataclass
-class ContainerInfo:
-    """Container configuration for deployments.
-    This class is read-only and includes the system-managed name field.
-
-    :param name: Name of the container (system-managed)
-    :param image: Container image to use
-    :param exposed_port: Port to expose from the container
-    :param healthcheck: Optional health check configuration
-    :param entrypoint_overrides: Optional entrypoint override settings
-    :param env: Optional list of environment variables
-    :param volume_mounts: Optional list of volume mounts
-    """
-    name: str
-    image: str
-    exposed_port: int
+    name: Optional[str] = None
     healthcheck: Optional[HealthcheckSettings] = None
     entrypoint_overrides: Optional[EntrypointOverridesSettings] = None
     env: Optional[List[EnvVar]] = None
@@ -250,7 +229,6 @@ class ScalingOptions:
 @dataclass
 class Deployment:
     """Configuration for creating or updating a container deployment.
-    This class uses Container instead of ContainerInfo to prevent name setting.
 
     :param name: Name of the deployment
     :param container_registry_settings: Settings for accessing container registry
@@ -264,14 +242,27 @@ class Deployment:
     """
     name: str
     container_registry_settings: ContainerRegistrySettings
-    containers: List[Container] | List[ContainerInfo]
+    containers: List[Container]
     compute: ComputeResource
     is_spot: bool = False
     endpoint_base_url: Optional[str] = None
     scaling: Optional[ScalingOptions] = None
     created_at: Optional[str] = None
 
-    inference_key: Optional[str] = None
+    _inference_key: Optional[str] = None
+
+    def __str__(self):
+        """String representation of the deployment, excluding sensitive information."""
+        # Get all attributes except _inference_key
+        attrs = {k: v for k, v in self.__dict__.items() if k !=
+                 '_inference_key'}
+        # Format each attribute
+        attr_strs = [f"{k}={repr(v)}" for k, v in attrs.items()]
+        return f"Deployment({', '.join(attr_strs)})"
+
+    def __repr__(self):
+        """Repr representation of the deployment, excluding sensitive information."""
+        return self.__str__()
 
     @classmethod
     def from_dict_with_inference_key(cls, data: Dict[str, Any], inference_key: str = None, **kwargs) -> 'Deployment':
@@ -282,21 +273,50 @@ class Deployment:
         :param **kwargs: Additional arguments to pass to from_dict
         :return: Deployment instance
         """
-        deployment = cls.from_dict(data, **kwargs)
+        deployment = Deployment.from_dict(data, infer_missing=True)
         deployment._inference_key = inference_key
         return deployment
 
     def run_sync(self, data: Dict[str, Any], path: str = "", timeout_seconds: int = 60 * 5):
         if self._inference_key is None:
-            raise ValueError("Inference key is not set")  # TODO: review this
+            # TODO: do something better
+            raise ValueError("Inference key is not set")
 
-        # TODO: create a request object
-        return requests.post(
+        response = requests.post(
             url=f"{self.endpoint_base_url}{path}",
             json=data,
             headers={"Authorization": f"Bearer {self._inference_key}"},
             timeout=timeout_seconds
         )
+
+        return InferenceResponse(
+            body=response.json(),
+            headers=response.headers,
+            status_code=response.status_code,
+            status_text=response.reason
+        )
+
+    def health(self):
+        healthcheck_path = "health"
+        if self.containers and self.containers[0].healthcheck and self.containers[0].healthcheck.path:
+            healthcheck_path = self.containers[0].healthcheck.path.lstrip('/')
+
+        response = requests.get(
+            url=f"{self.endpoint_base_url}{healthcheck_path}",
+            headers={"Authorization": f"Bearer {self._inference_key}"},
+        )
+        return response  # TODO: agree on response format
+    # Function alias
+    healthcheck = health
+
+
+@dataclass_json(undefined=Undefined.EXCLUDE)
+@dataclass
+class InferenceResponse:
+    body: Any
+    headers: CaseInsensitiveDict[str]
+    status_code: int
+    status_text: str
 
 
 @dataclass_json
@@ -421,7 +441,7 @@ class ContainersService:
         :rtype: List[Deployment]
         """
         response = self.client.get(CONTAINER_DEPLOYMENTS_ENDPOINT)
-        return [Deployment.from_dict(deployment, infer_missing=True) for deployment in response.json()]
+        return [Deployment.from_dict_with_inference_key(deployment, self._inference_key) for deployment in response.json()]
 
     def get_deployment_by_name(self, deployment_name: str) -> Deployment:
         """Get a deployment by name
@@ -453,7 +473,7 @@ class ContainersService:
             CONTAINER_DEPLOYMENTS_ENDPOINT,
             deployment.to_dict()
         )
-        return Deployment.from_dict(response.json(), infer_missing=True)
+        return Deployment.from_dict_with_inference_key(response.json(), self._inference_key)
 
     def update_deployment(self, deployment_name: str, deployment: Deployment) -> Deployment:
         """Update an existing deployment
@@ -469,7 +489,7 @@ class ContainersService:
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}",
             deployment.to_dict()
         )
-        return Deployment.from_dict(response.json(), infer_missing=True)
+        return Deployment.from_dict_with_inference_key(response.json(), self._inference_key)
 
     def delete_deployment(self, deployment_name: str) -> None:
         """Delete a deployment
