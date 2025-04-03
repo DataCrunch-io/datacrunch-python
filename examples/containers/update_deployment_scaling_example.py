@@ -18,7 +18,7 @@ from datacrunch.containers.containers import (
 # Configuration - replace with your deployment name
 DEPLOYMENT_NAME = "my-deployment"
 
-# Environment variables
+# Get client secret and id from environment variables
 DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
 DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
 
@@ -87,26 +87,20 @@ def update_deployment_scaling(client: DataCrunchClient, deployment_name: str) ->
 def main() -> None:
     """Main function demonstrating scaling updates."""
     try:
-        # Check required environment variables
-        if not DATACRUNCH_CLIENT_ID or not DATACRUNCH_CLIENT_SECRET:
-            print(
-                "Please set DATACRUNCH_CLIENT_ID and DATACRUNCH_CLIENT_SECRET environment variables")
-            return
-
         # Initialize client
-        datacrunch_client = DataCrunchClient(
+        datacrunch = DataCrunchClient(
             DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET)
 
         # Verify deployment exists
-        if not check_deployment_exists(datacrunch_client, DEPLOYMENT_NAME):
+        if not check_deployment_exists(datacrunch, DEPLOYMENT_NAME):
             print(f"Deployment {DEPLOYMENT_NAME} does not exist.")
             return
 
         # Update scaling options using the API
-        update_deployment_scaling(datacrunch_client, DEPLOYMENT_NAME)
+        update_deployment_scaling(datacrunch, DEPLOYMENT_NAME)
 
         # Get current scaling options
-        scaling_options = datacrunch_client.containers.get_deployment_scaling_options(
+        scaling_options = datacrunch.containers.get_deployment_scaling_options(
             DEPLOYMENT_NAME)
         print(f"\nCurrent scaling configuration:")
         print(f"Min replicas: {scaling_options.min_replica_count}")

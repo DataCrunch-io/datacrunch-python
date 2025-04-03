@@ -12,12 +12,12 @@ from datacrunch.containers import EnvVar, EnvVarType
 from datacrunch import DataCrunchClient
 from typing import Dict, List
 
+# Get client secret and id from environment variables
 DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
 DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
 
 # Initialize DataCrunch client
-datacrunch_client = DataCrunchClient(client_id=DATACRUNCH_CLIENT_ID,
-                                     client_secret=DATACRUNCH_CLIENT_SECRET)
+datacrunch = DataCrunchClient(DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET)
 
 # Example deployment and container names
 DEPLOYMENT_NAME = "my-deployment"
@@ -36,13 +36,13 @@ def print_env_vars(env_vars: Dict[str, List[EnvVar]]) -> None:
 def main():
     # First, let's get the current environment variables
     print("Getting current environment variables...")
-    env_vars = datacrunch_client.containers.get_deployment_environment_variables(
+    env_vars = datacrunch.containers.get_deployment_environment_variables(
         DEPLOYMENT_NAME)
     print_env_vars(env_vars)
 
     # Create a new secret
     secret_name = "my-secret-key"
-    datacrunch_client.containers.create_secret(
+    datacrunch.containers.create_secret(
         secret_name,
         "my-secret-value"
     )
@@ -62,7 +62,7 @@ def main():
         )
     ]
 
-    env_vars = datacrunch_client.containers.add_deployment_environment_variables(
+    env_vars = datacrunch.containers.add_deployment_environment_variables(
         deployment_name=DEPLOYMENT_NAME,
         container_name=CONTAINER_NAME,
         env_vars=new_env_vars
@@ -79,7 +79,7 @@ def main():
         ),
     ]
 
-    env_vars = datacrunch_client.containers.update_deployment_environment_variables(
+    env_vars = datacrunch.containers.update_deployment_environment_variables(
         deployment_name=DEPLOYMENT_NAME,
         container_name=CONTAINER_NAME,
         env_vars=updated_env_vars
@@ -88,7 +88,7 @@ def main():
 
     # Delete environment variables
     print("\nDeleting environment variables...")
-    env_vars = datacrunch_client.containers.delete_deployment_environment_variables(
+    env_vars = datacrunch.containers.delete_deployment_environment_variables(
         deployment_name=DEPLOYMENT_NAME,
         container_name=CONTAINER_NAME,
         env_var_names=["DEBUG"]

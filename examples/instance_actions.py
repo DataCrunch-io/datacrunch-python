@@ -4,12 +4,12 @@ from datacrunch import DataCrunchClient
 from datacrunch.exceptions import APIException
 
 
-# Get client secret from environment variable
-CLIENT_SECRET = os.environ['DATACRUNCH_CLIENT_SECRET']
-CLIENT_ID = 'Ibk5bdxV64lKAWOqYnvSi'  # Replace with your client ID
+# Get client secret and id from environment variables
+DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
+DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
 
 # Create datcrunch client
-datacrunch = DataCrunchClient(CLIENT_ID, CLIENT_SECRET)
+datacrunch = DataCrunchClient(DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET)
 
 # Get all SSH keys
 ssh_keys = datacrunch.ssh_keys.get()
