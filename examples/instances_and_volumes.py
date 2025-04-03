@@ -1,12 +1,12 @@
 import os
 from datacrunch import DataCrunchClient
 
-# Get client secret from environment variable
-CLIENT_SECRET = os.environ['DATACRUNCH_CLIENT_SECRET']
-CLIENT_ID = 'Ibk5bdxV64lKAWOqYnvSi'  # Replace with your client ID
+# Get client secret and id from environment variables
+DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
+DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
 
 # Create datcrunch client
-datacrunch = DataCrunchClient(CLIENT_ID, CLIENT_SECRET)
+datacrunch = DataCrunchClient(DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET)
 
 # Get some volume type constants
 NVMe = datacrunch.constants.volume_types.NVMe
@@ -27,7 +27,7 @@ instance_with_extra_volumes = datacrunch.instances.create(instance_type='1V100.6
                                                           description='example instance',
                                                           volumes=[
                                                               {"type": HDD, "name": "volume-1",
-                                                                  "size": 95},
+                                                                      "size": 95},
                                                               {"type": NVMe,
                                                                "name": "volume-2", "size": 95}
                                                           ])

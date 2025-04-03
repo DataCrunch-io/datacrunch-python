@@ -35,16 +35,16 @@ CONTAINER_NAME = "sglang-server"
 MODEL_PATH = "deepseek-ai/deepseek-llm-7b-chat"
 HF_SECRET_NAME = "huggingface-token"
 IMAGE_URL = "docker.io/lmsysorg/sglang:v0.4.1.post6-cu124"
+CONTAINERS_API_URL = f'https://containers.datacrunch.io/{DEPLOYMENT_NAME}'
 
-# Environment variables
+# Get confidential values from environment variables
 DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
 DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
 HF_TOKEN = os.environ.get('HF_TOKEN')
 INFERENCE_API_KEY = os.environ.get('INFERENCE_API_KEY')
-CONTAINERS_API_URL = f'https://containers.datacrunch.io/{DEPLOYMENT_NAME}'
 
 # DataCrunch client instance (global for graceful shutdown)
-datacrunch_client = None
+datacrunch = None
 
 
 def wait_for_deployment_health(datacrunch_client: DataCrunchClient, deployment_name: str, max_attempts: int = 20, delay: int = 30) -> bool:
@@ -93,7 +93,7 @@ def graceful_shutdown(signum, frame) -> None:
     """Handle graceful shutdown on signals."""
     print(f"\nSignal {signum} received, cleaning up resources...")
     try:
-        cleanup_resources(datacrunch_client)
+        cleanup_resources(datacrunch)
     except Exception as e:
         print(f"Error during cleanup: {e}")
     sys.exit(0)
@@ -166,19 +166,13 @@ def test_deployment(base_url: str, api_key: str) -> None:
 def main() -> None:
     """Main function demonstrating SGLang deployment."""
     try:
-        # Check required environment variables
-        if not DATACRUNCH_CLIENT_ID or not DATACRUNCH_CLIENT_SECRET:
-            print(
-                "Please set DATACRUNCH_CLIENT_ID and DATACRUNCH_CLIENT_SECRET environment variables")
-            return
-
         if not HF_TOKEN:
             print("Please set HF_TOKEN environment variable with your Hugging Face token")
             return
 
         # Initialize client
-        global datacrunch_client
-        datacrunch_client = DataCrunchClient(
+        global datacrunch
+        datacrunch = DataCrunchClient(
             DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET)
 
         # Register signal handlers for cleanup
@@ -189,12 +183,12 @@ def main() -> None:
         print(f"Creating secret for Hugging Face token: {HF_SECRET_NAME}")
         try:
             # Check if secret already exists
-            existing_secrets = datacrunch_client.containers.get_secrets()
+            existing_secrets = datacrunch.containers.get_secrets()
             secret_exists = any(
                 secret.name == HF_SECRET_NAME for secret in existing_secrets)
 
             if not secret_exists:
-                datacrunch_client.containers.create_secret(
+                datacrunch.containers.create_secret(
                     HF_SECRET_NAME, HF_TOKEN)
                 print(f"Secret '{HF_SECRET_NAME}' created successfully")
             else:
@@ -264,14 +258,14 @@ def main() -> None:
         )
 
         # Create the deployment
-        created_deployment = datacrunch_client.containers.create(deployment)
+        created_deployment = datacrunch.containers.create(deployment)
         print(f"Created deployment: {created_deployment.name}")
         print("This will take several minutes while the model is downloaded and the server starts...")
 
         # Wait for deployment to be healthy
-        if not wait_for_deployment_health(datacrunch_client, DEPLOYMENT_NAME):
+        if not wait_for_deployment_health(datacrunch, DEPLOYMENT_NAME):
             print("Deployment health check failed")
-            cleanup_resources(datacrunch_client)
+            cleanup_resources(datacrunch)
             return
 
         # Get the deployment endpoint URL and inference API key
@@ -301,7 +295,7 @@ def main() -> None:
         keep_running = input(
             "\nDo you want to keep the deployment running? (y/n): ")
         if keep_running.lower() != 'y':
-            cleanup_resources(datacrunch_client)
+            cleanup_resources(datacrunch)
         else:
             print(
                 f"Deployment {DEPLOYMENT_NAME} is running. Don't forget to delete it when finished.")
@@ -312,7 +306,7 @@ def main() -> None:
         print(f"Unexpected error: {e}")
         # Attempt cleanup even if there was an error
         try:
-            cleanup_resources(datacrunch_client)
+            cleanup_resources(datacrunch)
         except Exception as cleanup_error:
             print(f"Error during cleanup after failure: {cleanup_error}")
 
