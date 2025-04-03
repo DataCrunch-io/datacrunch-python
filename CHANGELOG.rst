@@ -1,6 +1,9 @@
 Changelog
 =========
 
+* Added environment variables to container deployment example
+* Updated examples image from 'fastai' to 'ubuntu-24.04-cuda-12.8-open-docker'
+
 v1.8.4 (2025-03-25)
 -------------------
 
