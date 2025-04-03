@@ -1,4 +1,9 @@
-import requests
+"""Container deployment and management service for DataCrunch.
+
+This module provides functionality for managing container deployments, including
+creation, updates, deletion, and monitoring of containerized applications.
+"""
+
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json, Undefined  # type: ignore
 from typing import List, Optional, Dict, Any
@@ -16,16 +21,22 @@ SECRETS_ENDPOINT = '/secrets'
 
 
 class EnvVarType(str, Enum):
+    """Types of environment variables that can be set in containers."""
+
     PLAIN = "plain"
     SECRET = "secret"
 
 
 class VolumeMountType(str, Enum):
+    """Types of volume mounts that can be configured for containers."""
+
     SCRATCH = "scratch"
     SECRET = "secret"
 
 
 class ContainerRegistryType(str, Enum):
+    """Supported container registry types."""
+
     GCR = "gcr"
     DOCKERHUB = "dockerhub"
     GITHUB = "ghcr"
@@ -34,6 +45,8 @@ class ContainerRegistryType(str, Enum):
 
 
 class ContainerDeploymentStatus(str, Enum):
+    """Possible states of a container deployment."""
+
     INITIALIZING = "initializing"
     HEALTHY = "healthy"
     DEGRADED = "degraded"
@@ -47,12 +60,14 @@ class ContainerDeploymentStatus(str, Enum):
 @dataclass_json
 @dataclass
 class HealthcheckSettings:
-    """Settings for container health checking.
+    """Configuration for container health checking.
 
-    :param enabled: Whether health checking is enabled
-    :param port: Port number to perform health check on
-    :param path: HTTP path to perform health check on
+    Attributes:
+        enabled: Whether health checking is enabled.
+        port: Port number to perform health check on.
+        path: HTTP path to perform health check on.
     """
+
     enabled: bool = True
     port: Optional[int] = None
     path: Optional[str] = None
@@ -61,12 +76,14 @@ class HealthcheckSettings:
 @dataclass_json
 @dataclass
 class EntrypointOverridesSettings:
-    """Settings for overriding container entrypoint and command.
+    """Configuration for overriding container entrypoint and command.
 
-    :param enabled: Whether entrypoint overrides are enabled
-    :param entrypoint: List of strings forming the entrypoint command
-    :param cmd: List of strings forming the command arguments
+    Attributes:
+        enabled: Whether entrypoint overrides are enabled.
+        entrypoint: List of strings forming the entrypoint command.
+        cmd: List of strings forming the command arguments.
     """
+
     enabled: bool = True
     entrypoint: Optional[List[str]] = None
     cmd: Optional[List[str]] = None
@@ -77,10 +94,12 @@ class EntrypointOverridesSettings:
 class EnvVar:
     """Environment variable configuration for containers.
 
-    :param name: Name of the environment variable
-    :param value_or_reference_to_secret: Direct value or reference to a secret
-    :param type: Type of the environment variable
+    Attributes:
+        name: Name of the environment variable.
+        value_or_reference_to_secret: Direct value or reference to a secret.
+        type: Type of the environment variable.
     """
+
     name: str
     value_or_reference_to_secret: str
     type: EnvVarType
@@ -91,9 +110,11 @@ class EnvVar:
 class VolumeMount:
     """Volume mount configuration for containers.
 
-    :param type: Type of volume mount
-    :param mount_path: Path where the volume should be mounted in the container
+    Attributes:
+        type: Type of volume mount.
+        mount_path: Path where the volume should be mounted in the container.
     """
+
     type: VolumeMountType
     mount_path: str
 
@@ -103,14 +124,16 @@ class VolumeMount:
 class Container:
     """Container configuration for deployment creation and updates.
 
-    :param image: Container image to use
-    :param exposed_port: Port to expose from the container
-    :param name: Name of the container (system-managed, read-only)
-    :param healthcheck: Optional health check configuration
-    :param entrypoint_overrides: Optional entrypoint override settings
-    :param env: Optional list of environment variables
-    :param volume_mounts: Optional list of volume mounts
+    Attributes:
+        image: Container image to use.
+        exposed_port: Port to expose from the container.
+        name: Name of the container (system-managed, read-only).
+        healthcheck: Optional health check configuration.
+        entrypoint_overrides: Optional entrypoint override settings.
+        env: Optional list of environment variables.
+        volume_mounts: Optional list of volume mounts.
     """
+
     image: str
     exposed_port: int
     name: Optional[str] = None
@@ -125,8 +148,10 @@ class Container:
 class ContainerRegistryCredentials:
     """Credentials for accessing a container registry.
 
-    :param name: Name of the credentials
+    Attributes:
+        name: Name of the credentials.
     """
+
     name: str
 
 
@@ -135,9 +160,11 @@ class ContainerRegistryCredentials:
 class ContainerRegistrySettings:
     """Settings for container registry access.
 
-    :param is_private: Whether the registry is private
-    :param credentials: Optional credentials for accessing private registry
+    Attributes:
+        is_private: Whether the registry is private.
+        credentials: Optional credentials for accessing private registry.
     """
+
     is_private: bool
     credentials: Optional[ContainerRegistryCredentials] = None
 
@@ -147,10 +174,12 @@ class ContainerRegistrySettings:
 class ComputeResource:
     """Compute resource configuration.
 
-    :param name: Name of the compute resource
-    :param size: Size of the compute resource
-    :param is_available: Whether the compute resource is currently available
+    Attributes:
+        name: Name of the compute resource.
+        size: Size of the compute resource.
+        is_available: Whether the compute resource is currently available.
     """
+
     name: str
     size: int
     # Made optional since it's only used in API responses
@@ -162,8 +191,10 @@ class ComputeResource:
 class ScalingPolicy:
     """Policy for controlling scaling behavior.
 
-    :param delay_seconds: Number of seconds to wait before applying scaling action
+    Attributes:
+        delay_seconds: Number of seconds to wait before applying scaling action.
     """
+
     delay_seconds: int
 
 
@@ -172,8 +203,10 @@ class ScalingPolicy:
 class QueueLoadScalingTrigger:
     """Trigger for scaling based on queue load.
 
-    :param threshold: Queue load threshold that triggers scaling
+    Attributes:
+        threshold: Queue load threshold that triggers scaling.
     """
+
     threshold: float
 
 
@@ -182,9 +215,11 @@ class QueueLoadScalingTrigger:
 class UtilizationScalingTrigger:
     """Trigger for scaling based on resource utilization.
 
-    :param enabled: Whether this trigger is enabled
-    :param threshold: Utilization threshold that triggers scaling
+    Attributes:
+        enabled: Whether this trigger is enabled.
+        threshold: Utilization threshold that triggers scaling.
     """
+
     enabled: bool
     threshold: Optional[float] = None
 
@@ -194,10 +229,12 @@ class UtilizationScalingTrigger:
 class ScalingTriggers:
     """Collection of triggers that can cause scaling actions.
 
-    :param queue_load: Optional trigger based on queue load
-    :param cpu_utilization: Optional trigger based on CPU utilization
-    :param gpu_utilization: Optional trigger based on GPU utilization
+    Attributes:
+        queue_load: Optional trigger based on queue load.
+        cpu_utilization: Optional trigger based on CPU utilization.
+        gpu_utilization: Optional trigger based on GPU utilization.
     """
+
     queue_load: Optional[QueueLoadScalingTrigger] = None
     cpu_utilization: Optional[UtilizationScalingTrigger] = None
     gpu_utilization: Optional[UtilizationScalingTrigger] = None
@@ -208,14 +245,16 @@ class ScalingTriggers:
 class ScalingOptions:
     """Configuration for automatic scaling behavior.
 
-    :param min_replica_count: Minimum number of replicas to maintain
-    :param max_replica_count: Maximum number of replicas allowed
-    :param scale_down_policy: Policy for scaling down replicas
-    :param scale_up_policy: Policy for scaling up replicas
-    :param queue_message_ttl_seconds: Time-to-live for queue messages in seconds
-    :param concurrent_requests_per_replica: Number of concurrent requests each replica can handle
-    :param scaling_triggers: Configuration for various scaling triggers
+    Attributes:
+        min_replica_count: Minimum number of replicas to maintain.
+        max_replica_count: Maximum number of replicas allowed.
+        scale_down_policy: Policy for scaling down replicas.
+        scale_up_policy: Policy for scaling up replicas.
+        queue_message_ttl_seconds: Time-to-live for queue messages in seconds.
+        concurrent_requests_per_replica: Number of concurrent requests each replica can handle.
+        scaling_triggers: Configuration for various scaling triggers.
     """
+
     min_replica_count: int
     max_replica_count: int
     scale_down_policy: ScalingPolicy
@@ -230,15 +269,17 @@ class ScalingOptions:
 class Deployment:
     """Configuration for creating or updating a container deployment.
 
-    :param name: Name of the deployment
-    :param container_registry_settings: Settings for accessing container registry
-    :param containers: List of container specifications in the deployment
-    :param compute: Compute resource configuration
-    :param is_spot: Whether is spot deployment
-    :param endpoint_base_url: Optional base URL for the deployment endpoint
-    :param scaling: Optional scaling configuration
-    :param created_at: Optional timestamp when the deployment was created
+    Attributes:
+        name: Name of the deployment.
+        container_registry_settings: Settings for accessing container registry.
+        containers: List of container specifications in the deployment.
+        compute: Compute resource configuration.
+        is_spot: Whether is spot deployment.
+        endpoint_base_url: Optional base URL for the deployment endpoint.
+        scaling: Optional scaling configuration.
+        created_at: Optional timestamp when the deployment was created.
     """
+
     name: str
     container_registry_settings: ContainerRegistrySettings
     containers: List[Container]
@@ -251,7 +292,11 @@ class Deployment:
     _inference_client: Optional[InferenceClient] = None
 
     def __str__(self):
-        """String representation of the deployment, excluding sensitive information."""
+        """Returns a string representation of the deployment, excluding sensitive information.
+
+        Returns:
+            str: A formatted string representation of the deployment.
+        """
         # Get all attributes except _inference_client
         attrs = {k: v for k, v in self.__dict__.items() if k !=
                  '_inference_client'}
@@ -260,16 +305,23 @@ class Deployment:
         return f"Deployment({', '.join(attr_strs)})"
 
     def __repr__(self):
-        """Repr representation of the deployment, excluding sensitive information."""
+        """Returns a repr representation of the deployment, excluding sensitive information.
+
+        Returns:
+            str: A formatted string representation of the deployment.
+        """
         return self.__str__()
 
     @classmethod
     def from_dict_with_inference_key(cls, data: Dict[str, Any], inference_key: str = None) -> 'Deployment':
-        """Create a Deployment instance from a dictionary with an inference key.
+        """Creates a Deployment instance from a dictionary with an inference key.
 
-        :param data: Dictionary containing deployment data
-        :param inference_key: inference key to set on the deployment
-        :return: Deployment instance
+        Args:
+            data: Dictionary containing deployment data.
+            inference_key: Inference key to set on the deployment.
+
+        Returns:
+            Deployment: A new Deployment instance with the inference client initialized.
         """
         deployment = Deployment.from_dict(data, infer_missing=True)
         if inference_key and deployment.endpoint_base_url:
@@ -280,11 +332,13 @@ class Deployment:
         return deployment
 
     def set_inference_client(self, inference_key: str) -> None:
-        """Set the inference client for this deployment.
+        """Sets the inference client for this deployment.
 
-        :param inference_key: The inference key to use for authentication
-        :type inference_key: str
-        :raises ValueError: If endpoint_base_url is not set
+        Args:
+            inference_key: The inference key to use for authentication.
+
+        Raises:
+            ValueError: If endpoint_base_url is not set.
         """
         if self.endpoint_base_url is None:
             raise ValueError(
@@ -294,26 +348,68 @@ class Deployment:
             endpoint_base_url=self.endpoint_base_url
         )
 
-    def run_sync(self, data: Dict[str, Any], path: str = "", timeout_seconds: int = 60 * 5) -> InferenceResponse:
+    def _validate_inference_client(self) -> None:
+        """Validates that the inference client is initialized.
+
+        Raises:
+            ValueError: If inference client is not initialized.
+        """
         if self._inference_client is None:
-            if self.endpoint_base_url is None:
-                raise ValueError(
-                    "Endpoint base URL must be set to use run_sync")
             raise ValueError(
                 "Inference client not initialized. Use from_dict_with_inference_key or set_inference_client to initialize inference capabilities.")
-        return self._inference_client.run_sync(data, path, timeout_seconds)
+
+    def run_sync(self, data: Dict[str, Any], path: str = "", timeout_seconds: int = 60 * 5, headers: Optional[Dict[str, str]] = None) -> InferenceResponse:
+        """Runs a synchronous inference request.
+
+        Args:
+            data: The data to send in the request.
+            path: The endpoint path to send the request to.
+            timeout_seconds: Maximum time to wait for the response.
+            headers: Optional headers to include in the request.
+
+        Returns:
+            InferenceResponse: The response from the inference request.
+
+        Raises:
+            ValueError: If the inference client is not initialized.
+        """
+        self._validate_inference_client()
+        return self._inference_client.run_sync(data, path, timeout_seconds, headers)
+
+    def run(self, data: Dict[str, Any], path: str = "", timeout_seconds: int = 60 * 5, headers: Optional[Dict[str, str]] = None):
+        """Runs an asynchronous inference request.
+
+        Args:
+            data: The data to send in the request.
+            path: The endpoint path to send the request to.
+            timeout_seconds: Maximum time to wait for the response.
+            headers: Optional headers to include in the request.
+
+        Returns:
+            The response from the inference request.
+
+        Raises:
+            ValueError: If the inference client is not initialized.
+        """
+        self._validate_inference_client()
+        return self._inference_client.run(data, path, timeout_seconds, headers)
 
     def health(self):
-        # TODO: use inference client?
-        healthcheck_path = "health"
-        if self.containers and self.containers[0].healthcheck and self.containers[0].healthcheck.path:
-            healthcheck_path = self.containers[0].healthcheck.path.lstrip('/')
+        """Checks the health of the deployed application.
 
-        response = requests.get(
-            url=f"{self.endpoint_base_url}{healthcheck_path}",
-            headers={"Authorization": f"Bearer {self._inference_key}"},
-        )
-        return response  # TODO: agree on response format
+        Returns:
+            The health check response.
+
+        Raises:
+            ValueError: If the inference client is not initialized.
+        """
+        self._validate_inference_client()
+        # build healthcheck path
+        healthcheck_path = "/health"
+        if self.containers and self.containers[0].healthcheck and self.containers[0].healthcheck.path:
+            healthcheck_path = self.containers[0].healthcheck.path
+
+        return self._inference_client.health(healthcheck_path)
     # Function alias
     healthcheck = health
 
@@ -323,10 +419,12 @@ class Deployment:
 class ReplicaInfo:
     """Information about a deployment replica.
 
-    :param id: Unique identifier of the replica
-    :param status: Current status of the replica
-    :param started_at: Timestamp when the replica was started
+    Attributes:
+        id: Unique identifier of the replica.
+        status: Current status of the replica.
+        started_at: Timestamp when the replica was started.
     """
+
     id: str
     status: str
     started_at: str
@@ -335,7 +433,13 @@ class ReplicaInfo:
 @dataclass_json
 @dataclass
 class Secret:
-    """A secret model class"""
+    """A secret model class.
+
+    Attributes:
+        name: Name of the secret.
+        created_at: Timestamp when the secret was created.
+    """
+
     name: str
     created_at: str
 
@@ -343,7 +447,13 @@ class Secret:
 @dataclass_json
 @dataclass
 class RegistryCredential:
-    """A container registry credential model class"""
+    """A container registry credential model class.
+
+    Attributes:
+        name: Name of the registry credential.
+        created_at: Timestamp when the credential was created.
+    """
+
     name: str
     created_at: str
 
@@ -351,7 +461,13 @@ class RegistryCredential:
 @dataclass_json
 @dataclass
 class BaseRegistryCredentials:
-    """Base class for registry credentials"""
+    """Base class for registry credentials.
+
+    Attributes:
+        name: Name of the registry credential.
+        type: Type of the container registry.
+    """
+
     name: str
     type: ContainerRegistryType
 
@@ -359,11 +475,24 @@ class BaseRegistryCredentials:
 @dataclass_json
 @dataclass
 class DockerHubCredentials(BaseRegistryCredentials):
-    """Credentials for DockerHub registry"""
+    """Credentials for DockerHub registry.
+
+    Attributes:
+        username: DockerHub username.
+        access_token: DockerHub access token.
+    """
+
     username: str
     access_token: str
 
     def __init__(self, name: str, username: str, access_token: str):
+        """Initializes DockerHub credentials.
+
+        Args:
+            name: Name of the credentials.
+            username: DockerHub username.
+            access_token: DockerHub access token.
+        """
         super().__init__(name=name, type=ContainerRegistryType.DOCKERHUB)
         self.username = username
         self.access_token = access_token
@@ -372,11 +501,24 @@ class DockerHubCredentials(BaseRegistryCredentials):
 @dataclass_json
 @dataclass
 class GithubCredentials(BaseRegistryCredentials):
-    """Credentials for GitHub Container Registry"""
+    """Credentials for GitHub Container Registry.
+
+    Attributes:
+        username: GitHub username.
+        access_token: GitHub access token.
+    """
+
     username: str
     access_token: str
 
     def __init__(self, name: str, username: str, access_token: str):
+        """Initializes GitHub credentials.
+
+        Args:
+            name: Name of the credentials.
+            username: GitHub username.
+            access_token: GitHub access token.
+        """
         super().__init__(name=name, type=ContainerRegistryType.GITHUB)
         self.username = username
         self.access_token = access_token
@@ -385,10 +527,21 @@ class GithubCredentials(BaseRegistryCredentials):
 @dataclass_json
 @dataclass
 class GCRCredentials(BaseRegistryCredentials):
-    """Credentials for Google Container Registry"""
+    """Credentials for Google Container Registry.
+
+    Attributes:
+        service_account_key: GCP service account key JSON.
+    """
+
     service_account_key: str
 
     def __init__(self, name: str, service_account_key: str):
+        """Initializes GCR credentials.
+
+        Args:
+            name: Name of the credentials.
+            service_account_key: GCP service account key JSON.
+        """
         super().__init__(name=name, type=ContainerRegistryType.GCR)
         self.service_account_key = service_account_key
 
@@ -396,13 +549,30 @@ class GCRCredentials(BaseRegistryCredentials):
 @dataclass_json
 @dataclass
 class AWSECRCredentials(BaseRegistryCredentials):
-    """Credentials for AWS Elastic Container Registry"""
+    """Credentials for AWS Elastic Container Registry.
+
+    Attributes:
+        access_key_id: AWS access key ID.
+        secret_access_key: AWS secret access key.
+        region: AWS region.
+        ecr_repo: ECR repository name.
+    """
+
     access_key_id: str
     secret_access_key: str
     region: str
     ecr_repo: str
 
     def __init__(self, name: str, access_key_id: str, secret_access_key: str, region: str, ecr_repo: str):
+        """Initializes AWS ECR credentials.
+
+        Args:
+            name: Name of the credentials.
+            access_key_id: AWS access key ID.
+            secret_access_key: AWS secret access key.
+            region: AWS region.
+            ecr_repo: ECR repository name.
+        """
         super().__init__(name=name, type=ContainerRegistryType.AWS_ECR)
         self.access_key_id = access_key_id
         self.secret_access_key = secret_access_key
@@ -413,42 +583,59 @@ class AWSECRCredentials(BaseRegistryCredentials):
 @dataclass_json
 @dataclass
 class CustomRegistryCredentials(BaseRegistryCredentials):
-    """Credentials for custom container registries"""
+    """Credentials for custom container registries.
+
+    Attributes:
+        docker_config_json: Docker config JSON containing registry credentials.
+    """
+
     docker_config_json: str
 
     def __init__(self, name: str, docker_config_json: str):
+        """Initializes custom registry credentials.
+
+        Args:
+            name: Name of the credentials.
+            docker_config_json: Docker config JSON containing registry credentials.
+        """
         super().__init__(name=name, type=ContainerRegistryType.CUSTOM)
         self.docker_config_json = docker_config_json
 
 
 class ContainersService:
-    """Service for managing container deployments"""
+    """Service for managing container deployments.
+
+    This class provides methods for interacting with the DataCrunch container
+    deployment API, including CRUD operations for deployments and related resources.
+    """
 
     def __init__(self, http_client: HTTPClient, inference_key: str = None) -> None:
-        """Initialize the containers service
+        """Initializes the containers service.
 
-        :param http_client: HTTP client for making API requests
-        :type http_client: Any
+        Args:
+            http_client: HTTP client for making API requests.
+            inference_key: Optional inference key for authenticating inference requests.
         """
         self.client = http_client
         self._inference_key = inference_key
 
     def get_deployments(self) -> List[Deployment]:
-        """Get all deployments
+        """Retrieves all container deployments.
 
-        :return: list of deployments
-        :rtype: List[Deployment]
+        Returns:
+            List[Deployment]: List of all deployments.
         """
         response = self.client.get(CONTAINER_DEPLOYMENTS_ENDPOINT)
         return [Deployment.from_dict_with_inference_key(deployment, self._inference_key) for deployment in response.json()]
 
     def get_deployment_by_name(self, deployment_name: str) -> Deployment:
-        """Get a deployment by name
+        """Retrieves a specific deployment by name.
 
-        :param deployment_name: name of the deployment
-        :type deployment_name: str
-        :return: deployment
-        :rtype: Deployment
+        Args:
+            deployment_name: Name of the deployment to retrieve.
+
+        Returns:
+            Deployment: The requested deployment.
         """
         response = self.client.get(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}")
@@ -461,12 +648,13 @@ class ContainersService:
         self,
         deployment: Deployment
     ) -> Deployment:
-        """Create a new deployment
+        """Creates a new container deployment.
 
-        :param deployment: deployment configuration
-        :type deployment: Deployment
-        :return: created deployment
-        :rtype: Deployment
+        Args:
+            deployment: Deployment configuration to create.
+
+        Returns:
+            Deployment: The created deployment.
         """
         response = self.client.post(
             CONTAINER_DEPLOYMENTS_ENDPOINT,
@@ -475,14 +663,14 @@ class ContainersService:
         return Deployment.from_dict_with_inference_key(response.json(), self._inference_key)
 
     def update_deployment(self, deployment_name: str, deployment: Deployment) -> Deployment:
-        """Update an existing deployment
+        """Updates an existing deployment.
 
-        :param deployment_name: name of the deployment to update
-        :type deployment_name: str
-        :param deployment: updated deployment
-        :type deployment: Deployment
-        :return: updated deployment
-        :rtype: Deployment
+        Args:
+            deployment_name: Name of the deployment to update.
+            deployment: Updated deployment configuration.
+
+        Returns:
+            Deployment: The updated deployment.
         """
         response = self.client.patch(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}",
@@ -491,56 +679,58 @@ class ContainersService:
         return Deployment.from_dict_with_inference_key(response.json(), self._inference_key)
 
     def delete_deployment(self, deployment_name: str) -> None:
-        """Delete a deployment
+        """Deletes a deployment.
 
-        :param deployment_name: name of the deployment to delete
-        :type deployment_name: str
+        Args:
+            deployment_name: Name of the deployment to delete.
         """
         self.client.delete(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}")
 
     def get_deployment_status(self, deployment_name: str) -> ContainerDeploymentStatus:
-        """Get deployment status
+        """Retrieves the current status of a deployment.
 
-        :param deployment_name: name of the deployment
-        :type deployment_name: str
-        :return: deployment status
-        :rtype: ContainerDeploymentStatus
+        Args:
+            deployment_name: Name of the deployment.
+
+        Returns:
+            ContainerDeploymentStatus: Current status of the deployment.
         """
         response = self.client.get(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/status")
         return ContainerDeploymentStatus(response.json()["status"])
 
     def restart_deployment(self, deployment_name: str) -> None:
-        """Restart a deployment
+        """Restarts a deployment.
 
-        :param deployment_name: name of the deployment to restart
-        :type deployment_name: str
+        Args:
+            deployment_name: Name of the deployment to restart.
         """
         self.client.post(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/restart")
 
     def get_deployment_scaling_options(self, deployment_name: str) -> ScalingOptions:
-        """Get deployment scaling options
+        """Retrieves the scaling options for a deployment.
 
-        :param deployment_name: name of the deployment
-        :type deployment_name: str
-        :return: scaling options
-        :rtype: ScalingOptions
+        Args:
+            deployment_name: Name of the deployment.
+
+        Returns:
+            ScalingOptions: Current scaling options for the deployment.
         """
         response = self.client.get(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/scaling")
         return ScalingOptions.from_dict(response.json())
 
     def update_deployment_scaling_options(self, deployment_name: str, scaling_options: ScalingOptions) -> ScalingOptions:
-        """Update deployment scaling options
+        """Updates the scaling options for a deployment.
 
-        :param deployment_name: name of the deployment
-        :type deployment_name: str
-        :param scaling_options: new scaling options
-        :type scaling_options: ScalingOptions
-        :return: updated scaling options
-        :rtype: ScalingOptions
+        Args:
+            deployment_name: Name of the deployment.
+            scaling_options: New scaling options to apply.
+
+        Returns:
+            ScalingOptions: Updated scaling options for the deployment.
         """
         response = self.client.patch(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/scaling",
@@ -549,51 +739,53 @@ class ContainersService:
         return ScalingOptions.from_dict(response.json())
 
     def get_deployment_replicas(self, deployment_name: str) -> List[ReplicaInfo]:
-        """Get deployment replicas
+        """Retrieves information about deployment replicas.
 
-        :param deployment_name: name of the deployment
-        :type deployment_name: str
-        :return: list of replicas information
-        :rtype: List[ReplicaInfo]
+        Args:
+            deployment_name: Name of the deployment.
+
+        Returns:
+            List[ReplicaInfo]: List of replica information.
         """
         response = self.client.get(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/replicas")
         return [ReplicaInfo.from_dict(replica) for replica in response.json()["list"]]
 
     def purge_deployment_queue(self, deployment_name: str) -> None:
-        """Purge deployment queue
+        """Purges the deployment queue.
 
-        :param deployment_name: name of the deployment
-        :type deployment_name: str
+        Args:
+            deployment_name: Name of the deployment.
         """
         self.client.post(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/purge-queue")
 
     def pause_deployment(self, deployment_name: str) -> None:
-        """Pause a deployment
+        """Pauses a deployment.
 
-        :param deployment_name: name of the deployment to pause
-        :type deployment_name: str
+        Args:
+            deployment_name: Name of the deployment to pause.
         """
         self.client.post(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/pause")
 
     def resume_deployment(self, deployment_name: str) -> None:
-        """Resume a deployment
+        """Resumes a paused deployment.
 
-        :param deployment_name: name of the deployment to resume
-        :type deployment_name: str
+        Args:
+            deployment_name: Name of the deployment to resume.
         """
         self.client.post(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/resume")
 
     def get_deployment_environment_variables(self, deployment_name: str) -> Dict[str, List[EnvVar]]:
-        """Get deployment environment variables
+        """Retrieves environment variables for a deployment.
 
-        :param deployment_name: name of the deployment
-        :type deployment_name: str
-        :return: dictionary mapping container names to their environment variables
-        :rtype: Dict[str, List[EnvVar]]
+        Args:
+            deployment_name: Name of the deployment.
+
+        Returns:
+            Dict[str, List[EnvVar]]: Dictionary mapping container names to their environment variables.
         """
         response = self.client.get(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/environment-variables")
@@ -606,16 +798,15 @@ class ContainersService:
         return result
 
     def add_deployment_environment_variables(self, deployment_name: str, container_name: str, env_vars: List[EnvVar]) -> Dict[str, List[EnvVar]]:
-        """Add environment variables to a container
+        """Adds environment variables to a container in a deployment.
 
-        :param deployment_name: name of the deployment
-        :type deployment_name: str
-        :param container_name: name of the container
-        :type container_name: str
-        :param env_vars: environment variables to add
-        :type env_vars: List[EnvVar]
-        :return: updated environment variables
-        :rtype: Dict[str, List[EnvVar]]
+        Args:
+            deployment_name: Name of the deployment.
+            container_name: Name of the container.
+            env_vars: List of environment variables to add.
+
+        Returns:
+            Dict[str, List[EnvVar]]: Updated environment variables for all containers.
         """
         response = self.client.post(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/environment-variables",
@@ -631,16 +822,15 @@ class ContainersService:
         return result
 
     def update_deployment_environment_variables(self, deployment_name: str, container_name: str, env_vars: List[EnvVar]) -> Dict[str, List[EnvVar]]:
-        """Update environment variables of a container
+        """Updates environment variables for a container in a deployment.
 
-        :param deployment_name: name of the deployment
-        :type deployment_name: str
-        :param container_name: name of the container
-        :type container_name: str
-        :param env_vars: updated environment variables
-        :type env_vars: List[EnvVar]
-        :return: updated environment variables
-        :rtype: Dict[str, List[EnvVar]] 
+        Args:
+            deployment_name: Name of the deployment.
+            container_name: Name of the container.
+            env_vars: List of updated environment variables.
+
+        Returns:
+            Dict[str, List[EnvVar]]: Updated environment variables for all containers.
         """
         response = self.client.patch(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/environment-variables",
@@ -656,16 +846,15 @@ class ContainersService:
         return result
 
     def delete_deployment_environment_variables(self, deployment_name: str, container_name: str, env_var_names: List[str]) -> Dict[str, List[EnvVar]]:
-        """Delete environment variables from a container
+        """Deletes environment variables from a container in a deployment.
 
-        :param deployment_name: name of the deployment
-        :type deployment_name: str
-        :param container_name: name of the container
-        :type container_name: str
-        :param env_var_names: names of environment variables to delete
-        :type env_var_names: List[str]
-        :return: remaining environment variables
-        :rtype: Dict[str, List[EnvVar]]
+        Args:
+            deployment_name: Name of the deployment.
+            container_name: Name of the container.
+            env_var_names: List of environment variable names to delete.
+
+        Returns:
+            Dict[str, List[EnvVar]]: Updated environment variables for all containers.
         """
         response = self.client.delete(
             f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/environment-variables",
@@ -680,10 +869,10 @@ class ContainersService:
         return result
 
     def get_compute_resources(self) -> List[ComputeResource]:
-        """Get available compute resources
+        """Retrieves available compute resources.
 
-        :return: list of compute resources
-        :rtype: List[ComputeResource]
+        Returns:
+            List[ComputeResource]: List of available compute resources.
         """
         response = self.client.get(SERVERLESS_COMPUTE_RESOURCES_ENDPOINT)
         resources = []
@@ -696,58 +885,56 @@ class ContainersService:
     get_gpus = get_compute_resources
 
     def get_secrets(self) -> List[Secret]:
-        """Get all secrets
+        """Retrieves all secrets.
 
-        :return: list of secrets
-        :rtype: List[Secret]
+        Returns:
+            List[Secret]: List of all secrets.
         """
         response = self.client.get(SECRETS_ENDPOINT)
         return [Secret.from_dict(secret) for secret in response.json()]
 
     def create_secret(self, name: str, value: str) -> None:
-        """Create a new secret
+        """Creates a new secret.
 
-        :param name: name of the secret
-        :type name: str
-        :param value: value of the secret
-        :type value: str
+        Args:
+            name: Name of the secret.
+            value: Value of the secret.
         """
         self.client.post(SECRETS_ENDPOINT, {"name": name, "value": value})
 
     def delete_secret(self, secret_name: str, force: bool = False) -> None:
-        """Delete a secret
+        """Deletes a secret.
 
-        :param secret_name: name of the secret to delete
-        :type secret_name: str
-        :param force: force delete even if secret is in use
-        :type force: bool
+        Args:
+            secret_name: Name of the secret to delete.
+            force: Whether to force delete even if secret is in use.
         """
         self.client.delete(
             f"{SECRETS_ENDPOINT}/{secret_name}", params={"force": str(force).lower()})
 
     def get_registry_credentials(self) -> List[RegistryCredential]:
-        """Get all registry credentials
+        """Retrieves all registry credentials.
 
-        :return: list of registry credentials
-        :rtype: List[RegistryCredential]
+        Returns:
+            List[RegistryCredential]: List of all registry credentials.
         """
         response = self.client.get(CONTAINER_REGISTRY_CREDENTIALS_ENDPOINT)
         return [RegistryCredential.from_dict(credential) for credential in response.json()]
 
     def add_registry_credentials(self, credentials: BaseRegistryCredentials) -> None:
-        """Add registry credentials
+        """Adds new registry credentials.
 
-        :param credentials: Registry credentials object
-        :type credentials: BaseRegistryCredentials
+        Args:
+            credentials: Registry credentials to add.
         """
         data = credentials.to_dict()
         self.client.post(CONTAINER_REGISTRY_CREDENTIALS_ENDPOINT, data)
 
     def delete_registry_credentials(self, credentials_name: str) -> None:
-        """Delete registry credentials
+        """Deletes registry credentials.
 
-        :param credentials_name: name of the credentials to delete
-        :type credentials_name: str
+        Args:
+            credentials_name: Name of the credentials to delete.
         """
         self.client.delete(
             f"{CONTAINER_REGISTRY_CREDENTIALS_ENDPOINT}/{credentials_name}")

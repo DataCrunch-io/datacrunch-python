@@ -20,8 +20,29 @@ class InferenceResponse:
     status_text: str
 
 
+@dataclass_json(undefined=Undefined.EXCLUDE)
+@dataclass
+class AsyncInferenceExecution:
+    id: str
+    status: str
+
+    _client: 'InferenceClient'
+
+    def status(self) -> str:
+        # TODO: Call the status endpoint and update the status
+        return self.status
+
+    # def cancel(self) -> None:
+    #     # TODO: Call the cancel inference executionendpoint
+    #     pass
+
+    def get_results(self) -> Dict[str, Any]:
+        # TODO: Call the results endpoint
+        pass
+
+
 class InferenceClient:
-    def __init__(self, inference_key: str, endpoint_base_url: str, timeout_seconds: int = 300) -> None:
+    def __init__(self, inference_key: str, endpoint_base_url: str, timeout_seconds: int = 60 * 5) -> None:
         """
         Initialize the InferenceClient.
 
@@ -157,6 +178,21 @@ class InferenceClient:
             status_text=response.reason
         )
 
+    def run(self, data: Dict[str, Any], path: str = "", timeout_seconds: int = 60 * 5, headers: Optional[Dict[str, str]] = None):
+        # Add the "Prefer: respond-async" header to the request, to indicate that the request is async
+        headers = headers or {}
+        headers['Prefer'] = 'respond-async'
+
+        response = self.post(
+            path, json=data, timeout_seconds=timeout_seconds, headers=headers)
+
+        # TODO: create an async response class:
+        # TODO: add a method to check the status of the async request
+        # TODO: add a method to cancel the async request
+        # TODO: add a method to get the results of the async request
+
+        return '837cdf50-6cf1-44b0-884e-ed115e700480'
+
     def get(self, path: str, params: Optional[Dict[str, Any]] = None, headers: Optional[Dict[str, str]] = None, timeout_seconds: Optional[int] = None) -> requests.Response:
         return self._make_request('GET', path, params=params, headers=headers, timeout_seconds=timeout_seconds)
 
@@ -181,18 +217,17 @@ class InferenceClient:
     def options(self, path: str, params: Optional[Dict[str, Any]] = None, headers: Optional[Dict[str, str]] = None, timeout_seconds: Optional[int] = None) -> requests.Response:
         return self._make_request('OPTIONS', path, params=params, headers=headers, timeout_seconds=timeout_seconds)
 
-    def health(self) -> dict:
+    def health(self, healthcheck_path: str = "/health") -> requests.Response:
         """
         Check the health status of the API.
 
         Returns:
-            dict: Health status information
+            requests.Response: The response from the health check
 
         Raises:
             InferenceClientError: If the health check fails
         """
         try:
-            response = self.get('/health')
-            return response.json()
+            return self.get(healthcheck_path)
         except InferenceClientError as e:
             raise InferenceClientError(f"Health check failed: {str(e)}")
