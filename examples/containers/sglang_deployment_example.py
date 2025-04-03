@@ -43,9 +43,6 @@ DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
 INFERENCE_KEY = os.environ.get('INFERENCE_KEY')
 HF_TOKEN = os.environ.get('HF_TOKEN')
 
-# DataCrunch client instance (global for graceful shutdown)
-datacrunch = None
-
 
 def wait_for_deployment_health(datacrunch_client: DataCrunchClient, deployment_name: str, max_attempts: int = 20, delay: int = 30) -> bool:
     """Wait for deployment to reach healthy status.
@@ -99,174 +96,168 @@ def graceful_shutdown(signum, frame) -> None:
     sys.exit(0)
 
 
-def main() -> None:
-    """Main function demonstrating SGLang deployment."""
+try:
+    # Get the inference API key
+    inference_key = INFERENCE_KEY
+    if not inference_key:
+        inference_key = input(
+            "Enter your Inference API Key from the DataCrunch dashboard: ")
+    else:
+        print("Using Inference API Key from environment")
+
+    # Initialize client with inference key
+    datacrunch = DataCrunchClient(
+        DATACRUNCH_CLIENT_ID,
+        DATACRUNCH_CLIENT_SECRET,
+        inference_key=inference_key
+    )
+
+    # Register signal handlers for cleanup
+    signal.signal(signal.SIGINT, graceful_shutdown)
+    signal.signal(signal.SIGTERM, graceful_shutdown)
+
+    # Create a secret for the Hugging Face token
+    print(f"Creating secret for Hugging Face token: {HF_SECRET_NAME}")
     try:
-        # Get the inference API key
-        inference_key = INFERENCE_KEY
-        if not inference_key:
-            inference_key = input(
-                "Enter your Inference API Key from the DataCrunch dashboard: ")
-        else:
-            print("Using Inference API Key from environment")
+        # Check if secret already exists
+        existing_secrets = datacrunch.containers.get_secrets()
+        secret_exists = any(
+            secret.name == HF_SECRET_NAME for secret in existing_secrets)
 
-        # Initialize client with inference key
-        global datacrunch
-        datacrunch = DataCrunchClient(
-            DATACRUNCH_CLIENT_ID,
-            DATACRUNCH_CLIENT_SECRET,
-            inference_key=inference_key
-        )
-
-        # Register signal handlers for cleanup
-        signal.signal(signal.SIGINT, graceful_shutdown)
-        signal.signal(signal.SIGTERM, graceful_shutdown)
-
-        # Create a secret for the Hugging Face token
-        print(f"Creating secret for Hugging Face token: {HF_SECRET_NAME}")
-        try:
-            # Check if secret already exists
-            existing_secrets = datacrunch.containers.get_secrets()
-            secret_exists = any(
-                secret.name == HF_SECRET_NAME for secret in existing_secrets)
-
-            if not secret_exists:
-                # check is HF_TOKEN is set, if not, prompt the user
-                if not HF_TOKEN:
-                    HF_TOKEN = input(
-                        "Enter your Hugging Face token: ")
-                datacrunch.containers.create_secret(
-                    HF_SECRET_NAME, HF_TOKEN)
-                print(f"Secret '{HF_SECRET_NAME}' created successfully")
-            else:
-                print(
-                    f"Secret '{HF_SECRET_NAME}' already exists, using existing secret")
-        except APIException as e:
-            print(f"Error creating secret: {e}")
-            return
-
-        # Create container configuration
-        container = Container(
-            image=IMAGE_URL,
-            exposed_port=30000,
-            healthcheck=HealthcheckSettings(
-                enabled=True,
-                port=30000,
-                path="/health"
-            ),
-            entrypoint_overrides=EntrypointOverridesSettings(
-                enabled=True,
-                cmd=["python3", "-m", "sglang.launch_server", "--model-path",
-                     MODEL_PATH, "--host", "0.0.0.0", "--port", "30000"]
-            ),
-            env=[
-                EnvVar(
-                    name="HF_TOKEN",
-                    value_or_reference_to_secret=HF_SECRET_NAME,
-                    type=EnvVarType.SECRET
-                )
-            ]
-        )
-
-        # Create scaling configuration - default values
-        scaling_options = ScalingOptions(
-            min_replica_count=1,
-            max_replica_count=2,
-            scale_down_policy=ScalingPolicy(delay_seconds=300),
-            scale_up_policy=ScalingPolicy(delay_seconds=300),
-            queue_message_ttl_seconds=500,
-            concurrent_requests_per_replica=1,
-            scaling_triggers=ScalingTriggers(
-                queue_load=QueueLoadScalingTrigger(threshold=1),
-                cpu_utilization=UtilizationScalingTrigger(
-                    enabled=True,
-                    threshold=90
-                ),
-                gpu_utilization=UtilizationScalingTrigger(
-                    enabled=True,
-                    threshold=90
-                )
-            )
-        )
-
-        # Create registry and compute settings
-        registry_settings = ContainerRegistrySettings(is_private=False)
-        # For a 7B model, General Compute (24GB VRAM) is sufficient
-        compute = ComputeResource(name="General Compute", size=1)
-
-        # Create deployment object
-        deployment = Deployment(
-            name=DEPLOYMENT_NAME,
-            container_registry_settings=registry_settings,
-            containers=[container],
-            compute=compute,
-            scaling=scaling_options,
-            is_spot=False
-        )
-
-        # Create the deployment
-        created_deployment = datacrunch.containers.create_deployment(
-            deployment)
-        print(f"Created deployment: {created_deployment.name}")
-        print("This will take several minutes while the model is downloaded and the server starts...")
-
-        # Wait for deployment to be healthy
-        if not wait_for_deployment_health(datacrunch, DEPLOYMENT_NAME):
-            print("Deployment health check failed")
-            cleanup_resources(datacrunch)
-            return
-
-        # Test the deployment with a simple request
-        print("\nTesting the deployment...")
-        try:
-            # Test model info endpoint
-            print(
-                "Testing /get_model_info endpoint by making a sync GET request to the SGLang server...")
-            model_info_response = created_deployment._inference_client.get(
-                path="/get_model_info")
-            print("Model info endpoint is working!")
-            print(f"Response: {model_info_response}")
-
-            # Test completions endpoint
-            print("\nTesting completions API...")
-            completions_data = {
-                "model": MODEL_PATH,
-                "prompt": "Is consciousness fundamentally computational, or is there something more to subjective experience that cannot be reduced to information processing?",
-                "max_tokens": 128,
-                "temperature": 0.7,
-                "top_p": 0.9,
-            }
-
-            # Make a sync inference request to the SGLang server
-            completions_response = created_deployment.run_sync(
-                completions_data,
-                path="/v1/completions",
-            )
-            print("Completions API is working!")
-            print(f"Response: {completions_response}")
-
-        except Exception as e:
-            print(f"Error testing deployment: {e}")
-
-        # Cleanup or keep running based on user input
-        keep_running = input(
-            "\nDo you want to keep the deployment running? (y/n): ")
-        if keep_running.lower() != 'y':
-            cleanup_resources(datacrunch)
+        if not secret_exists:
+            # check is HF_TOKEN is set, if not, prompt the user
+            if not HF_TOKEN:
+                HF_TOKEN = input(
+                    "Enter your Hugging Face token: ")
+            datacrunch.containers.create_secret(
+                HF_SECRET_NAME, HF_TOKEN)
+            print(f"Secret '{HF_SECRET_NAME}' created successfully")
         else:
             print(
-                f"Deployment {DEPLOYMENT_NAME} is running. Don't forget to delete it when finished.")
-            print("You can delete it from the DataCrunch dashboard or by running:")
-            print(f"datacrunch.containers.delete('{DEPLOYMENT_NAME}')")
+                f"Secret '{HF_SECRET_NAME}' already exists, using existing secret")
+    except APIException as e:
+        print(f"Error creating secret: {e}")
+        sys.exit(1)
+
+    # Create container configuration
+    container = Container(
+        image=IMAGE_URL,
+        exposed_port=30000,
+        healthcheck=HealthcheckSettings(
+            enabled=True,
+            port=30000,
+            path="/health"
+        ),
+        entrypoint_overrides=EntrypointOverridesSettings(
+            enabled=True,
+            cmd=["python3", "-m", "sglang.launch_server", "--model-path",
+                 MODEL_PATH, "--host", "0.0.0.0", "--port", "30000"]
+        ),
+        env=[
+            EnvVar(
+                name="HF_TOKEN",
+                value_or_reference_to_secret=HF_SECRET_NAME,
+                type=EnvVarType.SECRET
+            )
+        ]
+    )
+
+    # Create scaling configuration - default values
+    scaling_options = ScalingOptions(
+        min_replica_count=1,
+        max_replica_count=2,
+        scale_down_policy=ScalingPolicy(delay_seconds=300),
+        scale_up_policy=ScalingPolicy(delay_seconds=300),
+        queue_message_ttl_seconds=500,
+        concurrent_requests_per_replica=1,
+        scaling_triggers=ScalingTriggers(
+            queue_load=QueueLoadScalingTrigger(threshold=1),
+            cpu_utilization=UtilizationScalingTrigger(
+                enabled=True,
+                threshold=90
+            ),
+            gpu_utilization=UtilizationScalingTrigger(
+                enabled=True,
+                threshold=90
+            )
+        )
+    )
+
+    # Create registry and compute settings
+    registry_settings = ContainerRegistrySettings(is_private=False)
+    # For a 7B model, General Compute (24GB VRAM) is sufficient
+    compute = ComputeResource(name="General Compute", size=1)
+
+    # Create deployment object
+    deployment = Deployment(
+        name=DEPLOYMENT_NAME,
+        container_registry_settings=registry_settings,
+        containers=[container],
+        compute=compute,
+        scaling=scaling_options,
+        is_spot=False
+    )
+
+    # Create the deployment
+    created_deployment = datacrunch.containers.create_deployment(
+        deployment)
+    print(f"Created deployment: {created_deployment.name}")
+    print("This will take several minutes while the model is downloaded and the server starts...")
+
+    # Wait for deployment to be healthy
+    if not wait_for_deployment_health(datacrunch, DEPLOYMENT_NAME):
+        print("Deployment health check failed")
+        cleanup_resources(datacrunch)
+        sys.exit(1)
+
+    # Test the deployment with a simple request
+    print("\nTesting the deployment...")
+    try:
+        # Test model info endpoint
+        print(
+            "Testing /get_model_info endpoint by making a sync GET request to the SGLang server...")
+        model_info_response = created_deployment._inference_client.get(
+            path="/get_model_info")
+        print("Model info endpoint is working!")
+        print(f"Response: {model_info_response}")
+
+        # Test completions endpoint
+        print("\nTesting completions API...")
+        completions_data = {
+            "model": MODEL_PATH,
+            "prompt": "Is consciousness fundamentally computational, or is there something more to subjective experience that cannot be reduced to information processing?",
+            "max_tokens": 128,
+            "temperature": 0.7,
+            "top_p": 0.9,
+        }
+
+        # Make a sync inference request to the SGLang server
+        completions_response = created_deployment.run_sync(
+            completions_data,
+            path="/v1/completions",
+        )
+        print("Completions API is working!")
+        print(f"Response: {completions_response}")
 
     except Exception as e:
-        print(f"Unexpected error: {e}")
-        # Attempt cleanup even if there was an error
-        try:
-            cleanup_resources(datacrunch)
-        except Exception as cleanup_error:
-            print(f"Error during cleanup after failure: {cleanup_error}")
+        print(f"Error testing deployment: {e}")
 
+    # Cleanup or keep running based on user input
+    keep_running = input(
+        "\nDo you want to keep the deployment running? (y/n): ")
+    if keep_running.lower() != 'y':
+        cleanup_resources(datacrunch)
+    else:
+        print(
+            f"Deployment {DEPLOYMENT_NAME} is running. Don't forget to delete it when finished.")
+        print("You can delete it from the DataCrunch dashboard or by running:")
+        print(f"datacrunch.containers.delete('{DEPLOYMENT_NAME}')")
 
-if __name__ == "__main__":
-    main()
+except Exception as e:
+    print(f"Unexpected error: {e}")
+    # Attempt cleanup even if there was an error
+    try:
+        cleanup_resources(datacrunch)
+    except Exception as cleanup_error:
+        print(f"Error during cleanup after failure: {cleanup_error}")
+    sys.exit(1)
