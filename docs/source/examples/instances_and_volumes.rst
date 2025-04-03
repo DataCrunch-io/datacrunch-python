@@ -27,7 +27,7 @@ Instances and Volumes
 
     # Create instance with extra attached volumes
     instance_with_extra_volumes = datacrunch.instances.create(instance_type='1V100.6V',
-                                                            image='fastai',
+                                                            image='ubuntu-24.04-cuda-12.8-open-docker',
                                                             ssh_key_ids=ssh_keys,
                                                             hostname='example',
                                                             description='example instance',
@@ -38,7 +38,7 @@ Instances and Volumes
 
     # Create instance with custom OS volume size and name
     instance_with_custom_os_volume = datacrunch.instances.create(instance_type='1V100.6V',
-                                                          image='fastai',
+                                                          image='ubuntu-24.04-cuda-12.8-open-docker',
                                                           ssh_key_ids=ssh_keys,
                                                           hostname='example',
                                                           description='example instance',

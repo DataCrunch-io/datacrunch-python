@@ -51,18 +51,18 @@ try:
             if price_per_hour * DURATION < balance.amount:
                 # Deploy a new 8V instance
                 instance = datacrunch.instances.create(instance_type=INSTANCE_TYPE_8V,
-                                                       image='fastai',
+                                                       image='ubuntu-24.04-cuda-12.8-open-docker',
                                                        ssh_key_ids=ssh_keys_ids,
                                                        hostname='example',
                                                        description='large instance',
                                                        os_volume={
-                                                            "name": "Large OS volume",
-                                                            "size": 95
-                                                        })
+                                                           "name": "Large OS volume",
+                                                           "size": 95
+                                                       })
             else:
                 # Deploy a new 4V instance
                 instance = datacrunch.instances.create(instance_type=INSTANCE_TYPE_4V,
-                                                       image='fastai',
+                                                       image='ubuntu-24.04-cuda-12.8-open-docker',
                                                        ssh_key_ids=ssh_keys_ids,
                                                        hostname='example',
                                                        description='medium instance')

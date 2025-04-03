@@ -14,10 +14,11 @@ ssh_keys_ids = list(map(lambda ssh_key: ssh_key.id, ssh_keys))
 
 # Create a new instance
 instance = datacrunch.instances.create(instance_type='1V100.6V',
-                                       image='fastai',
+                                       image='ubuntu-24.04-cuda-12.8-open-docker',
                                        ssh_key_ids=ssh_keys_ids,
                                        hostname='example',
                                        description='example instance')
 
 # Delete instance
-datacrunch.instances.action(instance.id, datacrunch.constants.instance_actions.DELETE)
+datacrunch.instances.action(
+    instance.id, datacrunch.constants.instance_actions.DELETE)

@@ -54,7 +54,7 @@ DataCrunch's Public API documentation [is available here](https://api.datacrunch
 
   # Create a new instance
   instance = datacrunch.instances.create(instance_type='1V100.6V',
-                                        image='fastai',
+                                        image='ubuntu-24.04-cuda-12.8-open-docker',
                                         ssh_key_ids=ssh_keys,
                                         hostname='example',
                                         description='example instance')
