@@ -28,6 +28,11 @@ class DataCrunchClient:
         :type base_url: str, optional
         """
 
+        # Validate that client_id and client_secret are not empty
+        if not client_id or not client_secret:
+            raise ValueError(
+                "client_id and client_secret must be provided")
+
         # Constants
         self.constants: Constants = Constants(base_url, VERSION)
         """Constants"""
