@@ -23,22 +23,24 @@ class InferenceResponse:
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class AsyncInferenceExecution:
-    id: str
-    status: str
-
     _client: 'InferenceClient'
+    id: str
+    status: str  # TODO: add a status enum
 
+    # TODO: Implement when the status endpoint is done
     def status(self) -> str:
-        # TODO: Call the status endpoint and update the status
+        # Call the status endpoint and update the status when
         return self.status
 
+    # TODO: Implement when the cancel inference execution endpoint is done
     # def cancel(self) -> None:
-    #     # TODO: Call the cancel inference executionendpoint
     #     pass
 
+    # TODO: Implement when the results endpoint is done
     def get_results(self) -> Dict[str, Any]:
-        # TODO: Call the results endpoint
         pass
+    # alias for get_results
+    output = get_results
 
 
 class InferenceClient:
@@ -186,12 +188,10 @@ class InferenceClient:
         response = self.post(
             path, json=data, timeout_seconds=timeout_seconds, headers=headers)
 
-        # TODO: create an async response class:
-        # TODO: add a method to check the status of the async request
-        # TODO: add a method to cancel the async request
-        # TODO: add a method to get the results of the async request
+        # TODO: this response format isn't final
+        execution_id = response.json()['id']
 
-        return '837cdf50-6cf1-44b0-884e-ed115e700480'
+        return AsyncInferenceExecution(self, execution_id)
 
     def get(self, path: str, params: Optional[Dict[str, Any]] = None, headers: Optional[Dict[str, str]] = None, timeout_seconds: Optional[int] = None) -> requests.Response:
         return self._make_request('GET', path, params=params, headers=headers, timeout_seconds=timeout_seconds)

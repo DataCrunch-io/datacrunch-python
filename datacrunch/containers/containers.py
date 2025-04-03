@@ -10,7 +10,7 @@ from typing import List, Optional, Dict, Any
 from enum import Enum
 
 from datacrunch.http_client.http_client import HTTPClient
-from datacrunch.InferenceClient.inference_client import InferenceClient, InferenceResponse
+from datacrunch.InferenceClient import InferenceClient, InferenceResponse
 
 
 # API endpoints
