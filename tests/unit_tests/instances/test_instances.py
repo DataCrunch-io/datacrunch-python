@@ -13,7 +13,7 @@ SSH_KEY_ID = '12345dc1-a5d2-4972-ae4e-d429115d055b'
 OS_VOLUME_ID = '46fc0247-8f65-4d8a-ad73-852a8b3dc1d3'
 
 INSTANCE_TYPE = "1V100.6V"
-INSTANCE_IMAGE = "fastai"
+INSTANCE_IMAGE = "ubuntu-24.04-cuda-12.8-open-docker"
 INSTANCE_HOSTNAME = "I'll be your host for today"
 INSTANCE_DESCRIPTION = "hope you enjoy your GPU"
 INSTANCE_STATUS = 'running'

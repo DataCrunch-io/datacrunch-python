@@ -21,25 +21,27 @@ ssh_keys = datacrunch.ssh_keys.get()
 
 # Create instance with extra attached volumes
 instance_with_extra_volumes = datacrunch.instances.create(instance_type='1V100.6V',
-                                                          image='fastai',
+                                                          image='ubuntu-24.04-cuda-12.8-open-docker',
                                                           ssh_key_ids=ssh_keys,
                                                           hostname='example',
                                                           description='example instance',
                                                           volumes=[
-                                                            {"type": HDD, "name": "volume-1", "size": 95},
-                                                            {"type": NVMe, "name": "volume-2", "size": 95}
+                                                              {"type": HDD, "name": "volume-1",
+                                                                  "size": 95},
+                                                              {"type": NVMe,
+                                                               "name": "volume-2", "size": 95}
                                                           ])
 
 # Create instance with custom OS volume size and name
 instance_with_custom_os_volume = datacrunch.instances.create(instance_type='1V100.6V',
-                                                          image='fastai',
-                                                          ssh_key_ids=ssh_keys,
-                                                          hostname='example',
-                                                          description='example instance',
-                                                          os_volume={
-                                                              "name": "OS volume",
-                                                              "size": 95
-                                                          })
+                                                             image='ubuntu-24.04-cuda-12.8-open-docker',
+                                                             ssh_key_ids=ssh_keys,
+                                                             hostname='example',
+                                                             description='example instance',
+                                                             os_volume={
+                                                                 "name": "OS volume",
+                                                                 "size": 95
+                                                             })
 
 # Create instance with existing OS volume as an image
 instance_with_existing_os_volume = datacrunch.instances.create(instance_type='1V100.6V',
