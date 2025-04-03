@@ -13,7 +13,31 @@ Pricing = Literal['DYNAMIC_PRICE', 'FIXED_PRICE']
 @dataclass_json
 @dataclass
 class Instance:
-    """An instance model class"""
+    """Represents a cloud instance with its configuration and state.
+
+    Attributes:
+        id (str): Unique identifier for the instance.
+        instance_type (str): Type of the instance (e.g., '8V100.48V').
+        price_per_hour (float): Cost per hour of running the instance.
+        hostname (str): Network hostname of the instance.
+        description (str): Human-readable description of the instance.
+        ip (str): IP address assigned to the instance.
+        status (str): Current operational status of the instance.
+        created_at (str): Timestamp of instance creation.
+        ssh_key_ids (List[str]): List of SSH key IDs associated with the instance.
+        cpu (dict): CPU configuration details.
+        gpu (dict): GPU configuration details.
+        memory (dict): Memory configuration details.
+        storage (dict): Storage configuration details.
+        os_volume_id (str): ID of the operating system volume.
+        gpu_memory (dict): GPU memory configuration details.
+        location (str): Datacenter location code (default: Locations.FIN_01).
+        image (Optional[str]): Image ID or type used for the instance.
+        startup_script_id (Optional[str]): ID of the startup script to run.
+        is_spot (bool): Whether the instance is a spot instance.
+        contract (Optional[Contract]): Contract type for the instance. (e.g. 'LONG_TERM', 'PAY_AS_YOU_GO', 'SPOT')
+        pricing (Optional[Pricing]): Pricing model for the instance. (e.g. 'DYNAMIC_PRICE', 'FIXED_PRICE')
+    """
 
     id: str
     instance_type: str
@@ -38,39 +62,54 @@ class Instance:
     pricing: Optional[Pricing] = None
 
     def __str__(self) -> str:
-        """Returns a string of the json representation of the instance
+        """Returns a JSON string representation of the instance.
 
-        :return: json representation of the instance
-        :rtype: str
+        Returns:
+            str: JSON string containing all instance properties.
         """
         return stringify_class_object_properties(self)
 
 
 class InstancesService:
-    """A service for interacting with the instances endpoint"""
+    """Service for managing cloud instances through the API.
+
+    This service provides methods to create, retrieve, and manage cloud instances
+    through the DataCrunch API.
+    """
 
     def __init__(self, http_client) -> None:
+        """Initializes the InstancesService with an HTTP client.
+
+        Args:
+            http_client: HTTP client for making API requests.
+        """
         self._http_client = http_client
 
-    def get(self, status: str = None) -> List[Instance]:
-        """Get all of the client's non-deleted instances, or instances with specific status.
+    def get(self, status: Optional[str] = None) -> List[Instance]:
+        """Retrieves all non-deleted instances or instances with specific status.
 
-        :param status: optional, status of the instances, defaults to None
-        :type status: str, optional
-        :return: list of instance details objects
-        :rtype: List[Instance]
+        Args:
+            status: Optional status filter for instances. If None, returns all
+                non-deleted instances.
+
+        Returns:
+            List[Instance]: List of instance objects matching the criteria.
         """
         instances_dict = self._http_client.get(
             INSTANCES_ENDPOINT, params={'status': status}).json()
         return [Instance.from_dict(instance_dict, infer_missing=True) for instance_dict in instances_dict]
 
     def get_by_id(self, id: str) -> Instance:
-        """Get an instance with specified id.
+        """Retrieves a specific instance by its ID.
 
-        :param id: instance id
-        :type id: str
-        :return: instance details object
-        :rtype: Instance
+        Args:
+            id: Unique identifier of the instance to retrieve.
+
+        Returns:
+            Instance: Instance object with the specified ID.
+
+        Raises:
+            HTTPError: If the instance is not found or other API error occurs.
         """
         instance_dict = self._http_client.get(
             INSTANCES_ENDPOINT + f'/{id}').json()
@@ -83,46 +122,37 @@ class InstancesService:
                description: str,
                ssh_key_ids: list = [],
                location: str = Locations.FIN_01,
-               startup_script_id: str = None,
-               volumes: List[Dict] = None,
-               existing_volumes: List[str] = None,
-               os_volume: Dict = None,
+               startup_script_id: Optional[str] = None,
+               volumes: Optional[List[Dict]] = None,
+               existing_volumes: Optional[List[str]] = None,
+               os_volume: Optional[Dict] = None,
                is_spot: bool = False,
-               contract: Contract = None,
-               pricing: Pricing = None,
-               coupon: str = None) -> Instance:
-        """Creates (deploys) a new instance
+               contract: Optional[Contract] = None,
+               pricing: Optional[Pricing] = None,
+               coupon: Optional[str] = None) -> Instance:
+        """Creates and deploys a new cloud instance.
 
-        :param instance_type: instance type. e.g. '8V100.48M'
-        :type instance_type: str
-        :param image: instance image type. e.g. 'ubuntu-20.04-cuda-11.0', or existing OS volume id
-        :type image: str
-        :param ssh_key_ids: list of ssh key ids
-        :type ssh_key_ids: list
-        :param hostname: instance hostname
-        :type hostname: str
-        :param description: instance description
-        :type description: str
-        :param location: datacenter location, defaults to "FIN-01"
-        :type location: str, optional
-        :param startup_script_id: startup script id, defaults to None
-        :type startup_script_id: str, optional
-        :param volumes: List of volume data dictionaries to create alongside the instance
-        :type volumes: List[Dict], optional
-        :param existing_volumes: List of existing volume ids to attach to the instance
-        :type existing_volumes: List[str], optional
-        :param os_volume: OS volume details, defaults to None
-        :type os_volume: Dict, optional
-        :param is_spot: Is spot instance
-        :type is_spot: bool, optional
-        :param pricing: Pricing type
-        :type pricing: str, optional
-        :param contract: Contract type
-        :type contract: str, optional
-        :param coupon: coupon code
-        :type coupon: str, optional
-        :return: the new instance object
-        :rtype: Instance
+        Args:
+            instance_type: Type of instance to create (e.g., '8V100.48V').
+            image: Image type or existing OS volume ID for the instance.
+            hostname: Network hostname for the instance.
+            description: Human-readable description of the instance.
+            ssh_key_ids: List of SSH key IDs to associate with the instance.
+            location: Datacenter location code (default: Locations.FIN_01).
+            startup_script_id: Optional ID of startup script to run.
+            volumes: Optional list of volume configurations to create.
+            existing_volumes: Optional list of existing volume IDs to attach.
+            os_volume: Optional OS volume configuration details.
+            is_spot: Whether to create a spot instance.
+            contract: Optional contract type for the instance.
+            pricing: Optional pricing model for the instance.
+            coupon: Optional coupon code for discounts.
+
+        Returns:
+            Instance: The newly created instance object.
+
+        Raises:
+            HTTPError: If instance creation fails or other API error occurs.
         """
         payload = {
             "instance_type": instance_type,
@@ -146,14 +176,15 @@ class InstancesService:
         return self.get_by_id(id)
 
     def action(self, id_list: Union[List[str], str], action: str, volume_ids: Optional[List[str]] = None) -> None:
-        """Performs an action on a list of instances / single instance
+        """Performs an action on one or more instances.
 
-        :param id_list: list of instance ids, or an instance id
-        :type id_list: Union[List[str], str]
-        :param action: the action to perform
-        :type action: str
-        :param volume_ids: the volume ids to delete
-        :type volume_ids: Optional[List[str]]
+        Args:
+            id_list: Single instance ID or list of instance IDs to act upon.
+            action: Action to perform on the instances.
+            volume_ids: Optional list of volume IDs to delete.
+
+        Raises:
+            HTTPError: If the action fails or other API error occurs.
         """
         if type(id_list) is str:
             id_list = [id_list]
@@ -167,34 +198,31 @@ class InstancesService:
         self._http_client.put(INSTANCES_ENDPOINT, json=payload)
         return
 
-    # TODO: use enum/const for location_code
-    def is_available(self, instance_type: str, is_spot: bool = False, location_code: str = None) -> bool:
-        """Returns True if a specific instance type is now available for deployment
+    def is_available(self, instance_type: str, is_spot: bool = False, location_code: Optional[str] = None) -> bool:
+        """Checks if a specific instance type is available for deployment.
 
-        :param instance_type: instance type
-        :type instance_type: str
-        :param is_spot: Is spot instance
-        :type is_spot: bool, optional
-        :param location_code: datacenter location, defaults to "FIN-01"
-        :type location_code: str, optional
-        :return: True if available to deploy, False otherwise
-        :rtype: bool
+        Args:
+            instance_type: Type of instance to check availability for.
+            is_spot: Whether to check spot instance availability.
+            location_code: Optional datacenter location code.
+
+        Returns:
+            bool: True if the instance type is available, False otherwise.
         """
         is_spot = str(is_spot).lower()
         query_params = {'isSpot': is_spot, 'location_code': location_code}
         url = f'/instance-availability/{instance_type}'
         return self._http_client.get(url, query_params).json()
 
-    # TODO: use enum/const for location_code
-    def get_availabilities(self, is_spot: bool = None, location_code: str = None) -> bool:
-        """Returns a list of available instance types
+    def get_availabilities(self, is_spot: Optional[bool] = None, location_code: Optional[str] = None) -> List[Dict]:
+        """Retrieves a list of available instance types across locations.
 
-        :param is_spot: Is spot instance
-        :type is_spot: bool, optional
-        :param location_code: datacenter location, defaults to "FIN-01"
-        :type location_code: str, optional
-        :return: list of available instance types in every location
-        :rtype: list
+        Args:
+            is_spot: Optional flag to filter spot instance availability.
+            location_code: Optional datacenter location code to filter by.
+
+        Returns:
+            List[Dict]: List of available instance types and their details.
         """
         is_spot = str(is_spot).lower() if is_spot is not None else None
         query_params = {'isSpot': is_spot, 'locationCode': location_code}
