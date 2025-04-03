@@ -8,8 +8,7 @@ import os
 import time
 import signal
 import sys
-import requests
-
+from datetime import datetime
 from datacrunch import DataCrunchClient
 from datacrunch.exceptions import APIException
 from datacrunch.containers.containers import (
@@ -29,19 +28,20 @@ from datacrunch.containers.containers import (
     ContainerDeploymentStatus,
 )
 
+CURRENT_TIMESTAMP = datetime.now().strftime(
+    "%Y%m%d-%H%M%S").lower()  # e.g. 20250403-120000
+
 # Configuration constants
-DEPLOYMENT_NAME = "sglang-deployment-tutorial"
-CONTAINER_NAME = "sglang-server"
+DEPLOYMENT_NAME = f"sglang-deployment-example-{CURRENT_TIMESTAMP}"
 MODEL_PATH = "deepseek-ai/deepseek-llm-7b-chat"
 HF_SECRET_NAME = "huggingface-token"
 IMAGE_URL = "docker.io/lmsysorg/sglang:v0.4.1.post6-cu124"
-CONTAINERS_API_URL = f'https://containers.datacrunch.io/{DEPLOYMENT_NAME}'
 
 # Get confidential values from environment variables
 DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
 DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
+INFERENCE_KEY = os.environ.get('INFERENCE_KEY')
 HF_TOKEN = os.environ.get('HF_TOKEN')
-INFERENCE_API_KEY = os.environ.get('INFERENCE_API_KEY')
 
 # DataCrunch client instance (global for graceful shutdown)
 datacrunch = None
@@ -99,81 +99,24 @@ def graceful_shutdown(signum, frame) -> None:
     sys.exit(0)
 
 
-def test_deployment(base_url: str, api_key: str) -> None:
-    """Test the deployment with a simple request.
-
-    Args:
-        base_url: The base URL of the deployment
-        api_key: The API key for authentication
-    """
-    # First, check if the model info endpoint is working
-    model_info_url = f"{base_url}/get_model_info"
-    headers = {
-        'Authorization': f'Bearer {api_key}',
-        'Content-Type': 'application/json'
-    }
-
-    try:
-        print("\nTesting /get_model_info endpoint...")
-        response = requests.get(model_info_url, headers=headers)
-        if response.status_code == 200:
-            print("Model info endpoint is working!")
-            print(f"Response: {response.json()}")
-        else:
-            print(f"Request failed with status code {response.status_code}")
-            print(f"Response: {response.text}")
-            return
-
-        # Now test completions endpoint
-        print("\nTesting completions API with streaming...")
-        completions_url = f"{base_url}/v1/completions"
-
-        headers = {
-            'Content-Type': 'application/json',
-            'Authorization': f'Bearer {api_key}',
-            'Accept': 'text/event-stream',
-            'Cache-Control': 'no-cache',
-            'Connection': 'keep-alive',
-        }
-
-        data = {
-            "model": MODEL_PATH,
-            "prompt": "Solar wind is a curious phenomenon. Tell me more about it",
-            "max_tokens": 128,
-            "temperature": 0.7,
-            "top_p": 0.9,
-            "stream": True
-        }
-
-        with requests.post(completions_url, headers=headers, json=data, stream=True) as response:
-            if response.status_code == 200:
-                print("Stream started. Receiving first 5 events...\n")
-                for i, line in enumerate(response.iter_lines(decode_unicode=True)):
-                    if line:
-                        print(line)
-                    if i >= 4:  # Only show first 5 events
-                        print("...(response continues)...")
-                        break
-            else:
-                print(
-                    f"Request failed with status code {response.status_code}")
-                print(f"Response: {response.text}")
-
-    except requests.RequestException as e:
-        print(f"An error occurred: {e}")
-
-
 def main() -> None:
     """Main function demonstrating SGLang deployment."""
     try:
-        if not HF_TOKEN:
-            print("Please set HF_TOKEN environment variable with your Hugging Face token")
-            return
+        # Get the inference API key
+        inference_key = INFERENCE_KEY
+        if not inference_key:
+            inference_key = input(
+                "Enter your Inference API Key from the DataCrunch dashboard: ")
+        else:
+            print("Using Inference API Key from environment")
 
-        # Initialize client
+        # Initialize client with inference key
         global datacrunch
         datacrunch = DataCrunchClient(
-            DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET)
+            DATACRUNCH_CLIENT_ID,
+            DATACRUNCH_CLIENT_SECRET,
+            inference_key=inference_key
+        )
 
         # Register signal handlers for cleanup
         signal.signal(signal.SIGINT, graceful_shutdown)
@@ -188,6 +131,10 @@ def main() -> None:
                 secret.name == HF_SECRET_NAME for secret in existing_secrets)
 
             if not secret_exists:
+                # check is HF_TOKEN is set, if not, prompt the user
+                if not HF_TOKEN:
+                    HF_TOKEN = input(
+                        "Enter your Hugging Face token: ")
                 datacrunch.containers.create_secret(
                     HF_SECRET_NAME, HF_TOKEN)
                 print(f"Secret '{HF_SECRET_NAME}' created successfully")
@@ -258,7 +205,8 @@ def main() -> None:
         )
 
         # Create the deployment
-        created_deployment = datacrunch.containers.create(deployment)
+        created_deployment = datacrunch.containers.create_deployment(
+            deployment)
         print(f"Created deployment: {created_deployment.name}")
         print("This will take several minutes while the model is downloaded and the server starts...")
 
@@ -268,28 +216,37 @@ def main() -> None:
             cleanup_resources(datacrunch)
             return
 
-        # Get the deployment endpoint URL and inference API key
-        containers_api_url = CONTAINERS_API_URL
-        inference_api_key = INFERENCE_API_KEY
-
-        # If not provided as environment variables, prompt the user
-        if not containers_api_url:
-            containers_api_url = input(
-                "Enter your Containers API URL from the DataCrunch dashboard: ")
-        else:
+        # Test the deployment with a simple request
+        print("\nTesting the deployment...")
+        try:
+            # Test model info endpoint
             print(
-                f"Using Containers API URL from environment: {containers_api_url}")
+                "Testing /get_model_info endpoint by making a sync GET request to the SGLang server...")
+            model_info_response = created_deployment._inference_client.get(
+                path="/get_model_info")
+            print("Model info endpoint is working!")
+            print(f"Response: {model_info_response}")
 
-        if not inference_api_key:
-            inference_api_key = input(
-                "Enter your Inference API Key from the DataCrunch dashboard: ")
-        else:
-            print("Using Inference API Key from environment")
+            # Test completions endpoint
+            print("\nTesting completions API...")
+            completions_data = {
+                "model": MODEL_PATH,
+                "prompt": "Is consciousness fundamentally computational, or is there something more to subjective experience that cannot be reduced to information processing?",
+                "max_tokens": 128,
+                "temperature": 0.7,
+                "top_p": 0.9,
+            }
 
-        # Test the deployment
-        if containers_api_url and inference_api_key:
-            print("\nTesting the deployment...")
-            test_deployment(containers_api_url, inference_api_key)
+            # Make a sync inference request to the SGLang server
+            completions_response = created_deployment.run_sync(
+                completions_data,
+                path="/v1/completions",
+            )
+            print("Completions API is working!")
+            print(f"Response: {completions_response}")
+
+        except Exception as e:
+            print(f"Error testing deployment: {e}")
 
         # Cleanup or keep running based on user input
         keep_running = input(
