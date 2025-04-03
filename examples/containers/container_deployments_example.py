@@ -12,6 +12,8 @@ from datacrunch.exceptions import APIException
 from datacrunch.containers.containers import (
     Container,
     ComputeResource,
+    EnvVar,
+    EnvVarType,
     ScalingOptions,
     ScalingPolicy,
     ScalingTriggers,
@@ -103,6 +105,21 @@ def main() -> None:
                 VolumeMount(
                     type=VolumeMountType.SCRATCH,
                     mount_path="/data"
+                )
+            ],
+            env=[
+                # Secret environment variables needed to be added beforehand
+                EnvVar(
+                    name="HF_TOKEN",
+                    # This is a reference to a secret already created
+                    value_or_reference_to_secret="hf_token",
+                    type=EnvVarType.SECRET
+                ),
+                # Plain environment variables can be added directly
+                EnvVar(
+                    name="VERSION",
+                    value_or_reference_to_secret="1.5.2",
+                    type=EnvVarType.PLAIN
                 )
             ]
         )
