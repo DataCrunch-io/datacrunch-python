@@ -41,7 +41,7 @@ HF_SECRET_NAME = "huggingface-token"
 # Get confidential values from environment variables
 DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
 DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
-INFERENCE_KEY = os.environ.get('INFERENCE_KEY')
+DATACRUNCH_INFERENCE_KEY = os.environ.get('DATACRUNCH_INFERENCE_KEY')
 HF_TOKEN = os.environ.get('HF_TOKEN')
 
 
@@ -99,7 +99,7 @@ def graceful_shutdown(signum, frame) -> None:
 
 try:
     # Get the inference API key
-    inference_key = INFERENCE_KEY
+    inference_key = DATACRUNCH_INFERENCE_KEY
     if not inference_key:
         inference_key = input(
             "Enter your Inference API Key from the DataCrunch dashboard: ")
@@ -188,15 +188,12 @@ try:
         )
     )
 
-    # Create registry and compute settings
-    registry_settings = ContainerRegistrySettings(is_private=False)
-    # For a 7B model, General Compute (24GB VRAM) is sufficient
+    # Set compute settings. For a 7B model, General Compute (24GB VRAM) is sufficient
     compute = ComputeResource(name="General Compute", size=1)
 
-    # Create deployment object
+    # Create deployment object (no need to provide container_registry_settings because it's public)
     deployment = Deployment(
         name=DEPLOYMENT_NAME,
-        container_registry_settings=registry_settings,
         containers=[container],
         compute=compute,
         scaling=scaling_options,
@@ -207,7 +204,7 @@ try:
     created_deployment = datacrunch.containers.create_deployment(
         deployment)
     print(f"Created deployment: {created_deployment.name}")
-    print("This will take several minutes while the model is downloaded and the server starts...")
+    print("This could take several minutes while the model is downloaded and the server starts...")
 
     # Wait for deployment to be healthy
     if not wait_for_deployment_health(datacrunch, DEPLOYMENT_NAME):

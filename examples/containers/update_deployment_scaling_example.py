@@ -15,106 +15,99 @@ from datacrunch.containers.containers import (
     UtilizationScalingTrigger
 )
 
-# Configuration - replace with your deployment name
-DEPLOYMENT_NAME = "my-deployment"
 
-# Get client secret and id from environment variables
+# Get deployment name, client secret and id from environment variables
+DEPLOYMENT_NAME = os.environ.get('DATACRUNCH_DEPLOYMENT_NAME')
 DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
 DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
 
+# Initialize client
+datacrunch = DataCrunchClient(DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET)
 
-def check_deployment_exists(client: DataCrunchClient, deployment_name: str) -> bool:
-    """Check if a deployment exists.
+try:
+    # Get current scaling options
+    scaling_options = datacrunch.containers.get_deployment_scaling_options(
+        DEPLOYMENT_NAME)
 
-    Args:
-        client: DataCrunch API client
-        deployment_name: Name of the deployment to check
+    print(f"Current scaling configuration:\n")
+    print(f"Min replicas: {scaling_options.min_replica_count}")
+    print(f"Max replicas: {scaling_options.max_replica_count}")
+    print(
+        f"Scale-up delay: {scaling_options.scale_up_policy.delay_seconds} seconds")
+    print(
+        f"Scale-down delay: {scaling_options.scale_down_policy.delay_seconds} seconds")
+    print(
+        f"Queue message TTL: {scaling_options.queue_message_ttl_seconds} seconds")
+    print(
+        f"Concurrent requests per replica: {scaling_options.concurrent_requests_per_replica}")
+    print("Scaling Triggers:")
+    print(
+        f"  Queue load threshold: {scaling_options.scaling_triggers.queue_load.threshold}")
+    if scaling_options.scaling_triggers.cpu_utilization:
+        print(
+            f"  CPU utilization enabled: {scaling_options.scaling_triggers.cpu_utilization.enabled}")
+        print(
+            f"  CPU utilization threshold: {scaling_options.scaling_triggers.cpu_utilization.threshold}%")
+    if scaling_options.scaling_triggers.gpu_utilization:
+        print(
+            f"  GPU utilization enabled: {scaling_options.scaling_triggers.gpu_utilization.enabled}")
+        if scaling_options.scaling_triggers.gpu_utilization.threshold:
+            print(
+                f"  GPU utilization threshold: {scaling_options.scaling_triggers.gpu_utilization.threshold}%")
 
-    Returns:
-        bool: True if deployment exists, False otherwise
-    """
-    try:
-        client.containers.get_deployment_by_name(deployment_name)
-        return True
-    except APIException as e:
-        print(f"Error: {e}")
-        return False
-
-
-def update_deployment_scaling(client: DataCrunchClient, deployment_name: str) -> None:
-    """Update scaling options using the dedicated scaling options API.
-
-    Args:
-        client: DataCrunch API client
-        deployment_name: Name of the deployment to update
-    """
-    try:
-        # Create scaling options using ScalingOptions dataclass
-        scaling_options = ScalingOptions(
-            min_replica_count=1,
-            max_replica_count=5,
-            scale_down_policy=ScalingPolicy(
-                delay_seconds=600),  # Longer cooldown period
-            scale_up_policy=ScalingPolicy(delay_seconds=60),  # Quick scale-up
-            queue_message_ttl_seconds=500,
-            concurrent_requests_per_replica=1,
-            scaling_triggers=ScalingTriggers(
-                queue_load=QueueLoadScalingTrigger(threshold=1.0),
-                cpu_utilization=UtilizationScalingTrigger(
-                    enabled=True,
-                    threshold=75
-                ),
-                gpu_utilization=UtilizationScalingTrigger(
-                    enabled=False  # Disable GPU utilization trigger
-                )
+    # Create scaling options using ScalingOptions dataclass
+    scaling_options = ScalingOptions(
+        min_replica_count=1,
+        max_replica_count=5,
+        scale_down_policy=ScalingPolicy(
+            delay_seconds=600),  # Longer cooldown period
+        scale_up_policy=ScalingPolicy(delay_seconds=0),  # Quick scale-up
+        queue_message_ttl_seconds=500,
+        concurrent_requests_per_replica=50,  # LLMs can handle concurrent requests
+        scaling_triggers=ScalingTriggers(
+            queue_load=QueueLoadScalingTrigger(threshold=1.0),
+            cpu_utilization=UtilizationScalingTrigger(
+                enabled=True,
+                threshold=75
+            ),
+            gpu_utilization=UtilizationScalingTrigger(
+                enabled=False  # Disable GPU utilization trigger
             )
         )
+    )
 
-        # Update scaling options
-        updated_options = client.containers.update_deployment_scaling_options(
-            deployment_name, scaling_options)
-        print(f"Updated deployment scaling options")
-        print(f"New min replicas: {updated_options.min_replica_count}")
-        print(f"New max replicas: {updated_options.max_replica_count}")
+    # Update scaling options
+    updated_options = datacrunch.containers.update_deployment_scaling_options(
+        DEPLOYMENT_NAME, scaling_options)
+
+    print(f"\nUpdated scaling configuration:\n")
+    print(f"Min replicas: {updated_options.min_replica_count}")
+    print(f"Max replicas: {updated_options.max_replica_count}")
+    print(
+        f"Scale-up delay: {updated_options.scale_up_policy.delay_seconds} seconds")
+    print(
+        f"Scale-down delay: {updated_options.scale_down_policy.delay_seconds} seconds")
+    print(
+        f"Queue message TTL: {updated_options.queue_message_ttl_seconds} seconds")
+    print(
+        f"Concurrent requests per replica: {updated_options.concurrent_requests_per_replica}")
+    print("Scaling Triggers:")
+    print(
+        f"  Queue load threshold: {updated_options.scaling_triggers.queue_load.threshold}")
+    if updated_options.scaling_triggers.cpu_utilization:
         print(
-            f"CPU utilization trigger enabled: {updated_options.scaling_triggers.cpu_utilization.enabled}")
+            f"  CPU utilization enabled: {updated_options.scaling_triggers.cpu_utilization.enabled}")
         print(
-            f"CPU utilization threshold: {updated_options.scaling_triggers.cpu_utilization.threshold}%")
-    except APIException as e:
-        print(f"Error updating scaling options: {e}")
-
-
-def main() -> None:
-    """Main function demonstrating scaling updates."""
-    try:
-        # Initialize client
-        datacrunch = DataCrunchClient(
-            DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET)
-
-        # Verify deployment exists
-        if not check_deployment_exists(datacrunch, DEPLOYMENT_NAME):
-            print(f"Deployment {DEPLOYMENT_NAME} does not exist.")
-            return
-
-        # Update scaling options using the API
-        update_deployment_scaling(datacrunch, DEPLOYMENT_NAME)
-
-        # Get current scaling options
-        scaling_options = datacrunch.containers.get_deployment_scaling_options(
-            DEPLOYMENT_NAME)
-        print(f"\nCurrent scaling configuration:")
-        print(f"Min replicas: {scaling_options.min_replica_count}")
-        print(f"Max replicas: {scaling_options.max_replica_count}")
+            f"  CPU utilization threshold: {updated_options.scaling_triggers.cpu_utilization.threshold}%")
+    if updated_options.scaling_triggers.gpu_utilization:
         print(
-            f"Scale-up delay: {scaling_options.scale_up_policy.delay_seconds} seconds")
-        print(
-            f"Scale-down delay: {scaling_options.scale_down_policy.delay_seconds} seconds")
-
-        print("\nScaling update completed successfully.")
-
-    except Exception as e:
-        print(f"Unexpected error: {e}")
+            f"  GPU utilization enabled: {updated_options.scaling_triggers.gpu_utilization.enabled}")
+        if updated_options.scaling_triggers.gpu_utilization.threshold:
+            print(
+                f"  GPU utilization threshold: {updated_options.scaling_triggers.gpu_utilization.threshold}%")
 
 
-if __name__ == "__main__":
-    main()
+except APIException as e:
+    print(f"Error updating scaling options: {e}")
+except Exception as e:
+    print(f"Unexpected error: {e}")

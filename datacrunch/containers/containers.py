@@ -4,7 +4,7 @@ This module provides functionality for managing container deployments, including
 creation, updates, deletion, and monitoring of containerized applications.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, Undefined  # type: ignore
 from typing import List, Optional, Dict, Any
 from enum import Enum
@@ -284,9 +284,10 @@ class Deployment:
     """
 
     name: str
-    container_registry_settings: ContainerRegistrySettings
     containers: List[Container]
     compute: ComputeResource
+    container_registry_settings: ContainerRegistrySettings = field(
+        default_factory=lambda: ContainerRegistrySettings(is_private=False))
     is_spot: bool = False
     endpoint_base_url: Optional[str] = None
     scaling: Optional[ScalingOptions] = None
