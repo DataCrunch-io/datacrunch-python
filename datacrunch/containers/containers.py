@@ -868,17 +868,27 @@ class ContainersService:
                 env_var) for env_var in env_vars]
         return result
 
-    def get_compute_resources(self) -> List[ComputeResource]:
-        """Retrieves available compute resources.
+    def get_compute_resources(self, size: int = None, is_available: bool = None) -> List[ComputeResource]:
+        """Retrieves compute resources, optionally filtered by size and availability.
+
+        Args:
+            size: Optional size to filter resources by (e.g. 8 for 8x GPUs)
+            available: Optional boolean to filter by availability status
 
         Returns:
-            List[ComputeResource]: List of available compute resources.
+            List[ComputeResource]: List of compute resources matching the filters.
+                                 If no filters provided, returns all resources.
         """
         response = self.client.get(SERVERLESS_COMPUTE_RESOURCES_ENDPOINT)
         resources = []
         for resource_group in response.json():
             for resource in resource_group:
                 resources.append(ComputeResource.from_dict(resource))
+        if size:
+            resources = [r for r in resources if r.size == size]
+        if is_available:
+            resources = [
+                r for r in resources if r.is_available == is_available]
         return resources
 
     # Function alias
