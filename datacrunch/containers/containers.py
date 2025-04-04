@@ -90,10 +90,11 @@ class VolumeMount:
 
     :param type: Type of volume mount
     :param mount_path: Path where the volume should be mounted in the container
+    :param size_in_mb: Size of the volume in megabytes, only used for memory volume mounts
     """
     type: VolumeMountType
     mount_path: str
-    size_in_gb: Optional[int] = None
+    size_in_mb: Optional[int] = None
 
 
 @dataclass_json
