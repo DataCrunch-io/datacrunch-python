@@ -8,6 +8,7 @@ import os
 import time
 import signal
 import sys
+import json
 from datetime import datetime
 from datacrunch import DataCrunchClient
 from datacrunch.exceptions import APIException
@@ -33,9 +34,9 @@ CURRENT_TIMESTAMP = datetime.now().strftime(
 
 # Configuration constants
 DEPLOYMENT_NAME = f"sglang-deployment-example-{CURRENT_TIMESTAMP}"
-MODEL_PATH = "deepseek-ai/deepseek-llm-7b-chat"
+SGLANG_IMAGE_URL = "docker.io/lmsysorg/sglang:v0.4.1.post6-cu124"
+DEEPSEEK_MODEL_PATH = "deepseek-ai/deepseek-llm-7b-chat"
 HF_SECRET_NAME = "huggingface-token"
-IMAGE_URL = "docker.io/lmsysorg/sglang:v0.4.1.post6-cu124"
 
 # Get confidential values from environment variables
 DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
@@ -140,18 +141,19 @@ try:
         sys.exit(1)
 
     # Create container configuration
+    APP_PORT = 30000
     container = Container(
-        image=IMAGE_URL,
-        exposed_port=30000,
+        image=SGLANG_IMAGE_URL,
+        exposed_port=APP_PORT,
         healthcheck=HealthcheckSettings(
             enabled=True,
-            port=30000,
+            port=APP_PORT,
             path="/health"
         ),
         entrypoint_overrides=EntrypointOverridesSettings(
             enabled=True,
             cmd=["python3", "-m", "sglang.launch_server", "--model-path",
-                 MODEL_PATH, "--host", "0.0.0.0", "--port", "30000"]
+                 DEEPSEEK_MODEL_PATH, "--host", "0.0.0.0", "--port", str(APP_PORT)]
         ),
         env=[
             EnvVar(
@@ -162,16 +164,19 @@ try:
         ]
     )
 
-    # Create scaling configuration - default values
+    # Create scaling configuration
     scaling_options = ScalingOptions(
         min_replica_count=1,
-        max_replica_count=2,
-        scale_down_policy=ScalingPolicy(delay_seconds=300),
-        scale_up_policy=ScalingPolicy(delay_seconds=300),
+        max_replica_count=5,
+        scale_down_policy=ScalingPolicy(delay_seconds=60 * 5),
+        scale_up_policy=ScalingPolicy(
+            delay_seconds=0),  # No delay for scale up
         queue_message_ttl_seconds=500,
-        concurrent_requests_per_replica=1,
+        # Modern LLM engines are optimized for batching requests, with minimal performance impact. Taking advantage of batching can significantly improve throughput.
+        concurrent_requests_per_replica=32,
         scaling_triggers=ScalingTriggers(
-            queue_load=QueueLoadScalingTrigger(threshold=1),
+            # lower value means more aggressive scaling
+            queue_load=QueueLoadScalingTrigger(threshold=0.1),
             cpu_utilization=UtilizationScalingTrigger(
                 enabled=True,
                 threshold=90
@@ -224,7 +229,7 @@ try:
         # Test completions endpoint
         print("\nTesting completions API...")
         completions_data = {
-            "model": MODEL_PATH,
+            "model": DEEPSEEK_MODEL_PATH,
             "prompt": "Is consciousness fundamentally computational, or is there something more to subjective experience that cannot be reduced to information processing?",
             "max_tokens": 128,
             "temperature": 0.7,
@@ -238,6 +243,31 @@ try:
         )
         print("Completions API is working!")
         print(f"Response: {completions_response}")
+
+        # Make a stream sync inference request to the SGLang server
+        completions_response_stream = created_deployment.run_sync(
+            completions_data,
+            path="/v1/completions",
+            stream=True
+        )
+        print("Stream completions API is working!")
+        # Print the streamed response
+        for line in completions_response_stream.stream(as_text=True):
+            if line:
+                line = line.decode('utf-8')
+
+                if line.startswith('data:'):
+                    data = line[5:]  # Remove 'data: ' prefix
+                    if data == '[DONE]':
+                        break
+                    try:
+                        event_data = json.loads(data)
+                        token_text = event_data['choices'][0]['text']
+
+                        # Print token immediately to show progress
+                        print(token_text, end='', flush=True)
+                    except json.JSONDecodeError:
+                        continue
 
     except Exception as e:
         print(f"Error testing deployment: {e}")

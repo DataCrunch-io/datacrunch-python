@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from dataclasses_json import dataclass_json, Undefined  # type: ignore
 import requests
 from requests.structures import CaseInsensitiveDict
-from typing import Optional, Dict, Any, Union
+from typing import Optional, Dict, Any, Union, Generator
 from urllib.parse import urlparse
 
 
@@ -14,10 +14,76 @@ class InferenceClientError(Exception):
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class InferenceResponse:
-    body: Any
     headers: CaseInsensitiveDict[str]
     status_code: int
     status_text: str
+    _original_response: requests.Response
+    _stream: bool = False
+
+    def _is_stream_response(self, headers: CaseInsensitiveDict[str]) -> bool:
+        """Check if the response headers indicate a streaming response.
+
+        Args:
+            headers: The response headers to check
+
+        Returns:
+            bool: True if the response is likely a stream, False otherwise
+        """
+        # Standard chunked transfer encoding
+        is_chunked_transfer = headers.get(
+            'Transfer-Encoding', '').lower() == 'chunked'
+        # Server-Sent Events content type
+        is_event_stream = headers.get(
+            'Content-Type', '').lower() == 'text/event-stream'
+        # NDJSON
+        is_ndjson = headers.get(
+            'Content-Type', '').lower() == 'application/x-ndjson'
+        # Stream JSON
+        is_stream_json = headers.get(
+            'Content-Type', '').lower() == 'application/stream+json'
+        # Keep-alive
+        is_keep_alive = headers.get(
+            'Connection', '').lower() == 'keep-alive'
+        # No content length
+        has_no_content_length = 'Content-Length' not in headers
+
+        # No Content-Length with keep-alive often suggests streaming (though not definitive)
+        is_keep_alive_and_no_content_length = is_keep_alive and has_no_content_length
+
+        return (self._stream or is_chunked_transfer or is_event_stream or is_ndjson or
+                is_stream_json or is_keep_alive_and_no_content_length)
+
+    def output(self, is_text: bool = False) -> Any:
+        try:
+            if is_text:
+                return self._original_response.text
+            return self._original_response.json()
+        except Exception as e:
+            # if the response is a stream (check headers), raise relevant error
+            if self._is_stream_response(self._original_response.headers):
+                raise InferenceClientError(
+                    f"Response might be a stream, use the stream method instead")
+            raise InferenceClientError(
+                f"Failed to parse response as JSON: {str(e)}")
+
+    def stream(self, chunk_size: int = 512, as_text: bool = True) -> Generator[Any, None, None]:
+        """Stream the response content.
+
+        Args:
+            chunk_size: Size of chunks to stream, in bytes
+            as_text: If True, stream as text using iter_lines. If False, stream as binary using iter_content.
+
+        Returns:
+            Generator yielding chunks of the response
+        """
+        if as_text:
+            for chunk in self._original_response.iter_lines(chunk_size=chunk_size):
+                if chunk:
+                    yield chunk
+        else:
+            for chunk in self._original_response.iter_content(chunk_size=chunk_size):
+                if chunk:
+                    yield chunk
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -169,24 +235,24 @@ class InferenceClient:
         except requests.exceptions.RequestException as e:
             raise InferenceClientError(f"Request to {path} failed: {str(e)}")
 
-    def run_sync(self, data: Dict[str, Any], path: str = "", timeout_seconds: int = 60 * 5, headers: Optional[Dict[str, str]] = None):
-        response = self.post(
-            path, json=data, timeout_seconds=timeout_seconds, headers=headers)
+    def run_sync(self, data: Dict[str, Any], path: str = "", timeout_seconds: int = 60 * 5, headers: Optional[Dict[str, str]] = None, http_method: str = "POST", stream: bool = False):
+        response = self._make_request(
+            http_method, path, json=data, timeout_seconds=timeout_seconds, headers=headers, stream=stream)
 
         return InferenceResponse(
-            body=response.json(),
             headers=response.headers,
             status_code=response.status_code,
-            status_text=response.reason
+            status_text=response.reason,
+            _original_response=response
         )
 
-    def run(self, data: Dict[str, Any], path: str = "", timeout_seconds: int = 60 * 5, headers: Optional[Dict[str, str]] = None):
+    def run(self, data: Dict[str, Any], path: str = "", timeout_seconds: int = 60 * 5, headers: Optional[Dict[str, str]] = None, http_method: str = "POST"):
         # Add the "Prefer: respond-async" header to the request, to indicate that the request is async
         headers = headers or {}
         headers['Prefer'] = 'respond-async'
 
-        response = self.post(
-            path, json=data, timeout_seconds=timeout_seconds, headers=headers)
+        response = self._make_request(
+            http_method, path, json=data, timeout_seconds=timeout_seconds, headers=headers)
 
         # TODO: this response format isn't final
         execution_id = response.json()['id']

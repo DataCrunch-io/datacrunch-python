@@ -358,7 +358,7 @@ class Deployment:
             raise ValueError(
                 "Inference client not initialized. Use from_dict_with_inference_key or set_inference_client to initialize inference capabilities.")
 
-    def run_sync(self, data: Dict[str, Any], path: str = "", timeout_seconds: int = 60 * 5, headers: Optional[Dict[str, str]] = None) -> InferenceResponse:
+    def run_sync(self, data: Dict[str, Any], path: str = "", timeout_seconds: int = 60 * 5, headers: Optional[Dict[str, str]] = None, http_method: str = "POST", stream: bool = False) -> InferenceResponse:
         """Runs a synchronous inference request.
 
         Args:
@@ -366,6 +366,8 @@ class Deployment:
             path: The endpoint path to send the request to.
             timeout_seconds: Maximum time to wait for the response.
             headers: Optional headers to include in the request.
+            http_method: The HTTP method to use for the request.
+            stream: Whether to stream the response.
 
         Returns:
             InferenceResponse: The response from the inference request.
@@ -374,9 +376,9 @@ class Deployment:
             ValueError: If the inference client is not initialized.
         """
         self._validate_inference_client()
-        return self._inference_client.run_sync(data, path, timeout_seconds, headers)
+        return self._inference_client.run_sync(data, path, timeout_seconds, headers, http_method, stream)
 
-    def run(self, data: Dict[str, Any], path: str = "", timeout_seconds: int = 60 * 5, headers: Optional[Dict[str, str]] = None):
+    def run(self, data: Dict[str, Any], path: str = "", timeout_seconds: int = 60 * 5, headers: Optional[Dict[str, str]] = None, http_method: str = "POST", stream: bool = False):
         """Runs an asynchronous inference request.
 
         Args:
@@ -384,6 +386,8 @@ class Deployment:
             path: The endpoint path to send the request to.
             timeout_seconds: Maximum time to wait for the response.
             headers: Optional headers to include in the request.
+            http_method: The HTTP method to use for the request.
+            stream: Whether to stream the response.
 
         Returns:
             The response from the inference request.
@@ -392,7 +396,7 @@ class Deployment:
             ValueError: If the inference client is not initialized.
         """
         self._validate_inference_client()
-        return self._inference_client.run(data, path, timeout_seconds, headers)
+        return self._inference_client.run(data, path, timeout_seconds, headers, http_method, stream)
 
     def health(self):
         """Checks the health of the deployed application.
