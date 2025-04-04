@@ -19,6 +19,7 @@ class EnvVarType(str, Enum):
 class VolumeMountType(str, Enum):
     SCRATCH = "scratch"
     SECRET = "secret"
+    MEMORY = "memory"
 
 
 class ContainerRegistryType(str, Enum):
@@ -82,7 +83,7 @@ class EnvVar:
     type: EnvVarType
 
 
-@dataclass_json
+@dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class VolumeMount:
     """Volume mount configuration for containers.
@@ -92,6 +93,7 @@ class VolumeMount:
     """
     type: VolumeMountType
     mount_path: str
+    size_in_gb: Optional[int] = None
 
 
 @dataclass_json
