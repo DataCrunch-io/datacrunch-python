@@ -19,6 +19,7 @@ class EnvVarType(str, Enum):
 class VolumeMountType(str, Enum):
     SCRATCH = "scratch"
     SECRET = "secret"
+    MEMORY = "memory"
 
 
 class ContainerRegistryType(str, Enum):
@@ -82,16 +83,18 @@ class EnvVar:
     type: EnvVarType
 
 
-@dataclass_json
+@dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class VolumeMount:
     """Volume mount configuration for containers.
 
     :param type: Type of volume mount
     :param mount_path: Path where the volume should be mounted in the container
+    :param size_in_mb: Size of the volume in megabytes, only used for memory volume mounts
     """
     type: VolumeMountType
     mount_path: str
+    size_in_mb: Optional[int] = None
 
 
 @dataclass_json
