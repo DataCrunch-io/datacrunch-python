@@ -242,11 +242,11 @@ try:
             path="/v1/completions",
         )
         print("Completions API is working!")
-        print(f"Response: {completions_response}")
+        print(f"Response: {completions_response.output()}\n")
 
         # Make a stream sync inference request to the SGLang server
         completions_response_stream = created_deployment.run_sync(
-            completions_data,
+            {**completions_data, "stream": True},
             path="/v1/completions",
             stream=True
         )
