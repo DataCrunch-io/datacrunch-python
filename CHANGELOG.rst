@@ -1,9 +1,14 @@
 Changelog
 =========
 
+v1.9.0 (2025-04-04)
+-------------------
+
 * Added environment variables to container deployment example
 * Updated examples image from 'fastai' to 'ubuntu-24.04-cuda-12.8-open-docker'
 * Consistent naming and load of credentials from env variables in examples
+* Added size_in_mb parameter to VolumeMount class
+* Added memory volume mount type
 
 v1.8.4 (2025-03-25)
 -------------------
