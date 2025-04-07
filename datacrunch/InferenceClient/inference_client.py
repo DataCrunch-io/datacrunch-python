@@ -86,29 +86,6 @@ class InferenceResponse:
                     yield chunk
 
 
-@dataclass_json(undefined=Undefined.EXCLUDE)
-@dataclass
-class AsyncInferenceExecution:
-    _client: 'InferenceClient'
-    id: str
-    status: str  # TODO: add a status enum
-
-    # TODO: Implement when the status endpoint is done
-    def status(self) -> str:
-        # Call the status endpoint and update the status when
-        return self.status
-
-    # TODO: Implement when the cancel inference execution endpoint is done
-    # def cancel(self) -> None:
-    #     pass
-
-    # TODO: Implement when the results endpoint is done
-    def get_results(self) -> Dict[str, Any]:
-        pass
-    # alias for get_results
-    output = get_results
-
-
 class InferenceClient:
     def __init__(self, inference_key: str, endpoint_base_url: str, timeout_seconds: int = 60 * 5) -> None:
         """
@@ -131,6 +108,10 @@ class InferenceClient:
 
         self.inference_key = inference_key
         self.endpoint_base_url = endpoint_base_url.rstrip('/')
+        self.base_domain = self.endpoint_base_url[:self.endpoint_base_url.rindex(
+            '/')]
+        self.deployment_name = self.endpoint_base_url[self.endpoint_base_url.rindex(
+            '/')+1:]
         self.timeout_seconds = timeout_seconds
         self._session = requests.Session()
         self._global_headers = {
@@ -246,10 +227,17 @@ class InferenceClient:
             _original_response=response
         )
 
-    def run(self, data: Dict[str, Any], path: str = "", timeout_seconds: int = 60 * 5, headers: Optional[Dict[str, str]] = None, http_method: str = "POST"):
-        # Add the "Prefer: respond-async" header to the request, to indicate that the request is async
+    def run(self, data: Dict[str, Any], path: str = "", timeout_seconds: int = 60 * 5, headers: Optional[Dict[str, str]] = None, http_method: str = "POST", no_response: bool = False):
+        # Add relevant headers to the request, to indicate that the request is async
         headers = headers or {}
-        headers['Prefer'] = 'respond-async'
+        if no_response:
+            # If no_response is True, use the "Prefer: respond-async-proxy" header to run async and don't wait for the response
+            headers['Prefer'] = 'respond-async-proxy'
+            self._make_request(
+                http_method, path, json=data, timeout_seconds=timeout_seconds, headers=headers)
+            return
+        # Add the "Prefer: async-inference" header to the request, to run async and wait for the response
+        headers['Prefer'] = 'async-inference'
 
         response = self._make_request(
             http_method, path, json=data, timeout_seconds=timeout_seconds, headers=headers)
@@ -297,3 +285,41 @@ class InferenceClient:
             return self.get(healthcheck_path)
         except InferenceClientError as e:
             raise InferenceClientError(f"Health check failed: {str(e)}")
+
+
+@dataclass_json(undefined=Undefined.EXCLUDE)
+@dataclass
+class AsyncInferenceExecution:
+    _inference_client: 'InferenceClient'
+    id: str
+    _status: str  # TODO: add a status enum?
+    INFERENCE_ID_HEADER = 'X-Inference-Id'
+
+    def status(self) -> Dict[str, Any]:
+        """Get the current status of the async inference execution.
+
+        Returns:
+            Dict[str, Any]: The status response containing the execution status and other metadata
+        """
+        url = f'{self._inference_client.base_domain}/status/{self._inference_client.deployment_name}'
+        response = self._inference_client._session.get(
+            url, headers={self.INFERENCE_ID_HEADER: self.id, **self._inference_client._global_headers})
+
+        response_json = response.json()
+        self._status = response_json['status']
+
+        return response_json
+
+    def result(self) -> Dict[str, Any]:
+        """Get the results of the async inference execution.
+
+        Returns:
+            Dict[str, Any]: The results of the inference execution
+        """
+        url = f'{self._inference_client.base_domain}/results/{self._inference_client.deployment_name}'
+        response = self._inference_client._session.get(
+            url, headers={self.INFERENCE_ID_HEADER: self.id, **self._inference_client._global_headers})
+
+        return response
+    # alias for get_results
+    output = result

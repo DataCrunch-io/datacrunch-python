@@ -12,7 +12,7 @@ import json
 from datetime import datetime
 from datacrunch import DataCrunchClient
 from datacrunch.exceptions import APIException
-from datacrunch.containers.containers import (
+from datacrunch.containers import (
     Container,
     ComputeResource,
     ScalingOptions,

@@ -7,7 +7,7 @@ import os
 
 from datacrunch import DataCrunchClient
 from datacrunch.exceptions import APIException
-from datacrunch.containers.containers import (
+from datacrunch.containers import (
     ScalingOptions,
     ScalingPolicy,
     ScalingTriggers,
