@@ -1,6 +1,8 @@
 Changelog
 =========
 
+* Added inference client to run inference requests and get status and results
+
 v1.9.0 (2025-04-04)
 -------------------
 
