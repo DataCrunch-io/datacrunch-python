@@ -16,27 +16,27 @@ class Instance:
     """Represents a cloud instance with its configuration and state.
 
     Attributes:
-        id (str): Unique identifier for the instance.
-        instance_type (str): Type of the instance (e.g., '8V100.48V').
-        price_per_hour (float): Cost per hour of running the instance.
-        hostname (str): Network hostname of the instance.
-        description (str): Human-readable description of the instance.
-        ip (str): IP address assigned to the instance.
-        status (str): Current operational status of the instance.
-        created_at (str): Timestamp of instance creation.
-        ssh_key_ids (List[str]): List of SSH key IDs associated with the instance.
-        cpu (dict): CPU configuration details.
-        gpu (dict): GPU configuration details.
-        memory (dict): Memory configuration details.
-        storage (dict): Storage configuration details.
-        os_volume_id (str): ID of the operating system volume.
-        gpu_memory (dict): GPU memory configuration details.
-        location (str): Datacenter location code (default: Locations.FIN_01).
-        image (Optional[str]): Image ID or type used for the instance.
-        startup_script_id (Optional[str]): ID of the startup script to run.
-        is_spot (bool): Whether the instance is a spot instance.
-        contract (Optional[Contract]): Contract type for the instance. (e.g. 'LONG_TERM', 'PAY_AS_YOU_GO', 'SPOT')
-        pricing (Optional[Pricing]): Pricing model for the instance. (e.g. 'DYNAMIC_PRICE', 'FIXED_PRICE')
+        id: Unique identifier for the instance.
+        instance_type: Type of the instance (e.g., '8V100.48V').
+        price_per_hour: Cost per hour of running the instance.
+        hostname: Network hostname of the instance.
+        description: Human-readable description of the instance.
+        ip: IP address assigned to the instance.
+        status: Current operational status of the instance.
+        created_at: Timestamp of instance creation.
+        ssh_key_ids: List of SSH key IDs associated with the instance.
+        cpu: CPU configuration details.
+        gpu: GPU configuration details.
+        memory: Memory configuration details.
+        storage: Storage configuration details.
+        os_volume_id: ID of the operating system volume.
+        gpu_memory: GPU memory configuration details.
+        location: Datacenter location code (default: Locations.FIN_01).
+        image: Image ID or type used for the instance.
+        startup_script_id: ID of the startup script to run.
+        is_spot: Whether the instance is a spot instance.
+        contract: Contract type for the instance. (e.g. 'LONG_TERM', 'PAY_AS_YOU_GO', 'SPOT')
+        pricing: Pricing model for the instance. (e.g. 'DYNAMIC_PRICE', 'FIXED_PRICE')
     """
 
     id: str
