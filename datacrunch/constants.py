@@ -22,6 +22,7 @@ class VolumeActions:
 
 
 class InstanceStatus:
+    ORDERED = 'ordered'
     RUNNING = 'running'
     PROVISIONING = 'provisioning'
     OFFLINE = 'offline'
