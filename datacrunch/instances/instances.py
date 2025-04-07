@@ -65,7 +65,7 @@ class Instance:
         """Returns a JSON string representation of the instance.
 
         Returns:
-            str: JSON string containing all instance properties.
+            JSON string containing all instance properties.
         """
         return stringify_class_object_properties(self)
 
@@ -93,7 +93,7 @@ class InstancesService:
                 non-deleted instances.
 
         Returns:
-            List[Instance]: List of instance objects matching the criteria.
+            List of instance objects matching the criteria.
         """
         instances_dict = self._http_client.get(
             INSTANCES_ENDPOINT, params={'status': status}).json()
@@ -106,7 +106,7 @@ class InstancesService:
             id: Unique identifier of the instance to retrieve.
 
         Returns:
-            Instance: Instance object with the specified ID.
+            Instance object with the specified ID.
 
         Raises:
             HTTPError: If the instance is not found or other API error occurs.
@@ -149,7 +149,7 @@ class InstancesService:
             coupon: Optional coupon code for discounts.
 
         Returns:
-            Instance: The newly created instance object.
+            The newly created instance object.
 
         Raises:
             HTTPError: If instance creation fails or other API error occurs.
@@ -207,7 +207,7 @@ class InstancesService:
             location_code: Optional datacenter location code.
 
         Returns:
-            bool: True if the instance type is available, False otherwise.
+            True if the instance type is available, False otherwise.
         """
         is_spot = str(is_spot).lower()
         query_params = {'isSpot': is_spot, 'location_code': location_code}
@@ -222,7 +222,7 @@ class InstancesService:
             location_code: Optional datacenter location code to filter by.
 
         Returns:
-            List[Dict]: List of available instance types and their details.
+            List of available instance types and their details.
         """
         is_spot = str(is_spot).lower() if is_spot is not None else None
         query_params = {'isSpot': is_spot, 'locationCode': location_code}
