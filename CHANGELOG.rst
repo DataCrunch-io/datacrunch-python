@@ -1,6 +1,8 @@
 Changelog
 =========
 
+* Refactor: use dataclasses and google docstring style in instances.py
+
 v1.9.0 (2025-04-04)
 -------------------
 
