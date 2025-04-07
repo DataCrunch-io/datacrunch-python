@@ -303,7 +303,7 @@ class AsyncInferenceExecution:
         """
         url = f'{self._inference_client.base_domain}/status/{self._inference_client.deployment_name}'
         response = self._inference_client._session.get(
-            url, headers={self.INFERENCE_ID_HEADER: self.id, **self._inference_client._global_headers})
+            url, headers=self._inference_client._build_request_headers({self.INFERENCE_ID_HEADER: self.id}))
 
         response_json = response.json()
         self._status = response_json['status']
@@ -318,7 +318,7 @@ class AsyncInferenceExecution:
         """
         url = f'{self._inference_client.base_domain}/results/{self._inference_client.deployment_name}'
         response = self._inference_client._session.get(
-            url, headers={self.INFERENCE_ID_HEADER: self.id, **self._inference_client._global_headers})
+            url, headers=self._inference_client._build_request_headers({self.INFERENCE_ID_HEADER: self.id}))
 
         return response
     # alias for get_results
