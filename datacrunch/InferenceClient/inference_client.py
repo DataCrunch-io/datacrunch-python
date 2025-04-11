@@ -324,7 +324,7 @@ class AsyncInferenceExecution:
 
         return response_json
 
-    def result(self) -> Dict[str, Any] | str:
+    def result(self) -> Dict[str, Any]:
         """Get the results of the async inference execution.
 
         Returns:
@@ -337,7 +337,7 @@ class AsyncInferenceExecution:
         if response.headers['Content-Type'] == 'application/json':
             return response.json()
         else:
-            return response.text
+            return {'result': response.text}
 
     # alias for get_results
     output = result
