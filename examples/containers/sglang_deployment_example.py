@@ -44,7 +44,6 @@ DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
 DATACRUNCH_INFERENCE_KEY = os.environ.get('DATACRUNCH_INFERENCE_KEY')
 HF_TOKEN = os.environ.get('HF_TOKEN')
 
-
 def wait_for_deployment_health(datacrunch_client: DataCrunchClient, deployment_name: str, max_attempts: int = 20, delay: int = 30) -> bool:
     """Wait for deployment to reach healthy status.
 
@@ -99,18 +98,18 @@ def graceful_shutdown(signum, frame) -> None:
 
 try:
     # Get the inference API key
-    inference_key = DATACRUNCH_INFERENCE_KEY
-    if not inference_key:
-        inference_key = input(
+    datacrunch_inference_key = DATACRUNCH_INFERENCE_KEY
+    if not datacrunch_inference_key:
+        datacrunch_inference_key = input(
             "Enter your Inference API Key from the DataCrunch dashboard: ")
     else:
         print("Using Inference API Key from environment")
 
     # Initialize client with inference key
     datacrunch = DataCrunchClient(
-        DATACRUNCH_CLIENT_ID,
-        DATACRUNCH_CLIENT_SECRET,
-        inference_key=inference_key
+        client_id=DATACRUNCH_CLIENT_ID,
+        client_secret=DATACRUNCH_CLIENT_SECRET,
+        inference_key=datacrunch_inference_key
     )
 
     # Register signal handlers for cleanup

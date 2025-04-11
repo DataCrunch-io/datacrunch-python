@@ -4,12 +4,17 @@ import requests
 from requests.structures import CaseInsensitiveDict
 from typing import Optional, Dict, Any, Union, Generator
 from urllib.parse import urlparse
-
+from enum import Enum
 
 class InferenceClientError(Exception):
     """Base exception for InferenceClient errors."""
     pass
 
+class AsyncStatus(int, Enum):
+    Initialized = 0
+    Queue = 1
+    Inference = 2
+    Completed = 3
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
@@ -236,16 +241,16 @@ class InferenceClient:
             self._make_request(
                 http_method, path, json=data, timeout_seconds=timeout_seconds, headers=headers)
             return
-        # Add the "Prefer: async-inference" header to the request, to run async and wait for the response
-        headers['Prefer'] = 'async-inference'
+        # Add the "Prefer: respond-async" header to the request, to run async and wait for the response
+        headers['Prefer'] = 'respond-async'
 
         response = self._make_request(
             http_method, path, json=data, timeout_seconds=timeout_seconds, headers=headers)
 
-        # TODO: this response format isn't final
-        execution_id = response.json()['id']
+        result = response.json()
+        execution_id = result['Id']
 
-        return AsyncInferenceExecution(self, execution_id)
+        return AsyncInferenceExecution(self, execution_id, AsyncStatus.Initialized)
 
     def get(self, path: str, params: Optional[Dict[str, Any]] = None, headers: Optional[Dict[str, str]] = None, timeout_seconds: Optional[int] = None) -> requests.Response:
         return self._make_request('GET', path, params=params, headers=headers, timeout_seconds=timeout_seconds)
@@ -292,11 +297,20 @@ class InferenceClient:
 class AsyncInferenceExecution:
     _inference_client: 'InferenceClient'
     id: str
-    _status: str  # TODO: add a status enum?
+    _status: AsyncStatus
     INFERENCE_ID_HEADER = 'X-Inference-Id'
 
-    def status(self) -> Dict[str, Any]:
-        """Get the current status of the async inference execution.
+    def status(self) -> AsyncStatus:
+        """Get the current stored status of the async inference execution. Only the status value type
+
+        Returns:
+            AsyncStatus: The status object
+        """
+
+        return self._status
+
+    def status_json(self) -> Dict[str, Any]:
+        """Get the current status of the async inference execution. Return the status json
 
         Returns:
             Dict[str, Any]: The status response containing the execution status and other metadata
@@ -306,20 +320,24 @@ class AsyncInferenceExecution:
             url, headers=self._inference_client._build_request_headers({self.INFERENCE_ID_HEADER: self.id}))
 
         response_json = response.json()
-        self._status = response_json['status']
+        self._status = AsyncStatus(response_json['Status'])
 
         return response_json
 
-    def result(self) -> Dict[str, Any]:
+    def result(self) -> Dict[str, Any] | str:
         """Get the results of the async inference execution.
 
         Returns:
             Dict[str, Any]: The results of the inference execution
         """
-        url = f'{self._inference_client.base_domain}/results/{self._inference_client.deployment_name}'
+        url = f'{self._inference_client.base_domain}/result/{self._inference_client.deployment_name}'
         response = self._inference_client._session.get(
             url, headers=self._inference_client._build_request_headers({self.INFERENCE_ID_HEADER: self.id}))
 
-        return response
+        if response.headers['Content-Type'] == 'application/json':
+            return response.json()
+        else:
+            return response.text
+
     # alias for get_results
     output = result
