@@ -6,15 +6,18 @@ from typing import Optional, Dict, Any, Union, Generator
 from urllib.parse import urlparse
 from enum import Enum
 
+
 class InferenceClientError(Exception):
     """Base exception for InferenceClient errors."""
     pass
+
 
 class AsyncStatus(int, Enum):
     Initialized = 0
     Queue = 1
     Inference = 2
     Completed = 3
+
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
@@ -222,6 +225,22 @@ class InferenceClient:
             raise InferenceClientError(f"Request to {path} failed: {str(e)}")
 
     def run_sync(self, data: Dict[str, Any], path: str = "", timeout_seconds: int = 60 * 5, headers: Optional[Dict[str, str]] = None, http_method: str = "POST", stream: bool = False):
+        """Make a synchronous request to the inference endpoint.
+
+        Args:
+            data: The data payload to send with the request
+            path: API endpoint path. Defaults to empty string.
+            timeout_seconds: Request timeout in seconds. Defaults to 5 minutes.
+            headers: Optional headers to include in the request
+            http_method: HTTP method to use. Defaults to "POST".
+            stream: Whether to stream the response. Defaults to False.
+
+        Returns:
+            InferenceResponse: Object containing the response data.
+
+        Raises:
+            InferenceClientError: If the request fails
+        """
         response = self._make_request(
             http_method, path, json=data, timeout_seconds=timeout_seconds, headers=headers, stream=stream)
 
@@ -233,6 +252,23 @@ class InferenceClient:
         )
 
     def run(self, data: Dict[str, Any], path: str = "", timeout_seconds: int = 60 * 5, headers: Optional[Dict[str, str]] = None, http_method: str = "POST", no_response: bool = False):
+        """Make an asynchronous request to the inference endpoint.
+
+        Args:
+            data: The data payload to send with the request
+            path: API endpoint path. Defaults to empty string.
+            timeout_seconds: Request timeout in seconds. Defaults to 5 minutes.
+            headers: Optional headers to include in the request
+            http_method: HTTP method to use. Defaults to "POST".
+            no_response: If True, don't wait for response. Defaults to False.
+
+        Returns:
+            AsyncInferenceExecution: Object to track the async execution status.
+            If no_response is True, returns None.
+
+        Raises:
+            InferenceClientError: If the request fails
+        """
         # Add relevant headers to the request, to indicate that the request is async
         headers = headers or {}
         if no_response:
