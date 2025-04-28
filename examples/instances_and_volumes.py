@@ -21,7 +21,7 @@ ssh_keys = datacrunch.ssh_keys.get()
 
 # Create instance with extra attached volumes
 instance_with_extra_volumes = datacrunch.instances.create(instance_type='1V100.6V',
-                                                          image='ubuntu-24.04-cuda-12.8-open-docker',
+                                                          image='ubuntu-22.04-cuda-12.0-docker',
                                                           ssh_key_ids=ssh_keys,
                                                           hostname='example',
                                                           description='example instance',
@@ -34,7 +34,7 @@ instance_with_extra_volumes = datacrunch.instances.create(instance_type='1V100.6
 
 # Create instance with custom OS volume size and name
 instance_with_custom_os_volume = datacrunch.instances.create(instance_type='1V100.6V',
-                                                             image='ubuntu-24.04-cuda-12.8-open-docker',
+                                                             image='ubuntu-22.04-cuda-12.0-docker',
                                                              ssh_key_ids=ssh_keys,
                                                              hostname='example',
                                                              description='example instance',
@@ -58,7 +58,6 @@ datacrunch.instances.action(instance_id=EXAMPLE_INSTANCE_ID,
 datacrunch.instances.action(instance_id=EXAMPLE_INSTANCE_ID,
                             action=datacrunch.constants.instance_actions.DELETE,
                             volume_ids=[])
-
 
 # Delete instance and one of it's volumes (will delete one volume, detach the rest)
 datacrunch.instances.action(instance_id=EXAMPLE_INSTANCE_ID,
