@@ -175,7 +175,7 @@ class InstancesService:
         start_time = time.time()
         while True:
             instance = self.get_by_id(id)
-            if instance.status == InstanceStatus.PROVISIONING:
+            if instance.status != InstanceStatus.ORDERED:
                 return instance
 
             if time.time() - start_time > MAX_WAIT_TIME:
