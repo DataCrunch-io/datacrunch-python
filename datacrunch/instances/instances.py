@@ -1,8 +1,8 @@
+import time
 from typing import List, Union, Optional, Dict, Literal
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
-from datacrunch.helpers import stringify_class_object_properties
-from datacrunch.constants import Locations
+from datacrunch.constants import Locations, InstanceStatus
 
 INSTANCES_ENDPOINT = '/instances'
 
@@ -21,7 +21,6 @@ class Instance:
         price_per_hour: Cost per hour of running the instance.
         hostname: Network hostname of the instance.
         description: Human-readable description of the instance.
-        ip: IP address assigned to the instance.
         status: Current operational status of the instance.
         created_at: Timestamp of instance creation.
         ssh_key_ids: List of SSH key IDs associated with the instance.
@@ -29,8 +28,9 @@ class Instance:
         gpu: GPU configuration details.
         memory: Memory configuration details.
         storage: Storage configuration details.
-        os_volume_id: ID of the operating system volume.
         gpu_memory: GPU memory configuration details.
+        ip: IP address assigned to the instance.
+        os_volume_id: ID of the operating system volume.
         location: Datacenter location code (default: Locations.FIN_01).
         image: Image ID or type used for the instance.
         startup_script_id: ID of the startup script to run.
@@ -44,7 +44,6 @@ class Instance:
     price_per_hour: float
     hostname: str
     description: str
-    ip: str
     status: str
     created_at: str
     ssh_key_ids: List[str]
@@ -52,22 +51,17 @@ class Instance:
     gpu: dict
     memory: dict
     storage: dict
-    os_volume_id: str
     gpu_memory: dict
+    # Can be None if instance is still not provisioned
+    ip: Optional[str] = None
+    # Can be None if instance is still not provisioned
+    os_volume_id: Optional[str] = None
     location: str = Locations.FIN_01
     image: Optional[str] = None
     startup_script_id: Optional[str] = None
     is_spot: bool = False
     contract: Optional[Contract] = None
     pricing: Optional[Pricing] = None
-
-    def __str__(self) -> str:
-        """Returns a JSON string representation of the instance.
-
-        Returns:
-            JSON string containing all instance properties.
-        """
-        return stringify_class_object_properties(self)
 
 
 class InstancesService:
@@ -173,7 +167,22 @@ class InstancesService:
         if pricing:
             payload['pricing'] = pricing
         id = self._http_client.post(INSTANCES_ENDPOINT, json=payload).text
-        return self.get_by_id(id)
+
+        # Wait for instance to enter provisioning state with timeout
+        MAX_WAIT_TIME = 60  # Maximum wait time in seconds
+        POLL_INTERVAL = 0.5  # Time between status checks
+
+        start_time = time.time()
+        while True:
+            instance = self.get_by_id(id)
+            if instance.status == InstanceStatus.PROVISIONING:
+                return instance
+
+            if time.time() - start_time > MAX_WAIT_TIME:
+                raise TimeoutError(
+                    f"Instance {id} did not enter provisioning state within {MAX_WAIT_TIME} seconds")
+
+            time.sleep(POLL_INTERVAL)
 
     def action(self, id_list: Union[List[str], str], action: str, volume_ids: Optional[List[str]] = None) -> None:
         """Performs an action on one or more instances.
