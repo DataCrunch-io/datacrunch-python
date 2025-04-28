@@ -1,6 +1,8 @@
 Changelog
 =========
 
+* Added example for calling the inference endpoint with a minimal client
+* Added missing doc generation for inference examples
 * Refactor: use dataclasses and google docstring style in instances.py
 
 v1.10.0 (2025-04-17)
