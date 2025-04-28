@@ -24,16 +24,31 @@ DataCrunch's Public API documentation [is available here](https://api.datacrunch
 
 - Generate your client credentials - [instructions in the public API docs](https://api.datacrunch.io/v1/docs#description/quick-start-guide).
 
-- Add the client secret to an environment variable (don't want it to be hardcoded):
+
+- Add your client id and client secret to an environment variable (don't want it to be hardcoded):
 
   Linux (bash):
 
   ```bash
-  export DATACRUNCH_CLIENT_SECRET=Z4CZq02rdwdB7ISV0k4Z2gtwAFKiyvr2U1l0KDIeYi
+  export DATACRUNCH_CLIENT_ID=YOUR_ID_HERE
+  export DATACRUNCH_CLIENT_SECRET=YOUR_SECRET_HERE
   ```
 
+- To enable sending inference requests from SDK you must generate an inference key - [Instructions on inference authorization](https://docs.datacrunch.io/inference/authorization)
+  
+
+- Add your inference key to an environment variable
+
+  Linux (bash):
+ 
+  ```bash
+  export DATACRUNCH_INFERENCE_KEY=YOUR_API_KEY_HERE
+  ```
+  
   Other platforms:
   https://en.wikipedia.org/wiki/Environment_variable
+
+
 
 - Example for creating a new instance:
 
@@ -41,9 +56,9 @@ DataCrunch's Public API documentation [is available here](https://api.datacrunch
   import os
   from datacrunch import DataCrunchClient
 
-  # Get client secret from environment variable
+  # Get credentials from environment variables
+  CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
   CLIENT_SECRET = os.environ['DATACRUNCH_CLIENT_SECRET']
-  CLIENT_ID = 'Ibk5bdxV64lKAWOqYnvSi'
 
   # Create datcrunch client
   datacrunch = DataCrunchClient(CLIENT_ID, CLIENT_SECRET)
@@ -118,7 +133,7 @@ Create this file in the root directory of the project:
 from datacrunch.datacrunch import DataCrunchClient
 
 CLIENT_SECRET = 'secret'
-CLIENT_ID = 'Ibk5bdxV64lKAWOqYnvSi'
+CLIENT_ID = 'your-id'
 
 # Create datcrunch client
 datacrunch = DataCrunchClient(CLIENT_ID, CLIENT_SECRET, base_url='http://localhost:3001/v1')

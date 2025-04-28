@@ -8,12 +8,10 @@ from datacrunch.containers.containers import (
     SECRETS_ENDPOINT,
     SERVERLESS_COMPUTE_RESOURCES_ENDPOINT,
     Container,
-    ContainerInfo,
     ContainerDeploymentStatus,
     ContainerRegistrySettings,
     ContainersService,
     Deployment,
-    DeploymentInfo,
     EnvVar,
     EnvVarType,
     EntrypointOverridesSettings,
@@ -39,7 +37,8 @@ from datacrunch.exceptions import APIException
 
 DEPLOYMENT_NAME = "test-deployment"
 CONTAINER_NAME = "test-container"
-COMPUTE_RESOURCE_NAME = "test-compute"
+COMPUTE_RESOURCE_NAME_GENERAL_COMPUTE = "General Compute"
+COMPUTE_RESOURCE_NAME_H100 = "H100"
 SECRET_NAME = "test-secret"
 SECRET_VALUE = "test-secret-value"
 REGISTRY_CREDENTIAL_NAME = "test-credential"
@@ -84,7 +83,7 @@ DEPLOYMENT_DATA = {
         }
     ],
     "compute": {
-        "name": COMPUTE_RESOURCE_NAME,
+        "name": COMPUTE_RESOURCE_NAME_GENERAL_COMPUTE,
         "size": 1,
         "is_available": True
     },
@@ -120,12 +119,12 @@ DEPLOYMENT_DATA = {
 # Sample compute resources data
 COMPUTE_RESOURCES_DATA = [
     {
-        "name": COMPUTE_RESOURCE_NAME,
+        "name": COMPUTE_RESOURCE_NAME_GENERAL_COMPUTE,
         "size": 1,
         "is_available": True
     },
     {
-        "name": "large-compute",
+        "name": COMPUTE_RESOURCE_NAME_H100,
         "size": 4,
         "is_available": True
     }
@@ -215,12 +214,12 @@ class TestContainersService:
         # assert
         assert type(deployments) == list
         assert len(deployments) == 1
-        assert type(deployment) == DeploymentInfo
+        assert type(deployment) == Deployment
         assert deployment.name == DEPLOYMENT_NAME
         assert len(deployment.containers) == 1
-        assert type(deployment.containers[0]) == ContainerInfo
+        assert type(deployment.containers[0]) == Container
         assert type(deployment.compute) == ComputeResource
-        assert deployment.compute.name == COMPUTE_RESOURCE_NAME
+        assert deployment.compute.name == COMPUTE_RESOURCE_NAME_GENERAL_COMPUTE
         assert responses.assert_call_count(deployments_endpoint, 1) is True
 
     @responses.activate
@@ -238,11 +237,11 @@ class TestContainersService:
         deployment = containers_service.get_deployment_by_name(DEPLOYMENT_NAME)
 
         # assert
-        assert type(deployment) == DeploymentInfo
+        assert type(deployment) == Deployment
         assert deployment.name == DEPLOYMENT_NAME
         assert len(deployment.containers) == 1
         assert deployment.containers[0].name == CONTAINER_NAME
-        assert deployment.compute.name == COMPUTE_RESOURCE_NAME
+        assert deployment.compute.name == COMPUTE_RESOURCE_NAME_GENERAL_COMPUTE
         assert responses.assert_call_count(url, 1) is True
 
     @responses.activate
@@ -287,7 +286,8 @@ class TestContainersService:
                 type=VolumeMountType.SCRATCH, mount_path="/data")]
         )
 
-        compute = ComputeResource(name=COMPUTE_RESOURCE_NAME, size=1)
+        compute = ComputeResource(
+            name=COMPUTE_RESOURCE_NAME_GENERAL_COMPUTE, size=1)
 
         container_registry_settings = ContainerRegistrySettings(
             is_private=False)
@@ -305,11 +305,11 @@ class TestContainersService:
         created_deployment = containers_service.create_deployment(deployment)
 
         # assert
-        assert type(created_deployment) == DeploymentInfo
+        assert type(created_deployment) == Deployment
         assert created_deployment.name == DEPLOYMENT_NAME
         assert len(created_deployment.containers) == 1
         assert created_deployment.containers[0].name == CONTAINER_NAME
-        assert created_deployment.compute.name == COMPUTE_RESOURCE_NAME
+        assert created_deployment.compute.name == COMPUTE_RESOURCE_NAME_GENERAL_COMPUTE
         assert responses.assert_call_count(deployments_endpoint, 1) is True
 
     @responses.activate
@@ -324,7 +324,7 @@ class TestContainersService:
         )
 
         # create deployment object
-        container = ContainerInfo(
+        container = Container(
             name=CONTAINER_NAME,
             image="nginx:latest",
             exposed_port=80
@@ -333,9 +333,10 @@ class TestContainersService:
         container_registry_settings = ContainerRegistrySettings(
             is_private=False)
 
-        compute = ComputeResource(name=COMPUTE_RESOURCE_NAME, size=1)
+        compute = ComputeResource(
+            name=COMPUTE_RESOURCE_NAME_GENERAL_COMPUTE, size=1)
 
-        deployment = DeploymentInfo(
+        deployment = Deployment(
             name=DEPLOYMENT_NAME,
             container_registry_settings=container_registry_settings,
             containers=[container],
@@ -347,11 +348,11 @@ class TestContainersService:
             DEPLOYMENT_NAME, deployment)
 
         # assert
-        assert type(updated_deployment) == DeploymentInfo
+        assert type(updated_deployment) == Deployment
         assert updated_deployment.name == DEPLOYMENT_NAME
         assert len(updated_deployment.containers) == 1
         assert updated_deployment.containers[0].name == CONTAINER_NAME
-        assert updated_deployment.compute.name == COMPUTE_RESOURCE_NAME
+        assert updated_deployment.compute.name == COMPUTE_RESOURCE_NAME_GENERAL_COMPUTE
         assert responses.assert_call_count(url, 1) is True
 
     @responses.activate
@@ -650,7 +651,73 @@ class TestContainersService:
         assert type(resources) == list
         assert len(resources) == 2
         assert type(resources[0]) == ComputeResource
-        assert resources[0].name == COMPUTE_RESOURCE_NAME
+        assert resources[0].name == COMPUTE_RESOURCE_NAME_GENERAL_COMPUTE
+        assert resources[0].size == 1
+        assert resources[0].is_available == True
+        assert responses.assert_call_count(
+            compute_resources_endpoint, 1) is True
+
+    @responses.activate
+    def test_get_compute_resources_filter_by_size(self, containers_service, compute_resources_endpoint):
+        # arrange - add response mock
+        responses.add(
+            responses.GET,
+            compute_resources_endpoint,
+            json=[COMPUTE_RESOURCES_DATA],
+            status=200
+        )
+
+        # act
+        resources = containers_service.get_compute_resources(size=4)
+
+        # assert
+        assert type(resources) == list
+        assert len(resources) == 1
+        assert type(resources[0]) == ComputeResource
+        assert resources[0].name == COMPUTE_RESOURCE_NAME_H100
+        assert resources[0].size == 4
+        assert resources[0].is_available == True
+        assert responses.assert_call_count(
+            compute_resources_endpoint, 1) is True
+
+    @responses.activate
+    def test_get_compute_resources_filter_by_availability(self, containers_service, compute_resources_endpoint):
+        # arrange - add response mock
+        responses.add(
+            responses.GET,
+            compute_resources_endpoint,
+            json=[COMPUTE_RESOURCES_DATA],
+            status=200
+        )
+
+        # act
+        resources = containers_service.get_compute_resources(is_available=True)
+
+        # assert
+        assert type(resources) == list
+        assert len(resources) == 2
+        assert all(r.is_available == True for r in resources)
+        assert responses.assert_call_count(
+            compute_resources_endpoint, 1) is True
+
+    @responses.activate
+    def test_get_compute_resources_filter_by_size_and_availability(self, containers_service, compute_resources_endpoint):
+        # arrange - add response mock
+        responses.add(
+            responses.GET,
+            compute_resources_endpoint,
+            json=[COMPUTE_RESOURCES_DATA],
+            status=200
+        )
+
+        # act
+        resources = containers_service.get_compute_resources(
+            size=1, is_available=True)
+
+        # assert
+        assert type(resources) == list
+        assert len(resources) == 1
+        assert resources[0].name == COMPUTE_RESOURCE_NAME_GENERAL_COMPUTE
         assert resources[0].size == 1
         assert resources[0].is_available == True
         assert responses.assert_call_count(

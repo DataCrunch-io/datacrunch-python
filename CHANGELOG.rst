@@ -3,6 +3,17 @@ Changelog
 
 * Refactor: use dataclasses and google docstring style in instances.py
 
+v1.10.0 (2025-04-17)
+-------------------
+
+* Updated version for release
+
+v1.9.1 (2025-04-17)
+-------------------
+
+* Added inference client to run inference requests and get status and results
+* Added support for asynchronous inference
+
 v1.9.0 (2025-04-04)
 -------------------
 
