@@ -5,4 +5,4 @@ This example demonstrates how to deploy and manage SGLang applications in DataCr
 
 .. literalinclude:: ../../../../examples/containers/sglang_deployment_example.py
    :language: python
-   :caption: SGLang Deployment 
+   :caption: SGLang Deployment Example

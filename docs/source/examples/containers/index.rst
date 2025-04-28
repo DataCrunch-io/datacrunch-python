@@ -7,10 +7,13 @@ This section contains examples demonstrating how to work with containers in Data
    :maxdepth: 1
    :caption: Contents:
 
-   compute_resources
    deployments
+   compute_resources
    environment_variables
    registry_credentials
    secrets
    sglang
    scaling 
+   inference_async
+   inference_sync
+   inference_minimal
