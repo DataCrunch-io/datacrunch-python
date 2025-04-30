@@ -134,7 +134,8 @@ COMPUTE_RESOURCES_DATA = [
 SECRETS_DATA = [
     {
         "name": SECRET_NAME,
-        "created_at": "2023-01-01T00:00:00+00:00"
+        "created_at": "2023-01-01T00:00:00+00:00",
+        "secret_type": "generic"
     }
 ]
 

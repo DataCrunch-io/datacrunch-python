@@ -4,6 +4,8 @@ This module provides functionality for managing container deployments, including
 creation, updates, deletion, and monitoring of containerized applications.
 """
 
+import base64
+import os
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, Undefined  # type: ignore
 from typing import List, Optional, Dict, Any
@@ -18,6 +20,7 @@ CONTAINER_DEPLOYMENTS_ENDPOINT = '/container-deployments'
 SERVERLESS_COMPUTE_RESOURCES_ENDPOINT = '/serverless-compute-resources'
 CONTAINER_REGISTRY_CREDENTIALS_ENDPOINT = '/container-registry-credentials'
 SECRETS_ENDPOINT = '/secrets'
+FILESET_SECRETS_ENDPOINT = '/file-secrets'
 
 
 class EnvVarType(str, Enum):
@@ -25,6 +28,13 @@ class EnvVarType(str, Enum):
 
     PLAIN = "plain"
     SECRET = "secret"
+
+
+class SecretType(str, Enum):
+    """Types of secrets that can be set in containers."""
+
+    GENERIC = "generic"  # Regular secret, can be used in env vars
+    FILESET = "file-secret"  # A file secret that can be mounted into the container
 
 
 class VolumeMountType(str, Enum):
@@ -446,10 +456,12 @@ class Secret:
     Attributes:
         name: Name of the secret.
         created_at: Timestamp when the secret was created.
+        secret_type: Type of the secret.
     """
 
     name: str
     created_at: str
+    secret_type: SecretType
 
 
 @dataclass_json
@@ -909,6 +921,7 @@ class ContainersService:
             List[Secret]: List of all secrets.
         """
         response = self.client.get(SECRETS_ENDPOINT)
+        print(response.json())
         return [Secret.from_dict(secret) for secret in response.json()]
 
     def create_secret(self, name: str, value: str) -> None:
@@ -956,3 +969,42 @@ class ContainersService:
         """
         self.client.delete(
             f"{CONTAINER_REGISTRY_CREDENTIALS_ENDPOINT}/{credentials_name}")
+
+    def get_fileset_secrets(self) -> List[Secret]:
+        """Retrieves all fileset secrets.
+
+        Returns:
+           List of all fileset secrets.
+        """
+        response = self.client.get(FILESET_SECRETS_ENDPOINT)
+        return [Secret.from_dict(secret) for secret in response.json()]
+
+    def delete_fileset_secret(self, secret_name: str) -> None:
+        """Deletes a fileset secret.
+
+        Args:
+            secret_name: Name of the secret to delete.
+        """
+        self.client.delete(f"{FILESET_SECRETS_ENDPOINT}/{secret_name}")
+
+    def create_fileset_secret_from_file_paths(self, secret_name: str, file_paths: List[str]) -> None:
+        """Creates a new fileset secret.
+        A fileset secret is a secret that contains several files, 
+        and can be used to mount a directory with the files in a container.
+
+        Args:
+            secret_name: Name of the secret.
+            file_paths: List of file paths to include in the secret.
+        """
+        processed_files = []
+        for file_path in file_paths:
+            with open(file_path, "rb") as f:
+                base64_content = base64.b64encode(f.read()).decode("utf-8")
+                processed_files.append({
+                    "file_name": os.path.basename(file_path),
+                    "base64_content": base64_content
+                })
+        self.client.post(FILESET_SECRETS_ENDPOINT, {
+            "name": secret_name,
+            "files": processed_files
+        })

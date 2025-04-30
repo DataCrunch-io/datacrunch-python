@@ -1,6 +1,8 @@
 Changelog
 =========
 
+* Added support for fileset secrets
+
 v1.11.0 (2025-04-28)
 --------------------
 
