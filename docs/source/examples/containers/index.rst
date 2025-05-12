@@ -12,6 +12,7 @@ This section contains examples demonstrating how to work with containers in Data
    environment_variables
    registry_credentials
    secrets
+   fileset_secrets
    sglang
    scaling 
    inference_async

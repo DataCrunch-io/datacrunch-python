@@ -96,9 +96,16 @@ def main() -> None:
                 path="/health"
             ),
             volume_mounts=[
+                # Shared memory volume
                 VolumeMount(
                     type=VolumeMountType.SCRATCH,
                     mount_path="/data"
+                ),
+                # Fileset secret
+                VolumeMount(
+                    type=VolumeMountType.SECRET,
+                    mount_path="/path/to/mount",
+                    name="my-fileset-secret"  # This fileset secret must be created beforehand
                 )
             ],
             env=[
