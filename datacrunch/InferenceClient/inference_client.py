@@ -12,7 +12,7 @@ class InferenceClientError(Exception):
     pass
 
 
-class AsyncStatus(int, Enum):
+class AsyncStatus(str, Enum):
     Initialized = "Initialized"
     Queue = "Queue"
     Inference = "Inference"
