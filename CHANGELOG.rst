@@ -1,6 +1,8 @@
 Changelog
 =========
 
+* Fixed inference examples docs generation
+
 v1.12.0 (2025-05-12)
 --------------------
 
