@@ -13,10 +13,10 @@ class InferenceClientError(Exception):
 
 
 class AsyncStatus(int, Enum):
-    Initialized = 0
-    Queue = 1
-    Inference = 2
-    Completed = 3
+    Initialized = "Initialized"
+    Queue = "Queue"
+    Inference = "Inference"
+    Completed = "Completed"
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
