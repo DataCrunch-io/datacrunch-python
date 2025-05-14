@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - This file and CONTRIBUTING.rst to markdown
+- Updated inference status enum from numerical to meaningful string values
 
 ### Fixed
 
