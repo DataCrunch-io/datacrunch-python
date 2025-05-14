@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- This file and CONTRIBUTING.rst to markdown
+
+### Fixed
+
+- Github action publish package release trigger value
+
 ## [1.12.1] - 2025-05-13
 
 ### Fixed
