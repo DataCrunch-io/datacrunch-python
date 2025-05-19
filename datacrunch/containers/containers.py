@@ -1009,7 +1009,7 @@ class ContainersService:
             "files": processed_files
         })
 
-    def unmount_fileset_secret(self, deployment_name: str, secret_name: str) -> None:
+    def unmount_fileset_secret(self, deployment_name: str, fileset_secret_name: str) -> None:
         """Unmounts a fileset secret from a deployment.
 
         Args:
@@ -1018,5 +1018,5 @@ class ContainersService:
         """
         self.client.delete(FILESET_SECRETS_ENDPOINT, {
             "deployment_name": deployment_name,
-            "secret_name": secret_name,
+            "fileset_secret_name": fileset_secret_name,
         })
