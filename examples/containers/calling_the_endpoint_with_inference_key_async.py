@@ -30,7 +30,7 @@ async_inference_execution = inference_client.run(
 # Poll for status until completion
 while async_inference_execution.status() != AsyncStatus.Completed:
     print(async_inference_execution.status_json())
-    sleep(1)
+    sleep(5)
 
 # Print the response
 print(async_inference_execution.output())

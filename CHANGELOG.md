@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Trigger publish package github action only when a released is published
+- Async inference example: longer `sleep()` duration when polling for inference status
+
+### Fixed
+
+- Removed a forgotten and redundant `print`
+
 ## [1.13.0] - 2025-05-21
 
 ### Changed
