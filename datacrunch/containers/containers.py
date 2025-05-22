@@ -921,7 +921,6 @@ class ContainersService:
             List[Secret]: List of all secrets.
         """
         response = self.client.get(SECRETS_ENDPOINT)
-        print(response.json())
         return [Secret.from_dict(secret) for secret in response.json()]
 
     def create_secret(self, name: str, value: str) -> None:
