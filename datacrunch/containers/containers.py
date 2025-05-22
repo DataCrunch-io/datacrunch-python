@@ -134,6 +134,14 @@ class VolumeMount:
 
 @dataclass_json
 @dataclass
+class SecretMount:
+    mount_path: str
+    secret_name: str
+    type: VolumeMountType = VolumeMountType.SECRET
+
+
+@dataclass_json
+@dataclass
 class Container:
     """Container configuration for deployment creation and updates.
 
