@@ -6,6 +6,7 @@ from .containers import (
     HealthcheckSettings,
     EntrypointOverridesSettings,
     VolumeMount,
+    SecretMount,
     VolumeMountType,
     Container,
     ContainerRegistryCredentials,

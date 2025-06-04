@@ -21,6 +21,7 @@ from datacrunch.containers import (
     UtilizationScalingTrigger,
     HealthcheckSettings,
     VolumeMount,
+    SecretMount,
     ContainerRegistrySettings,
     Deployment,
     VolumeMountType,
@@ -102,10 +103,9 @@ def main() -> None:
                     mount_path="/data"
                 ),
                 # Fileset secret
-                VolumeMount(
-                    type=VolumeMountType.SECRET,
+                SecretMount(
                     mount_path="/path/to/mount",
-                    name="my-fileset-secret"  # This fileset secret must be created beforehand
+                    secret_name="my-fileset-secret"  # This fileset secret must be created beforehand
                 )
             ],
             env=[
