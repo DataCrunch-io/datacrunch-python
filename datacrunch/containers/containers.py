@@ -8,7 +8,7 @@ import base64
 import os
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, Undefined  # type: ignore
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Union
 from enum import Enum
 
 from datacrunch.http_client.http_client import HTTPClient
@@ -216,7 +216,7 @@ class Container:
         volume_mounts: Optional list of volume mounts.
     """
 
-    image: str
+    image: Union[str, dict]
     exposed_port: int
     name: Optional[str] = None
     healthcheck: Optional[HealthcheckSettings] = None
