@@ -131,7 +131,7 @@ class VolumeMount:
     type: VolumeMountType
     mount_path: str
     # Deprecated: use MemoryMount for memory volumes instead.
-    size_in_mb: Optional[int] = None
+    size_in_mb: Optional[int] = field(default=None, kw_only=True)
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -165,9 +165,9 @@ class SecretMount(VolumeMount):
     file_names: Optional[List[str]] = None
 
     def __init__(self, mount_path: str, secret_name: str, file_names: Optional[List[str]] = None):
-        super().__init__(type=VolumeMountType.SECRET, mount_path=mount_path)
         self.secret_name = secret_name
         self.file_names = file_names
+        super().__init__(type=VolumeMountType.SECRET, mount_path=mount_path)
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
