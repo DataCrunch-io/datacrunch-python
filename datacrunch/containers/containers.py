@@ -8,7 +8,7 @@ import base64
 import os
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, Undefined  # type: ignore
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Union
 from enum import Enum
 
 from datacrunch.http_client.http_client import HTTPClient
@@ -43,6 +43,7 @@ class VolumeMountType(str, Enum):
     SCRATCH = "scratch"
     SECRET = "secret"
     MEMORY = "memory"
+    SHARED = "shared"
 
 
 class ContainerRegistryType(str, Enum):
@@ -119,25 +120,88 @@ class EnvVar:
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class VolumeMount:
-    """Volume mount configuration for containers.
+    """Base class for volume mount configurations.
 
     Attributes:
         type: Type of volume mount.
         mount_path: Path where the volume should be mounted in the container.
-        size_in_mb: Size of the memory volume in megabytes, only used for memory volume mounts
+        size_in_mb: Size of the volume in megabytes. Deprecated: use MemoryMount for memory volumes instead.
     """
 
     type: VolumeMountType
     mount_path: str
-    size_in_mb: Optional[int] = None
+    # Deprecated: use MemoryMount for memory volumes instead.
+    size_in_mb: Optional[int] = field(default=None, kw_only=True)
 
 
-@dataclass_json
+@dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class SecretMount:
-    mount_path: str
+class GeneralStorageMount(VolumeMount):
+    """General storage volume mount configuration.
+    """
+
+    def __init__(self, mount_path: str):
+        """Initialize a general scratch volume mount.
+
+        Args:
+            mount_path: Path where the volume should be mounted in the container.
+        """
+        super().__init__(type=VolumeMountType.SCRATCH, mount_path=mount_path)
+
+
+@dataclass_json(undefined=Undefined.EXCLUDE)
+@dataclass
+class SecretMount(VolumeMount):
+    """Secret volume mount configuration.
+
+    A secret volume mount allows mounting secret files into the container.
+
+    Attributes:
+        secret_name: The name of the fileset secret to mount. This secret must be created in advance, for example using `create_fileset_secret_from_file_paths`
+        file_names: List of file names that are part of the fileset secret.
+    """
+
     secret_name: str
-    type: VolumeMountType = VolumeMountType.SECRET
+    file_names: Optional[List[str]] = None
+
+    def __init__(self, mount_path: str, secret_name: str, file_names: Optional[List[str]] = None):
+        self.secret_name = secret_name
+        self.file_names = file_names
+        super().__init__(type=VolumeMountType.SECRET, mount_path=mount_path)
+
+
+@dataclass_json(undefined=Undefined.EXCLUDE)
+@dataclass
+class MemoryMount(VolumeMount):
+    """Memory volume mount configuration.
+
+    A memory volume mount provides high-speed, ephemeral in-memory storage inside your container.
+    The mount path is currently hardcoded to /dev/shm and cannot be changed.
+
+    Attributes:
+        size_in_mb: Size of the memory volume in megabytes.
+    """
+
+    size_in_mb: int
+
+    def __init__(self, size_in_mb: int):
+        super().__init__(type=VolumeMountType.MEMORY, mount_path='/dev/shm')
+        self.size_in_mb = size_in_mb
+
+
+@dataclass_json(undefined=Undefined.EXCLUDE)
+@dataclass
+class SharedFileSystemMount(VolumeMount):
+    """Shared filesystem volume mount configuration.
+
+    A shared filesystem volume mount allows mounting a shared filesystem into the container.
+    """
+
+    volume_id: str  # The ID of the shared filesystem volume to mount, needs to be created first
+
+    def __init__(self, mount_path: str, volume_id: str):
+        super().__init__(type=VolumeMountType.SHARED, mount_path=mount_path)
+        self.volume_id = volume_id
 
 
 @dataclass_json
@@ -155,7 +219,7 @@ class Container:
         volume_mounts: Optional list of volume mounts.
     """
 
-    image: str
+    image: Union[str, dict]
     exposed_port: int
     name: Optional[str] = None
     healthcheck: Optional[HealthcheckSettings] = None

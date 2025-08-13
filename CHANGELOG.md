@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added `SharedFileSystemMount` class for container sfs support
+- Added `SecretMount` and `GeneralStorageMount` classes that inherit from base `VolumeMount`
+
+### Changed
+
+- Removed support for python 3.9 as it doesn't support `kw_only` and reaches EOS state in 2 months
+
 ## [1.13.2] - 2025-06-04
 
 ### Changed

@@ -7,6 +7,8 @@ from .containers import (
     EntrypointOverridesSettings,
     VolumeMount,
     SecretMount,
+    SharedFileSystemMount,
+    GeneralStorageMount,
     VolumeMountType,
     Container,
     ContainerRegistryCredentials,

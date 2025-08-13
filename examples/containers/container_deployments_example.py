@@ -20,11 +20,11 @@ from datacrunch.containers import (
     QueueLoadScalingTrigger,
     UtilizationScalingTrigger,
     HealthcheckSettings,
-    VolumeMount,
+    GeneralStorageMount,
     SecretMount,
+    SharedFileSystemMount,
     ContainerRegistrySettings,
     Deployment,
-    VolumeMountType,
     ContainerDeploymentStatus,
 )
 
@@ -97,23 +97,24 @@ def main() -> None:
                 path="/health"
             ),
             volume_mounts=[
-                # Shared memory volume
-                VolumeMount(
-                    type=VolumeMountType.SCRATCH,
+                GeneralStorageMount(
                     mount_path="/data"
                 ),
-                # Fileset secret
+                # Optional: Fileset secret
                 SecretMount(
                     mount_path="/path/to/mount",
                     secret_name="my-fileset-secret"  # This fileset secret must be created beforehand
-                )
+                ),
+                # Optional: Mount an existing shared filesystem volume
+                SharedFileSystemMount(
+                    mount_path="/sfs", volume_id="<ID-OF-THE-SFS-VOLUME>"),
             ],
             env=[
                 # Secret environment variables needed to be added beforehand
                 EnvVar(
                     name="HF_TOKEN",
                     # This is a reference to a secret already created
-                    value_or_reference_to_secret="hf_token",
+                    value_or_reference_to_secret="hf-token",
                     type=EnvVarType.SECRET
                 ),
                 # Plain environment variables can be added directly
