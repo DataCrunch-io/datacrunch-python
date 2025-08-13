@@ -20,7 +20,7 @@ from datacrunch.containers import (
     QueueLoadScalingTrigger,
     UtilizationScalingTrigger,
     HealthcheckSettings,
-    ScratchMount,
+    GeneralStorageMount,
     SecretMount,
     SharedFileSystemMount,
     ContainerRegistrySettings,
@@ -97,7 +97,7 @@ def main() -> None:
                 path="/health"
             ),
             volume_mounts=[
-                ScratchMount(
+                GeneralStorageMount(
                     mount_path="/data"
                 ),
                 # Optional: Fileset secret

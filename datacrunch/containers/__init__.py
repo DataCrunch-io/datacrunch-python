@@ -8,7 +8,7 @@ from .containers import (
     VolumeMount,
     SecretMount,
     SharedFileSystemMount,
-    ScratchMount,
+    GeneralStorageMount,
     VolumeMountType,
     Container,
     ContainerRegistryCredentials,
