@@ -125,10 +125,13 @@ class VolumeMount:
     Attributes:
         type: Type of volume mount.
         mount_path: Path where the volume should be mounted in the container.
+        size_in_mb: Size of the volume in megabytes. Deprecated: use MemoryMount for memory volumes instead.
     """
 
     type: VolumeMountType
     mount_path: str
+    # Deprecated: use MemoryMount for memory volumes instead.
+    size_in_mb: Optional[int] = None
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
