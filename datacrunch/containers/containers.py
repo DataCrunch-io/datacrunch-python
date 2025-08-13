@@ -157,8 +157,8 @@ class SecretMount(VolumeMount):
     A secret volume mount allows mounting secret files into the container.
 
     Attributes:
-        secret_name: Name of the fileset secret to mount
-        file_names: List of file names that are part of the fileset secret
+        secret_name: The name of the fileset secret to mount. This secret must be created in advance, for example using `create_fileset_secret_from_file_paths`
+        file_names: List of file names that are part of the fileset secret.
     """
 
     secret_name: str
