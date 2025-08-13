@@ -136,12 +136,12 @@ class VolumeMount:
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class ScratchMount(VolumeMount):
-    """Scratch volume mount configuration.
+class GeneralStorageMount(VolumeMount):
+    """General storage volume mount configuration.
     """
 
     def __init__(self, mount_path: str):
-        """Initialize a scratch volume mount.
+        """Initialize a general scratch volume mount.
 
         Args:
             mount_path: Path where the volume should be mounted in the container.

@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added `SharedFileSystemMount` class for container sfs support
-- Added `SecretMount` and `ScratchMount` classes that inherit from base `VolumeMount`
+- Added `SecretMount` and `GeneralStorageMount` classes that inherit from base `VolumeMount`
 
 ### Changed
 
