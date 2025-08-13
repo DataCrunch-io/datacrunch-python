@@ -22,7 +22,7 @@ from datacrunch.containers import (
     HealthcheckSettings,
     ScratchMount,
     SecretMount,
-    SharedFilesystemMount,
+    SharedFileSystemMount,
     ContainerRegistrySettings,
     Deployment,
     ContainerDeploymentStatus,
@@ -106,8 +106,8 @@ def main() -> None:
                     secret_name="my-fileset-secret"  # This fileset secret must be created beforehand
                 ),
                 # Optional: Mount an existing shared filesystem volume
-                SharedFilesystemMount(
-                    mount_path="/sfs", volume_id="<id-of-the-sfs-volume>"),
+                SharedFileSystemMount(
+                    mount_path="/sfs", volume_id="<ID-OF-THE-SFS-VOLUME>"),
             ],
             env=[
                 # Secret environment variables needed to be added beforehand

@@ -191,7 +191,7 @@ class MemoryMount(VolumeMount):
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class SharedFilesystemMount(VolumeMount):
+class SharedFileSystemMount(VolumeMount):
     """Shared filesystem volume mount configuration.
 
     A shared filesystem volume mount allows mounting a shared filesystem into the container.

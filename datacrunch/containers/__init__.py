@@ -7,7 +7,7 @@ from .containers import (
     EntrypointOverridesSettings,
     VolumeMount,
     SecretMount,
-    SharedFilesystemMount,
+    SharedFileSystemMount,
     ScratchMount,
     VolumeMountType,
     Container,
