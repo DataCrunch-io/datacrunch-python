@@ -1,7 +1,8 @@
-from typing import List
+from typing import List, Literal
 
 INSTANCE_TYPES_ENDPOINT = '/instance-types'
 
+Currency = Literal['usd', 'eur']
 
 class InstanceType:
 
@@ -15,7 +16,19 @@ class InstanceType:
                  gpu: dict,
                  memory: dict,
                  gpu_memory: dict,
-                 storage: dict) -> None:
+                 storage: dict,
+                 best_for: List[str],
+                 deploy_warning: str | None,
+                 model: str,
+                 name: str,
+                 p2p: str,
+                 dynamic_price: float,
+                 max_dynamic_price: float,
+                 serverless_price: float,
+                 serverless_spot_price: float,
+                 currency: Currency,
+                 manufacturer: str,
+                 display_name: str | None) -> None:
         """Initialize an instance type object
 
         :param id: instance type id
@@ -38,6 +51,30 @@ class InstanceType:
         :type gpu_memory: dict
         :param storage: storage details
         :type storage: dict
+        :param best_for: use cases for instance type
+        :type best_for: list[str]
+        :param deploy_warning: deploy warning
+        :type deploy_warning: str | None
+        :param model: gpu model
+        :type model: str
+        :param name: gpu model name
+        :type name: str
+        :param p2p: p2p details
+        :type p2p: str
+        :param dynamic_price: current dynamic price
+        :type dynamic_price: float
+        :param max_dynamic_price: ceiling value for dynamic price
+        :type max_dynamic_price: float
+        :param serverless_price: current serverless price
+        :type serverless_price: float
+        :param serverless_spot_price: current serverless spot price
+        :type serverless_spot_price: float
+        :param currency: currency type
+        :type currency: str
+        :param manufacturer: manufacturer
+        :type manufacturer: str
+        :param display_name: display name
+        :type display_name: str | None
         """
         self._id = id
         self._instance_type = instance_type
@@ -49,6 +86,18 @@ class InstanceType:
         self._memory = memory
         self._gpu_memory = gpu_memory
         self._storage = storage
+        self._best_for = best_for
+        self._deploy_warning = deploy_warning
+        self._model = model
+        self._name = name
+        self._p2p = p2p
+        self._dynamic_price = float(dynamic_price)
+        self._max_dynamic_price = float(max_dynamic_price)
+        self._serverless_price = float(serverless_price)
+        self._serverless_spot_price = float(serverless_spot_price)
+        self._currency = currency
+        self._manufacturer = manufacturer
+        self._display_name = display_name
 
     @property
     def id(self) -> str:
@@ -139,6 +188,114 @@ class InstanceType:
         :rtype: dict
         """
         return self._storage
+    
+    @property
+    def best_for(self) -> List[str]:
+        """Get the instance type use cases
+
+        :return: use cases for the instance type
+        :rtype: list[str]
+        """
+        return self._best_for
+    
+    @property
+    def deploy_warning(self) -> str:
+        """Get the instance type deploy warning
+
+        :return: deploy warning
+        :rtype: str
+        """
+        return self._deploy_warning
+    
+    @property
+    def model(self) -> str:
+        """Get the instance type gpu model
+
+        :return: gpu model
+        :rtype: str
+        """
+        return self._model
+    
+    @property
+    def name(self) -> str:
+        """Get the instance type gpu model name
+
+        :return: gpu model name
+        :rtype: str
+        """
+        return self._name
+    
+    @property
+    def p2p(self) -> str:
+        """Get the instance type p2p details
+
+        :return: p2p details
+        :rtype: str
+        """
+        return self._p2p
+
+    @property
+    def dynamic_price(self) -> float:
+        """Get the instance type's current dynamic price
+
+        :return: current dynamic price
+        :rtype: float
+        """
+        return self._dynamic_price
+
+    @property
+    def max_dynamic_price(self) -> float:
+        """Get the instance type's ceiling value for dynamic price
+
+        :return: ceiling value for dynamic price
+        :rtype: float
+        """
+        return self._max_dynamic_price
+
+    @property
+    def serverless_price(self) -> float:
+        """Get the instance type's current serverless price
+
+        :return: current serverless price
+        :rtype: float
+        """
+        return self._serverless_price
+
+    @property
+    def serverless_spot_price(self) -> float:
+        """Get the instance type's current serverless spot price
+
+        :return: current serverless spot price
+        :rtype: float
+        """
+        return self._serverless_spot_price
+    
+    @property
+    def currency(self) -> str:
+        """Get the instance type currency type
+
+        :return: currency type
+        :rtype: str
+        """
+        return self._currency
+    
+    @property
+    def manufacturer(self) -> str:
+        """Get the instance type gpu manufacturer
+
+        :return: gpu manufacturer
+        :rtype: str
+        """
+        return self._manufacturer
+
+    @property
+    def display_name(self) -> str:
+        """Get the instance type display name
+
+        :return: display name
+        :rtype: str
+        """
+        return self._display_name
 
     def __str__(self) -> str:
         """Prints the instance type
@@ -153,9 +310,21 @@ class InstanceType:
                 f'description: {self._description}\n'
                 f'cpu: {self._cpu}\n'
                 f'gpu: {self._gpu}\n'
-                f'memory :{self._memory}\n'
-                f'gpu_memory :{self._gpu_memory}\n'
-                f'storage :{self._storage}\n'
+                f'memory: {self._memory}\n'
+                f'gpu_memory: {self._gpu_memory}\n'
+                f'storage: {self._storage}\n'
+                f'best_for: {self._best_for}\n'
+                f'deploy_warning: {self._deploy_warning}\n'
+                f'model: {self._model}\n'
+                f'name: {self._name}\n'
+                f'p2p: {self._p2p}\n'
+                f'dynamic_price: {self._dynamic_price}\n'
+                f'max_dynamic_price: {self._max_dynamic_price}\n'
+                f'serverless_price: {self._serverless_price}\n'
+                f'serverless_spot_price: {self._serverless_spot_price}\n'
+                f'currency: {self._currency}\n'
+                f'manufacturer: {self._manufacturer}\n'
+                f'display_name: {self._display_name}\n'
                 )
 
 
@@ -182,7 +351,19 @@ class InstanceTypesService:
             gpu=instance_type['gpu'],
             memory=instance_type['memory'],
             gpu_memory=instance_type['gpu_memory'],
-            storage=instance_type['storage']
+            storage=instance_type['storage'],
+            best_for=instance_type['best_for'],
+            deploy_warning=instance_type['deploy_warning'],
+            model=instance_type['model'],
+            name=instance_type['name'],
+            p2p=instance_type['p2p'],
+            dynamic_price=instance_type['dynamic_price'],
+            max_dynamic_price=instance_type['max_dynamic_price'],
+            serverless_price=instance_type['serverless_price'],
+            serverless_spot_price=instance_type['serverless_spot_price'],
+            currency=instance_type['currency'],
+            manufacturer=instance_type['manufacturer'],
+            display_name=instance_type['display_name']
         ), instance_types))
 
         return instance_type_objects

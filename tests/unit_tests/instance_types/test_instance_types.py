@@ -17,6 +17,21 @@ INSTANCE_TYPE_DESCRIPTION = "Dedicated Bare metal Server"
 PRICE_PER_HOUR = 5.0
 SPOT_PRICE_PER_HOUR = 2.5
 INSTANCE_TYPE = "8V100.48M"
+SMALL_ML_MODELS = 'Small ML models'
+MULTI_GPU_TRAINING = 'Multi-GPU training'
+FP64_CALCULATIONS = 'FP64 calculations'
+NVLINK = 'NVLINK'
+DEPLOY_WARNING = 'This is a test'
+MODEL = 'Tesla V100'
+NAME = 'Tesla V100 16GB'
+P2P = 'NVLink up to 50GB/s'
+DYNAMIC_PRICE = 0.78
+MAX_DYNAMIC_PRICE = 1.66
+SERVERLESS_PRICE = 0.0
+SERVERLESS_SPOT_PRICE = 0.0
+CURRENCY = 'usd'
+MANUFACTURER = 'NVIDIA'
+DISPLAY_NAME = '8x Tesla V100'
 
 
 def test_instance_types(http_client):
@@ -50,7 +65,24 @@ def test_instance_types(http_client):
                 "description": INSTANCE_TYPE_DESCRIPTION,
                 "price_per_hour": "5.00",
                 "spot_price": "2.50",
-                "instance_type": INSTANCE_TYPE
+                "instance_type": INSTANCE_TYPE,
+                "best_for": [
+                    SMALL_ML_MODELS,
+                    MULTI_GPU_TRAINING,
+                    FP64_CALCULATIONS,
+                    NVLINK
+                ],
+                "deploy_warning": DEPLOY_WARNING,
+                "model": MODEL,
+                "name": NAME,
+                "p2p": P2P,
+                "dynamic_price": DYNAMIC_PRICE,
+                "max_dynamic_price": MAX_DYNAMIC_PRICE,
+                "serverless_price": SERVERLESS_PRICE,
+                "serverless_spot_price": SERVERLESS_SPOT_PRICE,
+                "currency": CURRENCY,
+                "manufacturer": MANUFACTURER,
+                "display_name": DISPLAY_NAME
             }
         ],
         status=200
@@ -75,6 +107,7 @@ def test_instance_types(http_client):
     assert type(instance_type.gpu) == dict
     assert type(instance_type.memory) == dict
     assert type(instance_type.storage) == dict
+    assert type(instance_type.best_for) == list
     assert instance_type.cpu['description'] == CPU_DESCRIPTION
     assert instance_type.gpu['description'] == GPU_DESCRIPTION
     assert instance_type.memory['description'] == MEMORY_DESCRIPTION
@@ -85,3 +118,18 @@ def test_instance_types(http_client):
     assert instance_type.memory['size_in_gigabytes'] == MEMORY_SIZE
     assert instance_type.gpu_memory['size_in_gigabytes'] == GPU_MEMORY_SIZE
     assert instance_type.storage['size_in_gigabytes'] == STORAGE_SIZE
+    assert instance_type.best_for[0] == SMALL_ML_MODELS
+    assert instance_type.best_for[1] == MULTI_GPU_TRAINING
+    assert instance_type.best_for[2] == FP64_CALCULATIONS
+    assert instance_type.best_for[3] == NVLINK
+    assert instance_type.deploy_warning == DEPLOY_WARNING
+    assert instance_type.model == MODEL
+    assert instance_type.name == NAME
+    assert instance_type.p2p == P2P
+    assert instance_type.dynamic_price == DYNAMIC_PRICE
+    assert instance_type.max_dynamic_price == MAX_DYNAMIC_PRICE
+    assert instance_type.serverless_price == SERVERLESS_PRICE
+    assert instance_type.serverless_spot_price == SERVERLESS_SPOT_PRICE
+    assert instance_type.currency == CURRENCY
+    assert instance_type.manufacturer == MANUFACTURER
+    assert instance_type.display_name == DISPLAY_NAME
