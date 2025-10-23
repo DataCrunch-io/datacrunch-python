@@ -179,8 +179,7 @@ class InstancesService:
 
         # Wait for instance to enter provisioning state with timeout
         interval = min(initial_interval, max_interval)
-        start = time.monotonic()
-        deadline = start + max_wait_time
+        deadline = time.monotonic() + max_wait_time
         while True:
             instance = self.get_by_id(id)
             if instance.status != InstanceStatus.ORDERED:
