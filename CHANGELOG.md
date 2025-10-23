@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.0] - 2025-10-23
+
 ### Added
 
 - Added `max_wait_time`, `initial_interval`, `max_interval`, `backoff_coefficient` keyword arguments to `instances.create()`
