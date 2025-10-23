@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added `max_wait_time`, `initial_interval`, `max_interval`, `backoff_coefficient` keyword arguments to `instances.create()`
+
+### Changed
+
+- Cap retry interval to 5 seconds during `instances.create()` and add exponential backoff
+
 ## [1.14.0] - 2025-08-15
 
 ### Added

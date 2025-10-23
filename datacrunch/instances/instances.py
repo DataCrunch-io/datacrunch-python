@@ -123,7 +123,12 @@ class InstancesService:
                is_spot: bool = False,
                contract: Optional[Contract] = None,
                pricing: Optional[Pricing] = None,
-               coupon: Optional[str] = None) -> Instance:
+               coupon: Optional[str] = None,
+               *,
+               max_wait_time: float = 60,
+               initial_interval: float = 0.5,
+               max_interval: float = 5,
+               backoff_coefficient: float = 2.0) -> Instance:
         """Creates and deploys a new cloud instance.
 
         Args:
@@ -141,6 +146,10 @@ class InstancesService:
             contract: Optional contract type for the instance.
             pricing: Optional pricing model for the instance.
             coupon: Optional coupon code for discounts.
+            max_wait_time: Maximum total wait for the instance to start provisioning, in seconds (default: 60)
+            initial_interval: Initial interval, in seconds (default: 0.5)
+            max_interval: The longest single delay allowed between retries, in seconds (default: 5)
+            backoff_coefficient: Coefficient to calculate the next retry interval (default 2.0)
 
         Returns:
             The newly created instance object.
@@ -169,20 +178,21 @@ class InstancesService:
         id = self._http_client.post(INSTANCES_ENDPOINT, json=payload).text
 
         # Wait for instance to enter provisioning state with timeout
-        MAX_WAIT_TIME = 60  # Maximum wait time in seconds
-        POLL_INTERVAL = 0.5  # Time between status checks
-
-        start_time = time.time()
+        interval = min(initial_interval, max_interval)
+        start = time.monotonic()
+        deadline = start + max_wait_time
         while True:
             instance = self.get_by_id(id)
             if instance.status != InstanceStatus.ORDERED:
                 return instance
 
-            if time.time() - start_time > MAX_WAIT_TIME:
+            now = time.monotonic()
+            if now >= deadline:
                 raise TimeoutError(
-                    f"Instance {id} did not enter provisioning state within {MAX_WAIT_TIME} seconds")
+                    f"Instance {id} did not enter provisioning state within {max_wait_time:.1f} seconds")
 
-            time.sleep(POLL_INTERVAL)
+            time.sleep(min(interval, deadline - now))
+            interval = min(interval * backoff_coefficient, max_interval)
 
     def action(self, id_list: Union[List[str], str], action: str, volume_ids: Optional[List[str]] = None) -> None:
         """Performs an action on one or more instances.
