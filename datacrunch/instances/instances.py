@@ -1,4 +1,5 @@
 import time
+import itertools
 from typing import List, Union, Optional, Dict, Literal
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
@@ -178,9 +179,8 @@ class InstancesService:
         id = self._http_client.post(INSTANCES_ENDPOINT, json=payload).text
 
         # Wait for instance to enter provisioning state with timeout
-        interval = min(initial_interval, max_interval)
         deadline = time.monotonic() + max_wait_time
-        while True:
+        for i in itertools.count():
             instance = self.get_by_id(id)
             if instance.status != InstanceStatus.ORDERED:
                 return instance
@@ -190,8 +190,8 @@ class InstancesService:
                 raise TimeoutError(
                     f"Instance {id} did not enter provisioning state within {max_wait_time:.1f} seconds")
 
-            time.sleep(min(interval, deadline - now))
-            interval = min(interval * backoff_coefficient, max_interval)
+            interval = min(initial_interval * backoff_coefficient ** i, max_interval, deadline - now)
+            time.sleep(interval)
 
     def action(self, id_list: Union[List[str], str], action: str, volume_ids: Optional[List[str]] = None) -> None:
         """Performs an action on one or more instances.
