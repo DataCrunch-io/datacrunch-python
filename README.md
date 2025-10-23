@@ -16,10 +16,14 @@ DataCrunch's Public API documentation [is available here](https://api.datacrunch
 
 ## Getting Started - Using the SDK:
 
-- Install via pip:
+- Install:
 
   ```bash
+  # via pip
   pip3 install datacrunch
+
+  # via uv
+  uv add datacrunch
   ```
 
 - Generate your client credentials - [instructions in the public API docs](https://api.datacrunch.io/v1/docs#description/quick-start-guide).
@@ -82,61 +86,51 @@ DataCrunch's Public API documentation [is available here](https://api.datacrunch
 
 ## Development
 
-### Setting up the local development environment
+### Set up the local development environment
 
-- Clone the repository:
+Prerequisite: install [`uv`](https://docs.astral.sh/uv/).
 
-  ```bash
-  git clone
-  ```
-
-- Create local virtual environment:
+Clone the repository, create local environment and install dependencies:
 
   ```bash
-  python3 -m venv datacrunch_env && source ./datacrunch_env/bin/activate
+  git clone git@github.com:DataCrunch-io/datacrunch-python.git
+  cd datacrunch-python
+  uv sync
   ```
 
-  or if using [fish shell](https://fishshell.com/):
+### Run Tests
 
-  ```fish
-  python3 -m venv datacrunch_env && source ./datacrunch_env/bin/activate.fish
-  ```
-
-- Install Dependencies:
+- Execute all tests
 
   ```bash
-  pip3 install -e .[test]
-  pip3 install -U pytest
+  uv run pytest
   ```
 
-### Running Tests
-
-We use pytest for testing.
-
-- To execute all tests
+- Execute a single test file
 
   ```bash
-  pytest
-  ```
-
-- To execute a single test file
-
-  ```bash
-  pytest ./tests/unit_tests/test_file.py
+  uv run pytest tests/unit_tests/test_file.py
   ```
 
 ### Local Manual Testing
 
-Create this file in the root directory of the project:
+Create a file in the root directory of the project:
 
 ```python
+# example.py
 from datacrunch.datacrunch import DataCrunchClient
 
 CLIENT_SECRET = 'secret'
 CLIENT_ID = 'your-id'
 
-# Create datcrunch client
+# Create datacrunch client
 datacrunch = DataCrunchClient(CLIENT_ID, CLIENT_SECRET, base_url='http://localhost:3001/v1')
+```
+
+Run it:
+
+```bash
+uv run python example.py
 ```
 
 ### Generating the documentation
