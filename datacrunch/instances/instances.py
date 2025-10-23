@@ -147,7 +147,7 @@ class InstancesService:
             contract: Optional contract type for the instance.
             pricing: Optional pricing model for the instance.
             coupon: Optional coupon code for discounts.
-            max_wait_time: Maximum total wait for the instance to start provisioning, in seconds (default: 60)
+            max_wait_time: Maximum total wait for the instance to start provisioning, in seconds (default: 180)
             initial_interval: Initial interval, in seconds (default: 0.5)
             max_interval: The longest single delay allowed between retries, in seconds (default: 5)
             backoff_coefficient: Coefficient to calculate the next retry interval (default 2.0)
