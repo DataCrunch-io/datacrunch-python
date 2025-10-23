@@ -71,10 +71,13 @@ You can open pull requests by following the steps:
 
 To release a new version:
 
-1. Update the version in `__version__.py`
-2. Add an entry to the `CHANGELOG.md` file
-3. `git tag v{major}.{minor}.{patch}`
-4. `git push origin master`
-5. `git push --tags`
-6. [Draft and publish](https://github.com/DataCrunch-io/datacrunch-python/releases) a new release.
-7. Check that package is automatically published to [PyPI](https://pypi.org/project/datacrunch/) via [GitHub action](https://github.com/DataCrunch-io/datacrunch-python/actions/workflows/publish_package.yml).
+1. Update version and push:
+```
+uv version --bump minor # also `major` or `patch`
+git commit -m v$(uv version --short)
+git tag v$(uv version --short)
+git push origin master
+git push --tags
+```
+2. [Draft and publish](https://github.com/DataCrunch-io/datacrunch-python/releases) a new release.
+3. Check that package is automatically published to [PyPI](https://pypi.org/project/datacrunch/) via [GitHub action](https://github.com/DataCrunch-io/datacrunch-python/actions/workflows/publish_package.yml).
