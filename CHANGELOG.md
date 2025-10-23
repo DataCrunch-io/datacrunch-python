@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Cap retry interval to 5 seconds during `instances.create()` and add exponential backoff
+- Cap `instances.create()` retry interval to 5 seconds; add exponential backoff; increase default `max_wait_time` from 60 to 180 seconds
 
 ## [1.14.0] - 2025-08-15
 

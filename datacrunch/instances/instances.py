@@ -125,7 +125,7 @@ class InstancesService:
                pricing: Optional[Pricing] = None,
                coupon: Optional[str] = None,
                *,
-               max_wait_time: float = 60,
+               max_wait_time: float = 180,
                initial_interval: float = 0.5,
                max_interval: float = 5,
                backoff_coefficient: float = 2.0) -> Instance:
