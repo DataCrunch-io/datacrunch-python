@@ -1,8 +1,13 @@
 # Based on https://docs.astral.sh/uv/guides/integration/github/#multiple-python-versions
 name: Code Style
 
-# trigger on every push and pull-request
-on: [push, pull_request]
+# trigger on PRs and main branches
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - develop
 
 jobs:
   build:
