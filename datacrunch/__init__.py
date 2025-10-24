@@ -1,3 +1,3 @@
 from datacrunch.datacrunch import DataCrunchClient
 
-from datacrunch.__version__ import __version__
+from datacrunch._version import __version__

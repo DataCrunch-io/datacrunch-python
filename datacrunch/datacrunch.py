@@ -11,7 +11,7 @@ from datacrunch.volumes.volumes import VolumesService
 from datacrunch.containers.containers import ContainersService
 from datacrunch.constants import Constants
 from datacrunch.locations.locations import LocationsService
-from datacrunch.__version__ import VERSION
+from datacrunch._version import __version__
 
 
 class DataCrunchClient:
@@ -36,7 +36,7 @@ class DataCrunchClient:
                 "client_id and client_secret must be provided")
 
         # Constants
-        self.constants: Constants = Constants(base_url, VERSION)
+        self.constants: Constants = Constants(base_url, __version__)
         """Constants"""
 
         # Services

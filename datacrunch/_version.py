@@ -3,5 +3,3 @@ try:
     __version__ = version('datacrunch')
 except Exception:
     __version__ = "0.0.0+dev" # fallback for development
-
-VERSION = __version__ # legacy API
