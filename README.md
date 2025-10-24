@@ -147,6 +147,9 @@ make html
 ```bash
 # Lint
 uv run ruff check
+
+# Format code
+uv run ruff format
 ```
 
 ## Contact

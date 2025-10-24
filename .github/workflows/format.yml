@@ -1,5 +1,5 @@
 # Based on https://docs.astral.sh/uv/guides/integration/github/#multiple-python-versions
-name: Code Style
+name: Format
 
 # trigger on PRs and main branches
 on:
@@ -24,6 +24,6 @@ jobs:
       - name: Install dependencies
         run: uv sync --dev
 
-      - name: Lint
+      - name: Check format
         run: |
-          uv run ruff check --output-format=github
+          uv run ruff format --check
