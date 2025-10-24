@@ -142,19 +142,11 @@ cd docs
 make html
 ```
 
-### Style Guide
-
-Use autopep8 for auto code formatting:
+### Code style
 
 ```bash
-# Install
-pip3 install autopep8
-
-# Apply to an entire directory
-autopep8 directory_name --recursive --in-place --pep8-passes 2000 --verbose
-
-# Or a single file
-autopep8 file.py --in-place
+# Lint
+uv run ruff check
 ```
 
 ## Contact
