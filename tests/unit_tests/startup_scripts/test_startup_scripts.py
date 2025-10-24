@@ -45,9 +45,9 @@ class TestStartupScripts:
         scripts = startup_script_service.get()
 
         # assert
-        assert type(scripts) == list
+        assert isinstance(scripts, list)
         assert len(scripts) == 1
-        assert type(scripts[0]) == StartupScript
+        assert isinstance(scripts[0], StartupScript)
         assert scripts[0].id == SCRIPT_ID
         assert scripts[0].name == SCRIPT_NAME
         assert scripts[0].script == SCRIPT_VALUE
@@ -67,7 +67,7 @@ class TestStartupScripts:
         script = startup_script_service.get_by_id(SCRIPT_ID)
 
         # assert
-        assert type(script) == StartupScript
+        assert isinstance(script, StartupScript)
         assert script.id == SCRIPT_ID
         assert script.name == SCRIPT_NAME
         assert script.script == SCRIPT_VALUE
@@ -105,7 +105,7 @@ class TestStartupScripts:
         script = startup_script_service.create(SCRIPT_NAME, SCRIPT_VALUE)
 
         # assert
-        assert type(script) == StartupScript
+        assert isinstance(script, StartupScript)
         assert script.id == SCRIPT_ID
         assert responses.assert_call_count(endpoint, 1) is True
 

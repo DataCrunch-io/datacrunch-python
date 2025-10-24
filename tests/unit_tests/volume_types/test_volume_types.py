@@ -40,10 +40,10 @@ def test_volume_types(http_client):
     hdd_type = volumes_types[1]
 
     # assert
-    assert type(volumes_types) == list
+    assert isinstance(volumes_types, list)
     assert len(volumes_types) == 2
-    assert type(nvme_type) == VolumeType
-    assert type(hdd_type) == VolumeType
+    assert isinstance(nvme_type, VolumeType)
+    assert isinstance(hdd_type, VolumeType)
     assert nvme_type.type == VolumeTypes.NVMe
     assert nvme_type.price_per_month_per_gb == NVMe_PRICE
     assert hdd_type.type == VolumeTypes.HDD

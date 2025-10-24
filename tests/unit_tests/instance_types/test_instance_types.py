@@ -63,18 +63,18 @@ def test_instance_types(http_client):
     instance_type = instance_types[0]
 
     # assert
-    assert type(instance_types) == list
+    assert isinstance(instance_types, list)
     assert len(instance_types) == 1
-    assert type(instance_type) == InstanceType
+    assert isinstance(instance_type, InstanceType)
     assert instance_type.id == TYPE_ID
     assert instance_type.description == INSTANCE_TYPE_DESCRIPTION
     assert instance_type.price_per_hour == PRICE_PER_HOUR
     assert instance_type.spot_price_per_hour == SPOT_PRICE_PER_HOUR
     assert instance_type.instance_type == INSTANCE_TYPE
-    assert type(instance_type.cpu) == dict
-    assert type(instance_type.gpu) == dict
-    assert type(instance_type.memory) == dict
-    assert type(instance_type.storage) == dict
+    assert isinstance(instance_type.cpu, dict)
+    assert isinstance(instance_type.gpu, dict)
+    assert isinstance(instance_type.memory, dict)
+    assert isinstance(instance_type.storage, dict)
     assert instance_type.cpu['description'] == CPU_DESCRIPTION
     assert instance_type.gpu['description'] == GPU_DESCRIPTION
     assert instance_type.memory['description'] == MEMORY_DESCRIPTION

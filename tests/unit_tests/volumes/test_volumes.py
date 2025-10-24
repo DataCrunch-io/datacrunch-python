@@ -103,10 +103,10 @@ class TestVolumesService:
         volume_hdd = volumes[1]
 
         # assert
-        assert type(volumes) == list
+        assert isinstance(volumes, list)
         assert len(volumes) == 2
-        assert type(volume_nvme) == Volume
-        assert type(volume_hdd) == Volume
+        assert isinstance(volume_nvme, Volume)
+        assert isinstance(volume_hdd, Volume)
         assert volume_nvme.id == NVME_VOL_ID
         assert volume_nvme.status == NVME_VOL_STATUS
         assert volume_nvme.instance_id == INSTANCE_ID
@@ -145,9 +145,9 @@ class TestVolumesService:
         volume_nvme = volumes[0]
 
         # assert
-        assert type(volumes) == list
+        assert isinstance(volumes, list)
         assert len(volumes) == 1
-        assert type(volume_nvme) == Volume
+        assert isinstance(volume_nvme, Volume)
         assert volume_nvme.id == NVME_VOL_ID
         assert volume_nvme.status == NVME_VOL_STATUS
         assert volume_nvme.instance_id == INSTANCE_ID
@@ -191,7 +191,7 @@ class TestVolumesService:
         volume_nvme = volumes_service.get_by_id(NVME_VOL_ID)
 
         # assert
-        assert type(volume_nvme) == Volume
+        assert isinstance(volume_nvme, Volume)
         assert volume_nvme.id == NVME_VOL_ID
         assert volume_nvme.status == NVME_VOL_STATUS
         assert volume_nvme.instance_id == INSTANCE_ID
@@ -243,7 +243,7 @@ class TestVolumesService:
 
         # assert
         assert volume.id == NVME_VOL_ID
-        assert type(volume.__str__()) == str
+        assert isinstance(volume.__str__(), str)
 
     def test_create_volume_failed(self, volumes_service, endpoint):
         # arrange - add response mock

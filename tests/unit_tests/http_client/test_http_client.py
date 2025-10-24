@@ -27,7 +27,7 @@ class TestHttpClient:
         bearer_string = http_client._generate_bearer_header()
         access_token = http_client._auth_service._access_token
 
-        assert type(bearer_string) == str
+        assert isinstance(bearer_string, str)
         assert bearer_string == f'Bearer {access_token}'
 
     def test_generate_user_agent(self, http_client):
@@ -39,7 +39,7 @@ class TestHttpClient:
         user_agent_string = http_client._generate_user_agent()
 
         # assert
-        assert type(user_agent_string) == str
+        assert isinstance(user_agent_string, str)
         assert user_agent_string == f'datacrunch-python-v{version}-{client_id_truncated}'
 
     def test_generate_headers(self, http_client):
@@ -49,10 +49,10 @@ class TestHttpClient:
         user_agent_string = http_client._generate_user_agent()
 
         # assert
-        assert type(headers) == dict
-        assert type(headers['Content-Type']) == str
-        assert type(headers['Authorization']) == str
-        assert type(headers['User-Agent']) == str
+        assert isinstance(headers, dict)
+        assert isinstance(headers['Content-Type'], str)
+        assert isinstance(headers['Authorization'], str)
+        assert isinstance(headers['User-Agent'], str)
         assert headers['Content-Type'] == 'application/json'
         assert headers['Authorization'] == authorization_string
         assert headers['User-Agent'] == user_agent_string

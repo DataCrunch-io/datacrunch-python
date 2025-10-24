@@ -18,8 +18,8 @@ def test_balance(http_client):
     balance = balance_service.get()
 
     # assert
-    assert type(balance) == Balance
-    assert type(balance.amount) == float
-    assert type(balance.currency) == str
+    assert isinstance(balance, Balance)
+    assert isinstance(balance.amount, float)
+    assert isinstance(balance.currency, str)
     assert balance.amount == 50.5
     assert balance.currency == "usd"

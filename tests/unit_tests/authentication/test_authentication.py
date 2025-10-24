@@ -52,7 +52,7 @@ class TestAuthenticationService:
         auth_data = authentication_service.authenticate()
 
         # assert
-        assert type(auth_data) == dict
+        assert isinstance(auth_data, dict)
         assert authentication_service._access_token == ACCESS_TOKEN
         assert authentication_service._refresh_token == REFRESH_TOKEN
         assert authentication_service._scope == SCOPE
@@ -117,7 +117,7 @@ class TestAuthenticationService:
         auth_data = authentication_service.authenticate()  # authenticate first
 
         # assert
-        assert type(auth_data) == dict
+        assert isinstance(auth_data, dict)
         assert authentication_service._access_token == ACCESS_TOKEN
         assert authentication_service._refresh_token == REFRESH_TOKEN
         assert authentication_service._scope == SCOPE
@@ -128,7 +128,7 @@ class TestAuthenticationService:
 
         auth_data2 = authentication_service.refresh()  # refresh
 
-        assert type(auth_data2) == dict
+        assert isinstance(auth_data2, dict)
         assert authentication_service._access_token == ACCESS_TOKEN2
         assert authentication_service._refresh_token == REFRESH_TOKEN2
         assert authentication_service._scope == SCOPE

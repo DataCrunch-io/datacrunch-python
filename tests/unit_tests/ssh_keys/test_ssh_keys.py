@@ -45,9 +45,9 @@ class TestSSHKeys:
         keys = ssh_key_service.get()
         
         # assert
-        assert type(keys) == list
+        assert isinstance(keys, list)
         assert len(keys) == 1
-        assert type(keys[0]) == SSHKey
+        assert isinstance(keys[0], SSHKey)
         assert keys[0].id == KEY_ID
         assert keys[0].name == KEY_NAME
         assert keys[0].public_key == KEY_VALUE
@@ -67,7 +67,7 @@ class TestSSHKeys:
         key = ssh_key_service.get_by_id(KEY_ID)
         
         # assert
-        assert type(key) == SSHKey
+        assert isinstance(key, SSHKey)
         assert key.id == KEY_ID
         assert key.name == KEY_NAME
         assert key.public_key == KEY_VALUE
@@ -105,8 +105,8 @@ class TestSSHKeys:
         key = ssh_key_service.create(KEY_NAME, KEY_VALUE)
         
         # assert
-        assert type(key) == SSHKey
-        assert type(key.id) == str
+        assert isinstance(key, SSHKey)
+        assert isinstance(key.id, str)
         assert key.id == KEY_ID 
         assert responses.assert_call_count(endpoint, 1) is True
 
