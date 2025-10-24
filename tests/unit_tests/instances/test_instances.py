@@ -307,7 +307,7 @@ class TestInstancesService:
         assert instance.ip == INSTANCE_IP
         assert instance.created_at == INSTANCE_CREATED_AT
         assert instance.os_volume_id == OS_VOLUME_ID
-        assert instance.is_spot == True
+        assert instance.is_spot
         assert isinstance(instance.cpu, dict)
         assert isinstance(instance.gpu, dict)
         assert isinstance(instance.memory, dict)

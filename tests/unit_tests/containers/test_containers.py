@@ -654,7 +654,7 @@ class TestContainersService:
         assert isinstance(resources[0], ComputeResource)
         assert resources[0].name == COMPUTE_RESOURCE_NAME_GENERAL_COMPUTE
         assert resources[0].size == 1
-        assert resources[0].is_available == True
+        assert resources[0].is_available
         assert responses.assert_call_count(
             compute_resources_endpoint, 1) is True
 
@@ -677,7 +677,7 @@ class TestContainersService:
         assert isinstance(resources[0], ComputeResource)
         assert resources[0].name == COMPUTE_RESOURCE_NAME_H100
         assert resources[0].size == 4
-        assert resources[0].is_available == True
+        assert resources[0].is_available
         assert responses.assert_call_count(
             compute_resources_endpoint, 1) is True
 
@@ -697,7 +697,7 @@ class TestContainersService:
         # assert
         assert isinstance(resources, list)
         assert len(resources) == 2
-        assert all(r.is_available == True for r in resources)
+        assert all(r.is_available for r in resources)
         assert responses.assert_call_count(
             compute_resources_endpoint, 1) is True
 
@@ -720,7 +720,7 @@ class TestContainersService:
         assert len(resources) == 1
         assert resources[0].name == COMPUTE_RESOURCE_NAME_GENERAL_COMPUTE
         assert resources[0].size == 1
-        assert resources[0].is_available == True
+        assert resources[0].is_available
         assert responses.assert_call_count(
             compute_resources_endpoint, 1) is True
 

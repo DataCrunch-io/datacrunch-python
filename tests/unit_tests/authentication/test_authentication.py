@@ -196,5 +196,5 @@ class TestAuthenticationService:
         is_expired_future = authentication_service.is_expired()
 
         # assert
-        assert is_expired_current == True
-        assert is_expired_future == False
+        assert is_expired_current
+        assert not is_expired_future

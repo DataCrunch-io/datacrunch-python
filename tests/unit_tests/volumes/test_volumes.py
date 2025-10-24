@@ -83,7 +83,7 @@ class TestVolumesService:
         assert volume.size == HDD_VOL_SIZE
         assert volume.type == HDD
         assert volume.location == Locations.FIN_01
-        assert volume.is_os_volume == False
+        assert not volume.is_os_volume
         assert volume.created_at == HDD_VOL_CREATED_AT
         assert volume.target is None
         assert volume.ssh_key_ids == []

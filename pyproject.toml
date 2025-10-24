@@ -48,4 +48,4 @@ module-root = ""
 
 [tool.ruff]
 # TODO(shamrin) fix these errors and stop ignoring them
-lint.ignore = ["E712", "F401"]
+lint.ignore = ["F401"]
