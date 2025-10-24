@@ -70,7 +70,7 @@ class InferenceResponse:
             # if the response is a stream (check headers), raise relevant error
             if self._is_stream_response(self._original_response.headers):
                 raise InferenceClientError(
-                    f"Response might be a stream, use the stream method instead")
+                    "Response might be a stream, use the stream method instead")
             raise InferenceClientError(
                 f"Failed to parse response as JSON: {str(e)}")
 
