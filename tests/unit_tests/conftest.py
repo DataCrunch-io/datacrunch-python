@@ -3,10 +3,10 @@ from unittest.mock import Mock
 from datacrunch.http_client.http_client import HTTPClient
 
 
-BASE_URL = "https://api-testing.datacrunch.io/v1"
-ACCESS_TOKEN = "test-token"
-CLIENT_ID = "0123456789xyz"
-CLIENT_SECRET = "0123456789xyz"
+BASE_URL = 'https://api-testing.datacrunch.io/v1'
+ACCESS_TOKEN = 'test-token'
+CLIENT_ID = '0123456789xyz'
+CLIENT_SECRET = '0123456789xyz'
 
 
 @pytest.fixture

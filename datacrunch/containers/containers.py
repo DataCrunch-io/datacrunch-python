@@ -26,47 +26,47 @@ FILESET_SECRETS_ENDPOINT = '/file-secrets'
 class EnvVarType(str, Enum):
     """Types of environment variables that can be set in containers."""
 
-    PLAIN = "plain"
-    SECRET = "secret"
+    PLAIN = 'plain'
+    SECRET = 'secret'
 
 
 class SecretType(str, Enum):
     """Types of secrets that can be set in containers."""
 
-    GENERIC = "generic"  # Regular secret, can be used in env vars
-    FILESET = "file-secret"  # A file secret that can be mounted into the container
+    GENERIC = 'generic'  # Regular secret, can be used in env vars
+    FILESET = 'file-secret'  # A file secret that can be mounted into the container
 
 
 class VolumeMountType(str, Enum):
     """Types of volume mounts that can be configured for containers."""
 
-    SCRATCH = "scratch"
-    SECRET = "secret"
-    MEMORY = "memory"
-    SHARED = "shared"
+    SCRATCH = 'scratch'
+    SECRET = 'secret'
+    MEMORY = 'memory'
+    SHARED = 'shared'
 
 
 class ContainerRegistryType(str, Enum):
     """Supported container registry types."""
 
-    GCR = "gcr"
-    DOCKERHUB = "dockerhub"
-    GITHUB = "ghcr"
-    AWS_ECR = "aws-ecr"
-    CUSTOM = "custom"
+    GCR = 'gcr'
+    DOCKERHUB = 'dockerhub'
+    GITHUB = 'ghcr'
+    AWS_ECR = 'aws-ecr'
+    CUSTOM = 'custom'
 
 
 class ContainerDeploymentStatus(str, Enum):
     """Possible states of a container deployment."""
 
-    INITIALIZING = "initializing"
-    HEALTHY = "healthy"
-    DEGRADED = "degraded"
-    UNHEALTHY = "unhealthy"
-    PAUSED = "paused"
-    QUOTA_REACHED = "quota_reached"
-    IMAGE_PULLING = "image_pulling"
-    VERSION_UPDATING = "version_updating"
+    INITIALIZING = 'initializing'
+    HEALTHY = 'healthy'
+    DEGRADED = 'degraded'
+    UNHEALTHY = 'unhealthy'
+    PAUSED = 'paused'
+    QUOTA_REACHED = 'quota_reached'
+    IMAGE_PULLING = 'image_pulling'
+    VERSION_UPDATING = 'version_updating'
 
 
 @dataclass_json
@@ -137,8 +137,7 @@ class VolumeMount:
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class GeneralStorageMount(VolumeMount):
-    """General storage volume mount configuration.
-    """
+    """General storage volume mount configuration."""
 
     def __init__(self, mount_path: str):
         """Initialize a general scratch volume mount.
@@ -369,7 +368,8 @@ class Deployment:
     containers: List[Container]
     compute: ComputeResource
     container_registry_settings: ContainerRegistrySettings = field(
-        default_factory=lambda: ContainerRegistrySettings(is_private=False))
+        default_factory=lambda: ContainerRegistrySettings(is_private=False)
+    )
     is_spot: bool = False
     endpoint_base_url: Optional[str] = None
     scaling: Optional[ScalingOptions] = None
@@ -384,11 +384,10 @@ class Deployment:
             str: A formatted string representation of the deployment.
         """
         # Get all attributes except _inference_client
-        attrs = {k: v for k, v in self.__dict__.items() if k !=
-                 '_inference_client'}
+        attrs = {k: v for k, v in self.__dict__.items() if k != '_inference_client'}
         # Format each attribute
-        attr_strs = [f"{k}={repr(v)}" for k, v in attrs.items()]
-        return f"Deployment({', '.join(attr_strs)})"
+        attr_strs = [f'{k}={repr(v)}' for k, v in attrs.items()]
+        return f'Deployment({", ".join(attr_strs)})'
 
     def __repr__(self):
         """Returns a repr representation of the deployment, excluding sensitive information.
@@ -399,7 +398,9 @@ class Deployment:
         return self.__str__()
 
     @classmethod
-    def from_dict_with_inference_key(cls, data: Dict[str, Any], inference_key: str = None) -> 'Deployment':
+    def from_dict_with_inference_key(
+        cls, data: Dict[str, Any], inference_key: str = None
+    ) -> 'Deployment':
         """Creates a Deployment instance from a dictionary with an inference key.
 
         Args:
@@ -413,7 +414,7 @@ class Deployment:
         if inference_key and deployment.endpoint_base_url:
             deployment._inference_client = InferenceClient(
                 inference_key=inference_key,
-                endpoint_base_url=deployment.endpoint_base_url
+                endpoint_base_url=deployment.endpoint_base_url,
             )
         return deployment
 
@@ -427,11 +428,9 @@ class Deployment:
             ValueError: If endpoint_base_url is not set.
         """
         if self.endpoint_base_url is None:
-            raise ValueError(
-                "Endpoint base URL must be set to use inference client")
+            raise ValueError('Endpoint base URL must be set to use inference client')
         self._inference_client = InferenceClient(
-            inference_key=inference_key,
-            endpoint_base_url=self.endpoint_base_url
+            inference_key=inference_key, endpoint_base_url=self.endpoint_base_url
         )
 
     def _validate_inference_client(self) -> None:
@@ -442,9 +441,18 @@ class Deployment:
         """
         if self._inference_client is None:
             raise ValueError(
-                "Inference client not initialized. Use from_dict_with_inference_key or set_inference_client to initialize inference capabilities.")
+                'Inference client not initialized. Use from_dict_with_inference_key or set_inference_client to initialize inference capabilities.'
+            )
 
-    def run_sync(self, data: Dict[str, Any], path: str = "", timeout_seconds: int = 60 * 5, headers: Optional[Dict[str, str]] = None, http_method: str = "POST", stream: bool = False) -> InferenceResponse:
+    def run_sync(
+        self,
+        data: Dict[str, Any],
+        path: str = '',
+        timeout_seconds: int = 60 * 5,
+        headers: Optional[Dict[str, str]] = None,
+        http_method: str = 'POST',
+        stream: bool = False,
+    ) -> InferenceResponse:
         """Runs a synchronous inference request.
 
         Args:
@@ -462,9 +470,19 @@ class Deployment:
             ValueError: If the inference client is not initialized.
         """
         self._validate_inference_client()
-        return self._inference_client.run_sync(data, path, timeout_seconds, headers, http_method, stream)
+        return self._inference_client.run_sync(
+            data, path, timeout_seconds, headers, http_method, stream
+        )
 
-    def run(self, data: Dict[str, Any], path: str = "", timeout_seconds: int = 60 * 5, headers: Optional[Dict[str, str]] = None, http_method: str = "POST", stream: bool = False):
+    def run(
+        self,
+        data: Dict[str, Any],
+        path: str = '',
+        timeout_seconds: int = 60 * 5,
+        headers: Optional[Dict[str, str]] = None,
+        http_method: str = 'POST',
+        stream: bool = False,
+    ):
         """Runs an asynchronous inference request.
 
         Args:
@@ -495,11 +513,16 @@ class Deployment:
         """
         self._validate_inference_client()
         # build healthcheck path
-        healthcheck_path = "/health"
-        if self.containers and self.containers[0].healthcheck and self.containers[0].healthcheck.path:
+        healthcheck_path = '/health'
+        if (
+            self.containers
+            and self.containers[0].healthcheck
+            and self.containers[0].healthcheck.path
+        ):
             healthcheck_path = self.containers[0].healthcheck.path
 
         return self._inference_client.health(healthcheck_path)
+
     # Function alias
     healthcheck = health
 
@@ -655,7 +678,14 @@ class AWSECRCredentials(BaseRegistryCredentials):
     region: str
     ecr_repo: str
 
-    def __init__(self, name: str, access_key_id: str, secret_access_key: str, region: str, ecr_repo: str):
+    def __init__(
+        self,
+        name: str,
+        access_key_id: str,
+        secret_access_key: str,
+        region: str,
+        ecr_repo: str,
+    ):
         """Initializes AWS ECR credentials.
 
         Args:
@@ -718,7 +748,10 @@ class ContainersService:
             List[Deployment]: List of all deployments.
         """
         response = self.client.get(CONTAINER_DEPLOYMENTS_ENDPOINT)
-        return [Deployment.from_dict_with_inference_key(deployment, self._inference_key) for deployment in response.json()]
+        return [
+            Deployment.from_dict_with_inference_key(deployment, self._inference_key)
+            for deployment in response.json()
+        ]
 
     def get_deployment_by_name(self, deployment_name: str) -> Deployment:
         """Retrieves a specific deployment by name.
@@ -729,17 +762,13 @@ class ContainersService:
         Returns:
             Deployment: The requested deployment.
         """
-        response = self.client.get(
-            f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}")
+        response = self.client.get(f'{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}')
         return Deployment.from_dict_with_inference_key(response.json(), self._inference_key)
 
     # Function alias
     get_deployment = get_deployment_by_name
 
-    def create_deployment(
-        self,
-        deployment: Deployment
-    ) -> Deployment:
+    def create_deployment(self, deployment: Deployment) -> Deployment:
         """Creates a new container deployment.
 
         Args:
@@ -748,10 +777,7 @@ class ContainersService:
         Returns:
             Deployment: The created deployment.
         """
-        response = self.client.post(
-            CONTAINER_DEPLOYMENTS_ENDPOINT,
-            deployment.to_dict()
-        )
+        response = self.client.post(CONTAINER_DEPLOYMENTS_ENDPOINT, deployment.to_dict())
         return Deployment.from_dict_with_inference_key(response.json(), self._inference_key)
 
     def update_deployment(self, deployment_name: str, deployment: Deployment) -> Deployment:
@@ -765,8 +791,7 @@ class ContainersService:
             Deployment: The updated deployment.
         """
         response = self.client.patch(
-            f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}",
-            deployment.to_dict()
+            f'{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}', deployment.to_dict()
         )
         return Deployment.from_dict_with_inference_key(response.json(), self._inference_key)
 
@@ -776,8 +801,7 @@ class ContainersService:
         Args:
             deployment_name: Name of the deployment to delete.
         """
-        self.client.delete(
-            f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}")
+        self.client.delete(f'{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}')
 
     def get_deployment_status(self, deployment_name: str) -> ContainerDeploymentStatus:
         """Retrieves the current status of a deployment.
@@ -788,9 +812,8 @@ class ContainersService:
         Returns:
             ContainerDeploymentStatus: Current status of the deployment.
         """
-        response = self.client.get(
-            f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/status")
-        return ContainerDeploymentStatus(response.json()["status"])
+        response = self.client.get(f'{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/status')
+        return ContainerDeploymentStatus(response.json()['status'])
 
     def restart_deployment(self, deployment_name: str) -> None:
         """Restarts a deployment.
@@ -798,8 +821,7 @@ class ContainersService:
         Args:
             deployment_name: Name of the deployment to restart.
         """
-        self.client.post(
-            f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/restart")
+        self.client.post(f'{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/restart')
 
     def get_deployment_scaling_options(self, deployment_name: str) -> ScalingOptions:
         """Retrieves the scaling options for a deployment.
@@ -810,11 +832,12 @@ class ContainersService:
         Returns:
             ScalingOptions: Current scaling options for the deployment.
         """
-        response = self.client.get(
-            f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/scaling")
+        response = self.client.get(f'{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/scaling')
         return ScalingOptions.from_dict(response.json())
 
-    def update_deployment_scaling_options(self, deployment_name: str, scaling_options: ScalingOptions) -> ScalingOptions:
+    def update_deployment_scaling_options(
+        self, deployment_name: str, scaling_options: ScalingOptions
+    ) -> ScalingOptions:
         """Updates the scaling options for a deployment.
 
         Args:
@@ -825,8 +848,8 @@ class ContainersService:
             ScalingOptions: Updated scaling options for the deployment.
         """
         response = self.client.patch(
-            f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/scaling",
-            scaling_options.to_dict()
+            f'{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/scaling',
+            scaling_options.to_dict(),
         )
         return ScalingOptions.from_dict(response.json())
 
@@ -839,9 +862,8 @@ class ContainersService:
         Returns:
             List[ReplicaInfo]: List of replica information.
         """
-        response = self.client.get(
-            f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/replicas")
-        return [ReplicaInfo.from_dict(replica) for replica in response.json()["list"]]
+        response = self.client.get(f'{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/replicas')
+        return [ReplicaInfo.from_dict(replica) for replica in response.json()['list']]
 
     def purge_deployment_queue(self, deployment_name: str) -> None:
         """Purges the deployment queue.
@@ -849,8 +871,7 @@ class ContainersService:
         Args:
             deployment_name: Name of the deployment.
         """
-        self.client.post(
-            f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/purge-queue")
+        self.client.post(f'{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/purge-queue')
 
     def pause_deployment(self, deployment_name: str) -> None:
         """Pauses a deployment.
@@ -858,8 +879,7 @@ class ContainersService:
         Args:
             deployment_name: Name of the deployment to pause.
         """
-        self.client.post(
-            f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/pause")
+        self.client.post(f'{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/pause')
 
     def resume_deployment(self, deployment_name: str) -> None:
         """Resumes a paused deployment.
@@ -867,8 +887,7 @@ class ContainersService:
         Args:
             deployment_name: Name of the deployment to resume.
         """
-        self.client.post(
-            f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/resume")
+        self.client.post(f'{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/resume')
 
     def get_deployment_environment_variables(self, deployment_name: str) -> Dict[str, List[EnvVar]]:
         """Retrieves environment variables for a deployment.
@@ -880,16 +899,18 @@ class ContainersService:
             Dict[str, List[EnvVar]]: Dictionary mapping container names to their environment variables.
         """
         response = self.client.get(
-            f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/environment-variables")
+            f'{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/environment-variables'
+        )
         result = {}
         for item in response.json():
-            container_name = item["container_name"]
-            env_vars = item["env"]
-            result[container_name] = [EnvVar.from_dict(
-                env_var) for env_var in env_vars]
+            container_name = item['container_name']
+            env_vars = item['env']
+            result[container_name] = [EnvVar.from_dict(env_var) for env_var in env_vars]
         return result
 
-    def add_deployment_environment_variables(self, deployment_name: str, container_name: str, env_vars: List[EnvVar]) -> Dict[str, List[EnvVar]]:
+    def add_deployment_environment_variables(
+        self, deployment_name: str, container_name: str, env_vars: List[EnvVar]
+    ) -> Dict[str, List[EnvVar]]:
         """Adds environment variables to a container in a deployment.
 
         Args:
@@ -901,19 +922,22 @@ class ContainersService:
             Dict[str, List[EnvVar]]: Updated environment variables for all containers.
         """
         response = self.client.post(
-            f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/environment-variables",
-            {"container_name": container_name, "env": [
-                env_var.to_dict() for env_var in env_vars]}
+            f'{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/environment-variables',
+            {
+                'container_name': container_name,
+                'env': [env_var.to_dict() for env_var in env_vars],
+            },
         )
         result = {}
         for item in response.json():
-            container_name = item["container_name"]
-            env_vars = item["env"]
-            result[container_name] = [EnvVar.from_dict(
-                env_var) for env_var in env_vars]
+            container_name = item['container_name']
+            env_vars = item['env']
+            result[container_name] = [EnvVar.from_dict(env_var) for env_var in env_vars]
         return result
 
-    def update_deployment_environment_variables(self, deployment_name: str, container_name: str, env_vars: List[EnvVar]) -> Dict[str, List[EnvVar]]:
+    def update_deployment_environment_variables(
+        self, deployment_name: str, container_name: str, env_vars: List[EnvVar]
+    ) -> Dict[str, List[EnvVar]]:
         """Updates environment variables for a container in a deployment.
 
         Args:
@@ -925,19 +949,22 @@ class ContainersService:
             Dict[str, List[EnvVar]]: Updated environment variables for all containers.
         """
         response = self.client.patch(
-            f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/environment-variables",
-            {"container_name": container_name, "env": [
-                env_var.to_dict() for env_var in env_vars]}
+            f'{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/environment-variables',
+            {
+                'container_name': container_name,
+                'env': [env_var.to_dict() for env_var in env_vars],
+            },
         )
         result = {}
         item = response.json()
-        container_name = item["container_name"]
-        env_vars = item["env"]
-        result[container_name] = [EnvVar.from_dict(
-            env_var) for env_var in env_vars]
+        container_name = item['container_name']
+        env_vars = item['env']
+        result[container_name] = [EnvVar.from_dict(env_var) for env_var in env_vars]
         return result
 
-    def delete_deployment_environment_variables(self, deployment_name: str, container_name: str, env_var_names: List[str]) -> Dict[str, List[EnvVar]]:
+    def delete_deployment_environment_variables(
+        self, deployment_name: str, container_name: str, env_var_names: List[str]
+    ) -> Dict[str, List[EnvVar]]:
         """Deletes environment variables from a container in a deployment.
 
         Args:
@@ -949,18 +976,19 @@ class ContainersService:
             Dict[str, List[EnvVar]]: Updated environment variables for all containers.
         """
         response = self.client.delete(
-            f"{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/environment-variables",
-            {"container_name": container_name, "env": env_var_names}
+            f'{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/environment-variables',
+            {'container_name': container_name, 'env': env_var_names},
         )
         result = {}
         for item in response.json():
-            container_name = item["container_name"]
-            env_vars = item["env"]
-            result[container_name] = [EnvVar.from_dict(
-                env_var) for env_var in env_vars]
+            container_name = item['container_name']
+            env_vars = item['env']
+            result[container_name] = [EnvVar.from_dict(env_var) for env_var in env_vars]
         return result
 
-    def get_compute_resources(self, size: int = None, is_available: bool = None) -> List[ComputeResource]:
+    def get_compute_resources(
+        self, size: int = None, is_available: bool = None
+    ) -> List[ComputeResource]:
         """Retrieves compute resources, optionally filtered by size and availability.
 
         Args:
@@ -979,8 +1007,7 @@ class ContainersService:
         if size:
             resources = [r for r in resources if r.size == size]
         if is_available:
-            resources = [
-                r for r in resources if r.is_available == is_available]
+            resources = [r for r in resources if r.is_available == is_available]
         return resources
 
     # Function alias
@@ -1002,7 +1029,7 @@ class ContainersService:
             name: Name of the secret.
             value: Value of the secret.
         """
-        self.client.post(SECRETS_ENDPOINT, {"name": name, "value": value})
+        self.client.post(SECRETS_ENDPOINT, {'name': name, 'value': value})
 
     def delete_secret(self, secret_name: str, force: bool = False) -> None:
         """Deletes a secret.
@@ -1012,7 +1039,8 @@ class ContainersService:
             force: Whether to force delete even if secret is in use.
         """
         self.client.delete(
-            f"{SECRETS_ENDPOINT}/{secret_name}", params={"force": str(force).lower()})
+            f'{SECRETS_ENDPOINT}/{secret_name}', params={'force': str(force).lower()}
+        )
 
     def get_registry_credentials(self) -> List[RegistryCredential]:
         """Retrieves all registry credentials.
@@ -1038,8 +1066,7 @@ class ContainersService:
         Args:
             credentials_name: Name of the credentials to delete.
         """
-        self.client.delete(
-            f"{CONTAINER_REGISTRY_CREDENTIALS_ENDPOINT}/{credentials_name}")
+        self.client.delete(f'{CONTAINER_REGISTRY_CREDENTIALS_ENDPOINT}/{credentials_name}')
 
     def get_fileset_secrets(self) -> List[Secret]:
         """Retrieves all fileset secrets.
@@ -1056,11 +1083,13 @@ class ContainersService:
         Args:
             secret_name: Name of the secret to delete.
         """
-        self.client.delete(f"{FILESET_SECRETS_ENDPOINT}/{secret_name}")
+        self.client.delete(f'{FILESET_SECRETS_ENDPOINT}/{secret_name}')
 
-    def create_fileset_secret_from_file_paths(self, secret_name: str, file_paths: List[str]) -> None:
+    def create_fileset_secret_from_file_paths(
+        self, secret_name: str, file_paths: List[str]
+    ) -> None:
         """Creates a new fileset secret.
-        A fileset secret is a secret that contains several files, 
+        A fileset secret is a secret that contains several files,
         and can be used to mount a directory with the files in a container.
 
         Args:
@@ -1069,13 +1098,12 @@ class ContainersService:
         """
         processed_files = []
         for file_path in file_paths:
-            with open(file_path, "rb") as f:
-                base64_content = base64.b64encode(f.read()).decode("utf-8")
-                processed_files.append({
-                    "file_name": os.path.basename(file_path),
-                    "base64_content": base64_content
-                })
-        self.client.post(FILESET_SECRETS_ENDPOINT, {
-            "name": secret_name,
-            "files": processed_files
-        })
+            with open(file_path, 'rb') as f:
+                base64_content = base64.b64encode(f.read()).decode('utf-8')
+                processed_files.append(
+                    {
+                        'file_name': os.path.basename(file_path),
+                        'base64_content': base64_content,
+                    }
+                )
+        self.client.post(FILESET_SECRETS_ENDPOINT, {'name': secret_name, 'files': processed_files})

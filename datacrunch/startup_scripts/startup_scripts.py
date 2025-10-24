@@ -61,8 +61,12 @@ class StartupScriptsService:
         :rtype: List[StartupScript]
         """
         scripts = self._http_client.get(STARTUP_SCRIPTS_ENDPOINT).json()
-        scripts_objects = list(map(lambda script: StartupScript(
-            script['id'], script['name'], script['script']), scripts))
+        scripts_objects = list(
+            map(
+                lambda script: StartupScript(script['id'], script['name'], script['script']),
+                scripts,
+            )
+        )
         return scripts_objects
 
     def get_by_id(self, id) -> StartupScript:
@@ -73,8 +77,7 @@ class StartupScriptsService:
         :return: startup script object
         :rtype: StartupScript
         """
-        script = self._http_client.get(
-            STARTUP_SCRIPTS_ENDPOINT + f'/{id}').json()[0]
+        script = self._http_client.get(STARTUP_SCRIPTS_ENDPOINT + f'/{id}').json()[0]
 
         return StartupScript(script['id'], script['name'], script['script'])
 
@@ -84,7 +87,7 @@ class StartupScriptsService:
         :param id_list: list of startup scripts ids
         :type id_list: List[str]
         """
-        payload = {"scripts": id_list}
+        payload = {'scripts': id_list}
         self._http_client.delete(STARTUP_SCRIPTS_ENDPOINT, json=payload)
         return
 
@@ -107,7 +110,6 @@ class StartupScriptsService:
         :return: the new startup script's id
         :rtype: str
         """
-        payload = {"name": name, "script": script}
-        id = self._http_client.post(
-            STARTUP_SCRIPTS_ENDPOINT, json=payload).text
+        payload = {'name': name, 'script': script}
+        id = self._http_client.post(STARTUP_SCRIPTS_ENDPOINT, json=payload).text
         return StartupScript(id, name, script)

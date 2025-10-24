@@ -2,7 +2,10 @@ import pytest
 import responses  # https://github.com/getsentry/responses
 
 from datacrunch.exceptions import APIException
-from datacrunch.startup_scripts.startup_scripts import StartupScriptsService, StartupScript
+from datacrunch.startup_scripts.startup_scripts import (
+    StartupScriptsService,
+    StartupScript,
+)
 
 INVALID_REQUEST = 'invalid_request'
 INVALID_REQUEST_MESSAGE = 'Your existence is invalid'
@@ -13,33 +16,21 @@ SCRIPT_VALUE = 'this was not in the script!'
 
 script_ID_2 = 'beefbeef-a5d2-4972-ae4e-d429115d055b'
 
-PAYLOAD = [
-    {
-        'id': SCRIPT_ID,
-        'name': SCRIPT_NAME,
-        'script': SCRIPT_VALUE
-    }
-]
+PAYLOAD = [{'id': SCRIPT_ID, 'name': SCRIPT_NAME, 'script': SCRIPT_VALUE}]
 
 
 class TestStartupScripts:
-
     @pytest.fixture
     def startup_script_service(self, http_client):
         return StartupScriptsService(http_client)
 
     @pytest.fixture
     def endpoint(self, http_client):
-        return http_client._base_url + "/scripts"
+        return http_client._base_url + '/scripts'
 
     def test_get_scripts(self, startup_script_service, endpoint):
         # arrange - add response mock
-        responses.add(
-            responses.GET,
-            endpoint,
-            json=PAYLOAD,
-            status=200
-        )
+        responses.add(responses.GET, endpoint, json=PAYLOAD, status=200)
 
         # act
         scripts = startup_script_service.get()
@@ -56,12 +47,7 @@ class TestStartupScripts:
     def test_get_script_by_id_successful(self, startup_script_service, endpoint):
         # arrange - add response mock
         url = endpoint + '/' + SCRIPT_ID
-        responses.add(
-            responses.GET,
-            url,
-            json=PAYLOAD,
-            status=200
-        )
+        responses.add(responses.GET, url, json=PAYLOAD, status=200)
 
         # act
         script = startup_script_service.get_by_id(SCRIPT_ID)
@@ -79,8 +65,8 @@ class TestStartupScripts:
         responses.add(
             responses.GET,
             url,
-            json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
-            status=400
+            json={'code': INVALID_REQUEST, 'message': INVALID_REQUEST_MESSAGE},
+            status=400,
         )
 
         # act
@@ -94,12 +80,7 @@ class TestStartupScripts:
 
     def test_create_script_successful(self, startup_script_service, endpoint):
         # arrange - add response mock
-        responses.add(
-            responses.POST,
-            endpoint,
-            body=SCRIPT_ID,
-            status=201
-        )
+        responses.add(responses.POST, endpoint, body=SCRIPT_ID, status=201)
 
         # act
         script = startup_script_service.create(SCRIPT_NAME, SCRIPT_VALUE)
@@ -114,8 +95,8 @@ class TestStartupScripts:
         responses.add(
             responses.POST,
             endpoint,
-            json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
-            status=400
+            json={'code': INVALID_REQUEST, 'message': INVALID_REQUEST_MESSAGE},
+            status=400,
         )
 
         # act
@@ -129,11 +110,7 @@ class TestStartupScripts:
 
     def test_delete_scripts_successful(self, startup_script_service, endpoint):
         # arrange - add response mock
-        responses.add(
-            responses.DELETE,
-            endpoint,
-            status=200
-        )
+        responses.add(responses.DELETE, endpoint, status=200)
 
         # act
         result = startup_script_service.delete([SCRIPT_ID, script_ID_2])
@@ -147,8 +124,8 @@ class TestStartupScripts:
         responses.add(
             responses.DELETE,
             endpoint,
-            json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
-            status=400
+            json={'code': INVALID_REQUEST, 'message': INVALID_REQUEST_MESSAGE},
+            status=400,
         )
 
         # act
@@ -163,11 +140,7 @@ class TestStartupScripts:
     def test_delete_script_by_id_successful(self, startup_script_service, endpoint):
         # arrange - add response mock
         url = endpoint + '/' + SCRIPT_ID
-        responses.add(
-            responses.DELETE,
-            url,
-            status=200
-        )
+        responses.add(responses.DELETE, url, status=200)
 
         # act
         result = startup_script_service.delete_by_id(SCRIPT_ID)
@@ -182,8 +155,8 @@ class TestStartupScripts:
         responses.add(
             responses.DELETE,
             url,
-            json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
-            status=400
+            json={'code': INVALID_REQUEST, 'message': INVALID_REQUEST_MESSAGE},
+            status=400,
         )
 
         # act

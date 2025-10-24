@@ -8,20 +8,21 @@ VOLUMES_ENDPOINT = '/volumes'
 class Volume:
     """A volume model class"""
 
-    def __init__(self,
-                 id: str,
-                 status: str,
-                 name: str,
-                 size: int,
-                 type: str,
-                 is_os_volume: bool,
-                 created_at: str,
-                 target: str = None,
-                 location: str = Locations.FIN_01,
-                 instance_id: str = None,
-                 ssh_key_ids: List[str] = [],
-                 deleted_at: str = None,
-                 ) -> None:
+    def __init__(
+        self,
+        id: str,
+        status: str,
+        name: str,
+        size: int,
+        type: str,
+        is_os_volume: bool,
+        created_at: str,
+        target: str = None,
+        location: str = Locations.FIN_01,
+        instance_id: str = None,
+        ssh_key_ids: List[str] = [],
+        deleted_at: str = None,
+    ) -> None:
         """Initialize the volume object
 
         :param id: volume id
@@ -181,18 +182,18 @@ class Volume:
         """
 
         return cls(
-            id = volume_dict['id'],
-            status = volume_dict['status'],
-            name = volume_dict['name'],
-            size = volume_dict['size'],
-            type = volume_dict['type'],
-            is_os_volume = volume_dict['is_os_volume'],
-            created_at = volume_dict['created_at'],
-            target = volume_dict['target'],
-            location = volume_dict['location'],
-            instance_id = volume_dict['instance_id'],
-            ssh_key_ids = volume_dict['ssh_key_ids'],
-            deleted_at = volume_dict.get('deleted_at'),
+            id=volume_dict['id'],
+            status=volume_dict['status'],
+            name=volume_dict['name'],
+            size=volume_dict['size'],
+            type=volume_dict['type'],
+            is_os_volume=volume_dict['is_os_volume'],
+            created_at=volume_dict['created_at'],
+            target=volume_dict['target'],
+            location=volume_dict['location'],
+            instance_id=volume_dict['instance_id'],
+            ssh_key_ids=volume_dict['ssh_key_ids'],
+            deleted_at=volume_dict.get('deleted_at'),
         )
 
     def __str__(self) -> str:
@@ -218,8 +219,7 @@ class VolumesService:
         :return: list of volume details objects
         :rtype: List[Volume]
         """
-        volumes_dict = self._http_client.get(
-            VOLUMES_ENDPOINT, params={'status': status}).json()
+        volumes_dict = self._http_client.get(VOLUMES_ENDPOINT, params={'status': status}).json()
         return list(map(Volume.create_from_dict, volumes_dict))
 
     def get_by_id(self, id: str) -> Volume:
@@ -230,8 +230,7 @@ class VolumesService:
         :return: Volume details object
         :rtype: Volume
         """
-        volume_dict = self._http_client.get(
-            VOLUMES_ENDPOINT + f'/{id}').json()
+        volume_dict = self._http_client.get(VOLUMES_ENDPOINT + f'/{id}').json()
 
         return Volume.create_from_dict(volume_dict)
 
@@ -241,19 +240,18 @@ class VolumesService:
         :return: list of volume details objects
         :rtype: List[Volume]
         """
-        volumes_dicts = self._http_client.get(
-            VOLUMES_ENDPOINT + '/trash'
-        ).json()
+        volumes_dicts = self._http_client.get(VOLUMES_ENDPOINT + '/trash').json()
 
         return list(map(Volume.create_from_dict, volumes_dicts))
 
-    def create(self,
-               type: str,
-               name: str,
-               size: int,
-               instance_id: str = None,
-               location: str = Locations.FIN_01,
-               ) -> Volume:
+    def create(
+        self,
+        type: str,
+        name: str,
+        size: int,
+        instance_id: str = None,
+        location: str = Locations.FIN_01,
+    ) -> Volume:
         """Create new volume
 
         :param type: volume type
@@ -270,11 +268,11 @@ class VolumesService:
         :rtype: Volume
         """
         payload = {
-            "type": type,
-            "name": name,
-            "size": size,
-            "instance_id": instance_id,
-            "location_code": location
+            'type': type,
+            'name': name,
+            'size': size,
+            'instance_id': instance_id,
+            'location_code': location,
         }
         id = self._http_client.post(VOLUMES_ENDPOINT, json=payload).text
         volume = self.get_by_id(id)
@@ -290,9 +288,9 @@ class VolumesService:
         :type instance_id: str
         """
         payload = {
-            "id": id_list,
-            "action": VolumeActions.ATTACH,
-            "instance_id": instance_id
+            'id': id_list,
+            'action': VolumeActions.ATTACH,
+            'instance_id': instance_id,
         }
 
         self._http_client.put(VOLUMES_ENDPOINT, json=payload)
@@ -306,8 +304,8 @@ class VolumesService:
         :type id_list: Union[List[str], str]
         """
         payload = {
-            "id": id_list,
-            "action": VolumeActions.DETACH,
+            'id': id_list,
+            'action': VolumeActions.DETACH,
         }
 
         self._http_client.put(VOLUMES_ENDPOINT, json=payload)
@@ -325,20 +323,13 @@ class VolumesService:
         :return: the new volume object, or a list of volume objects if cloned mutliple volumes
         :rtype: Volume or List[Volume]
         """
-        payload = {
-            "id": id,
-            "action": VolumeActions.CLONE,
-            "name": name,
-            "type": type
-        }
+        payload = {'id': id, 'action': VolumeActions.CLONE, 'name': name, 'type': type}
 
         # clone volume(s)
-        volume_ids_array = self._http_client.put(
-            VOLUMES_ENDPOINT, json=payload).json()
+        volume_ids_array = self._http_client.put(VOLUMES_ENDPOINT, json=payload).json()
 
         # map the IDs into Volume objects
-        volumes_array = list(
-            map(lambda volume_id: self.get_by_id(volume_id), volume_ids_array))
+        volumes_array = list(map(lambda volume_id: self.get_by_id(volume_id), volume_ids_array))
 
         # if the array has only one element, return that element
         if len(volumes_array) == 1:
@@ -355,11 +346,7 @@ class VolumesService:
         :param name: new name
         :type name: str
         """
-        payload = {
-            "id": id_list,
-            "action": VolumeActions.RENAME,
-            "name": name
-        }
+        payload = {'id': id_list, 'action': VolumeActions.RENAME, 'name': name}
 
         self._http_client.put(VOLUMES_ENDPOINT, json=payload)
         return
@@ -373,9 +360,9 @@ class VolumesService:
         :type size: int
         """
         payload = {
-            "id": id_list,
-            "action": VolumeActions.INCREASE_SIZE,
-            "size": size,
+            'id': id_list,
+            'action': VolumeActions.INCREASE_SIZE,
+            'size': size,
         }
 
         self._http_client.put(VOLUMES_ENDPOINT, json=payload)
@@ -389,9 +376,9 @@ class VolumesService:
         :type id_list: Union[List[str], str]
         """
         payload = {
-            "id": id_list,
-            "action": VolumeActions.DELETE,
-            "is_permanent": is_permanent
+            'id': id_list,
+            'action': VolumeActions.DELETE,
+            'is_permanent': is_permanent,
         }
 
         self._http_client.put(VOLUMES_ENDPOINT, json=payload)

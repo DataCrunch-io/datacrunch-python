@@ -4,7 +4,7 @@ from datacrunch.volume_types.volume_types import VolumeTypesService, VolumeType
 from datacrunch.constants import VolumeTypes
 
 
-USD = "usd"
+USD = 'usd'
 NVMe_PRICE = 0.2
 HDD_PRICE = 0.05
 
@@ -12,24 +12,18 @@ HDD_PRICE = 0.05
 def test_volume_types(http_client):
     responses.add(
         responses.GET,
-        http_client._base_url + "/volume-types",
+        http_client._base_url + '/volume-types',
         json=[
             {
-                "type": VolumeTypes.NVMe,
-                "price": {
-                    "currency": USD,
-                    "price_per_month_per_gb": NVMe_PRICE
-                }
+                'type': VolumeTypes.NVMe,
+                'price': {'currency': USD, 'price_per_month_per_gb': NVMe_PRICE},
             },
             {
-                "type": VolumeTypes.HDD,
-                "price": {
-                    "currency": USD,
-                    "price_per_month_per_gb": HDD_PRICE
-                }
-            }
+                'type': VolumeTypes.HDD,
+                'price': {'currency': USD, 'price_per_month_per_gb': HDD_PRICE},
+            },
         ],
-        status=200
+        status=200,
     )
 
     volume_types_service = VolumeTypesService(http_client)

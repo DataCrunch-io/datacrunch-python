@@ -36,12 +36,12 @@ class InstanceStatus:
 
 
 class VolumeStatus:
-    ORDERED = "ordered"
-    CREATING = "creating"
-    ATTACHED = "attached"
-    DETACHED = "detached"
-    DELETING = "deleting"
-    DELETED = "deleted"
+    ORDERED = 'ordered'
+    CREATING = 'creating'
+    ATTACHED = 'attached'
+    DETACHED = 'detached'
+    DELETING = 'deleting'
+    DELETED = 'deleted'
     CLONING = 'cloning'
 
     def __init__(self):
@@ -49,29 +49,29 @@ class VolumeStatus:
 
 
 class VolumeTypes:
-    NVMe = "NVMe"
-    HDD = "HDD"
+    NVMe = 'NVMe'
+    HDD = 'HDD'
 
     def __init__(self):
         return
 
 
 class Locations:
-    FIN_01: str = "FIN-01"
-    ICE_01: str = "ICE-01"
+    FIN_01: str = 'FIN-01'
+    ICE_01: str = 'ICE-01'
 
     def __init__(self):
         return
 
 
 class ErrorCodes:
-    INVALID_REQUEST = "invalid_request"
-    UNAUTHORIZED_REQUEST = "unauthorized_request"
-    INSUFFICIENT_FUNDS = "insufficient_funds"
-    FORBIDDEN_ACTION = "forbidden_action"
-    NOT_FOUND = "not_found"
-    SERVER_ERROR = "server_error"
-    SERVICE_UNAVAILABLE = "service_unavailable"
+    INVALID_REQUEST = 'invalid_request'
+    UNAUTHORIZED_REQUEST = 'unauthorized_request'
+    INSUFFICIENT_FUNDS = 'insufficient_funds'
+    FORBIDDEN_ACTION = 'forbidden_action'
+    NOT_FOUND = 'not_found'
+    SERVER_ERROR = 'server_error'
+    SERVICE_UNAVAILABLE = 'service_unavailable'
 
     def __init__(self):
         return
