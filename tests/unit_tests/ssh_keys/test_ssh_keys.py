@@ -175,7 +175,7 @@ class TestSSHKeys:
         result = ssh_key_service.delete_by_id(KEY_ID)
 
         # assert
-        assert result == None
+        assert result is None
         assert responses.assert_call_count(url, 1) is True
 
     def test_delete_key_by_id_failed(self, ssh_key_service, endpoint):

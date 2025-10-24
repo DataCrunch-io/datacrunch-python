@@ -57,7 +57,7 @@ class TestAuthenticationService:
         assert authentication_service._refresh_token == REFRESH_TOKEN
         assert authentication_service._scope == SCOPE
         assert authentication_service._token_type == TOKEN_TYPE
-        assert authentication_service._expires_at != None
+        assert authentication_service._expires_at is not None
         assert responses.assert_call_count(endpoint, 1) is True
 
     def test_authenticate_failed(self, authentication_service, endpoint):
@@ -122,7 +122,7 @@ class TestAuthenticationService:
         assert authentication_service._refresh_token == REFRESH_TOKEN
         assert authentication_service._scope == SCOPE
         assert authentication_service._token_type == TOKEN_TYPE
-        assert authentication_service._expires_at != None
+        assert authentication_service._expires_at is not None
         assert responses.calls[0].request.body == f'{{"grant_type": "client_credentials", "client_id": "{CLIENT_ID}", "client_secret": "{CLIENT_SECRET}"}}'.encode(
         )
 
@@ -133,7 +133,7 @@ class TestAuthenticationService:
         assert authentication_service._refresh_token == REFRESH_TOKEN2
         assert authentication_service._scope == SCOPE
         assert authentication_service._token_type == TOKEN_TYPE
-        assert authentication_service._expires_at != None
+        assert authentication_service._expires_at is not None
         assert responses.calls[1].request.body == f'{{"grant_type": "refresh_token", "refresh_token": "{REFRESH_TOKEN}"}}'.encode(
         )
         assert responses.assert_call_count(endpoint, 2) is True

@@ -78,14 +78,14 @@ class TestVolumesService:
 
         assert volume.id == RANDOM_VOL_ID
         assert volume.status == VolumeStatus.DETACHED
-        assert volume.instance_id == None
+        assert volume.instance_id is None
         assert volume.name == HDD_VOL_NAME
         assert volume.size == HDD_VOL_SIZE
         assert volume.type == HDD
         assert volume.location == Locations.FIN_01
         assert volume.is_os_volume == False
         assert volume.created_at == HDD_VOL_CREATED_AT
-        assert volume.target == None
+        assert volume.target is None
         assert volume.ssh_key_ids == []
 
     def test_get_volumes(self, volumes_service, endpoint):
