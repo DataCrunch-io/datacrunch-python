@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     # TODO(shamrin) configure trusted publishing and remove TWINE_* vars https://docs.astral.sh/uv/guides/integration/github/#publishing-to-pypi
     environment:
