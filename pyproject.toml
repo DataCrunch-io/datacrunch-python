@@ -1,6 +1,6 @@
 [project]
 name = "datacrunch"
-version = "1.15.0"
+version = "1.16.0"
 description = "Official Python SDK for DataCrunch Public API"
 readme = "README.md"
 requires-python = ">=3.11"
