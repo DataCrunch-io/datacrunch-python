@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Migrated to `uv`
+- Removed `datacrunch.__version__.VERSION`. Use standard [importlib.metadata.version()](https://docs.python.org/3/library/importlib.metadata.html#importlib.metadata.version) instead:
+  ```python
+  from importlib.metadata import version
+  print(version('datacrunch'))
+  ```
+- Migrated to Ruff for linting
+- Upgraded pytest
+
+If you are working on the library itself, do a fresh clone or upgrade your local development environment in-place:
+  ```bash
+  # remove old environment
+  rm -rf datacrunch.egg-info/ .venv/ datacrunch_env/
+
+  # create new environment and install dependencies
+  uv sync
+
+  # run example
+  uv run python examples/simple_create_instance.py
+  ```
+
 ## [1.15.0] - 2025-10-23
 
 ### Added

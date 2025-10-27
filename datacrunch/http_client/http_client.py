@@ -2,7 +2,7 @@ import requests
 import json
 
 from datacrunch.exceptions import APIException
-from datacrunch.__version__ import VERSION
+from datacrunch._version import __version__
 
 
 def handle_error(response: requests.Response) -> None:
@@ -27,7 +27,7 @@ class HTTPClient:
     """
 
     def __init__(self, auth_service, base_url: str) -> None:
-        self._version = VERSION
+        self._version = __version__
         self._base_url = base_url
         self._auth_service = auth_service
         self._auth_service.authenticate()

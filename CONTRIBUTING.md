@@ -8,6 +8,8 @@ You can open pull requests by following the steps:
 
 ## Code Contribution
 
+Prerequisite: install [`uv`](https://docs.astral.sh/uv/).
+
 1. Fork the `datacrunch-python` repo on GitHub.
 
 2. Clone your fork locally:
@@ -17,11 +19,10 @@ You can open pull requests by following the steps:
    cd datacrunch-python
    ```
 
-3. Create virtual environment & install this local copy into the virtual environment:
+3. Set up local environment and install dependencies:
 
    ```bash
-   python3 -m venv datacrunch_env && source ./datacrunch_env/bin/activate
-   python3 setup.py develop
+   uv sync
    ```
 
 4. Create a new branch:
@@ -40,27 +41,20 @@ You can open pull requests by following the steps:
 
 5. Make your local changes
 
-6. Install dependencies for test:
+6. Run tests:
 
    ```bash
-   pip3 install -e .[test]
-   pip3 install -U pytest
+   uv run pytest
    ```
 
-7. Run tests:
+7. Commit and push:
 
    ```bash
-   pytest
-   ```
-
-8. Commit and push:
-
-   ```bash
-   git commit .am "Detailed commit message"
+   git commit -am "Detailed commit message"
    git push origin {branch-name}
    ```
 
-9. Submit a pull request in GitHub.
+8. Submit a pull request in GitHub.
 
 ## Pull Request Guidelines
 
@@ -71,10 +65,21 @@ You can open pull requests by following the steps:
 
 To release a new version:
 
-1. Update the version in `__version__.py`
-2. Add an entry to the `CHANGELOG.md` file
-3. `git tag v{major}.{minor}.{patch}`
-4. `git push origin master`
-5. `git push --tags`
-6. [Draft and publish](https://github.com/DataCrunch-io/datacrunch-python/releases) a new release.
-7. Check that package is automatically published to [PyPI](https://pypi.org/project/datacrunch/) via [GitHub action](https://github.com/DataCrunch-io/datacrunch-python/actions/workflows/publish_package.yml).
+1. Bump version:
+   ```bash
+   uv version --bump minor # also `major` or `patch`
+   ```
+
+2. Update `CHANGELOG.md`
+
+3. Commit and push:
+   ```bash
+   git commit -m v$(uv version --short) CHANGELOG.md pyproject.toml uv.lock
+   git tag v$(uv version --short)
+   git push origin master
+   git push --tags
+   ```
+
+4. [Draft and publish](https://github.com/DataCrunch-io/datacrunch-python/releases) a new release.
+
+5. Check that package is automatically published to [PyPI](https://pypi.org/project/datacrunch/) via [GitHub action](https://github.com/DataCrunch-io/datacrunch-python/actions/workflows/publish_package.yml).

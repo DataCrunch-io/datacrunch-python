@@ -29,7 +29,7 @@ try:
     scaling_options = datacrunch.containers.get_deployment_scaling_options(
         DEPLOYMENT_NAME)
 
-    print(f"Current scaling configuration:\n")
+    print("Current scaling configuration:\n")
     print(f"Min replicas: {scaling_options.min_replica_count}")
     print(f"Max replicas: {scaling_options.max_replica_count}")
     print(
@@ -80,7 +80,7 @@ try:
     updated_options = datacrunch.containers.update_deployment_scaling_options(
         DEPLOYMENT_NAME, scaling_options)
 
-    print(f"\nUpdated scaling configuration:\n")
+    print("\nUpdated scaling configuration:\n")
     print(f"Min replicas: {updated_options.min_replica_count}")
     print(f"Max replicas: {updated_options.max_replica_count}")
     print(

@@ -73,8 +73,6 @@ class TestAuthenticationService:
         with pytest.raises(APIException) as excinfo:
             authentication_service.authenticate()
 
-        x = responses.calls[0].request
-
         # assert
         assert excinfo.value.code == INVALID_REQUEST
         assert excinfo.value.message == INVALID_REQUEST_MESSAGE

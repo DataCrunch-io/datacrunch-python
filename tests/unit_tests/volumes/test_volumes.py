@@ -1,5 +1,6 @@
 import pytest
 import responses  # https://github.com/getsentry/responses
+from responses import matchers
 
 from datacrunch.exceptions import APIException
 from datacrunch.volumes.volumes import VolumesService, Volume
@@ -270,7 +271,7 @@ class TestVolumesService:
             endpoint,
             status=202,
             match=[
-                responses.json_params_matcher({
+                matchers.json_params_matcher({
                     "id": NVME_VOL_ID,
                     "action": VolumeActions.ATTACH,
                     "instance_id": INSTANCE_ID
@@ -293,7 +294,7 @@ class TestVolumesService:
             json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
             status=400,
             match=[
-                responses.json_params_matcher({
+                matchers.json_params_matcher({
                     "id": NVME_VOL_ID,
                     "action": VolumeActions.ATTACH,
                     "instance_id": INSTANCE_ID
@@ -317,7 +318,7 @@ class TestVolumesService:
             endpoint,
             status=202,
             match=[
-                responses.json_params_matcher({
+                matchers.json_params_matcher({
                     "id": NVME_VOL_ID,
                     "action": VolumeActions.DETACH
                 })
@@ -339,7 +340,7 @@ class TestVolumesService:
             json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
             status=400,
             match=[
-                responses.json_params_matcher({
+                matchers.json_params_matcher({
                     "id": NVME_VOL_ID,
                     "action": VolumeActions.DETACH
                 })
@@ -364,7 +365,7 @@ class TestVolumesService:
             endpoint,
             status=202,
             match=[
-                responses.json_params_matcher({
+                matchers.json_params_matcher({
                     "id": NVME_VOL_ID,
                     "action": VolumeActions.RENAME,
                     "name": new_name,
@@ -389,7 +390,7 @@ class TestVolumesService:
             json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
             status=400,
             match=[
-                responses.json_params_matcher({
+                matchers.json_params_matcher({
                     "id": NVME_VOL_ID,
                     "action": VolumeActions.RENAME,
                     "name": new_name
@@ -415,7 +416,7 @@ class TestVolumesService:
             endpoint,
             status=202,
             match=[
-                responses.json_params_matcher({
+                matchers.json_params_matcher({
                     "id": NVME_VOL_ID,
                     "action": VolumeActions.INCREASE_SIZE,
                     "size": new_size,
@@ -440,7 +441,7 @@ class TestVolumesService:
             json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
             status=400,
             match=[
-                responses.json_params_matcher({
+                matchers.json_params_matcher({
                     "id": NVME_VOL_ID,
                     "action": VolumeActions.INCREASE_SIZE,
                     "size": new_size
@@ -464,7 +465,7 @@ class TestVolumesService:
             endpoint,
             status=202,
             match=[
-                responses.json_params_matcher({
+                matchers.json_params_matcher({
                     "id": NVME_VOL_ID,
                     "action": VolumeActions.DELETE,
                     "is_permanent": False
@@ -487,7 +488,7 @@ class TestVolumesService:
             json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
             status=400,
             match=[
-                responses.json_params_matcher({
+                matchers.json_params_matcher({
                     "id": NVME_VOL_ID,
                     "action": VolumeActions.DELETE,
                     "is_permanent": False
@@ -515,7 +516,7 @@ class TestVolumesService:
             status=202,
             json=[RANDOM_VOL_ID],
             match=[
-                responses.json_params_matcher({
+                matchers.json_params_matcher({
                     "id": NVME_VOL_ID,
                     "action": VolumeActions.CLONE,
                     "name": CLONED_VOLUME_NAME,
@@ -556,7 +557,7 @@ class TestVolumesService:
             status=202,
             json=[RANDOM_VOL_ID],
             match=[
-                responses.json_params_matcher({
+                matchers.json_params_matcher({
                     "id": NVME_VOL_ID,
                     "action": VolumeActions.CLONE,
                     "name": None,
@@ -598,7 +599,7 @@ class TestVolumesService:
             status=202,
             json=[RANDOM_VOL_ID, RANDOM_VOL2_ID],
             match=[
-                responses.json_params_matcher({
+                matchers.json_params_matcher({
                     "id": [NVME_VOL_ID, HDD_VOL_ID],
                     "action": VolumeActions.CLONE,
                     "name": None,

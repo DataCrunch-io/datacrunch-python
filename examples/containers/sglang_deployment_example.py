@@ -24,7 +24,6 @@ from datacrunch.containers import (
     EntrypointOverridesSettings,
     EnvVar,
     EnvVarType,
-    ContainerRegistrySettings,
     Deployment,
     ContainerDeploymentStatus,
 )
@@ -56,7 +55,7 @@ def wait_for_deployment_health(datacrunch_client: DataCrunchClient, deployment_n
     Returns:
         bool: True if deployment is healthy, False otherwise
     """
-    print(f"Waiting for deployment to be healthy (may take several minutes to download model)...")
+    print("Waiting for deployment to be healthy (may take several minutes to download model)...")
     for attempt in range(max_attempts):
         try:
             status = datacrunch_client.containers.get_deployment_status(
