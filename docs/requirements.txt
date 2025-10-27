@@ -1,3 +1,2 @@
 sphinx>=7.0.0
 recommonmark>=0.7.1
-datacrunch>=1.8.3

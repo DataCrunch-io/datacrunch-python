@@ -13,12 +13,10 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import datetime
+from importlib.metadata import version as pkg_version, PackageNotFoundError
 from recommonmark.parser import CommonMarkParser
-from datacrunch import __version__
 import os
 import sys
-
-sys.path.insert(0, os.path.abspath('../../'))
 
 # -- Project information -----------------------------------------------------
 current_year = datetime.datetime.now().year
@@ -27,10 +25,12 @@ project = 'DataCrunch Python SDK'
 copyright = f'{current_year}, DataCrunch.io'
 author = 'DataCrunch.io'
 
-# The short X.Y version
-version = __version__
-# The full version, including alpha/beta/rc tags
-release = __version__
+try:
+    release = pkg_version('datacrunch')
+except PackageNotFoundError:
+    release = '0.0.0+dev'
+
+version = release
 
 
 # -- General configuration ---------------------------------------------------

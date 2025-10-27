@@ -32,7 +32,7 @@ class Instance:
         gpu_memory: GPU memory configuration details.
         ip: IP address assigned to the instance.
         os_volume_id: ID of the operating system volume.
-        location: Datacenter location code (default: Locations.FIN_01).
+        location: Datacenter location code (default: Locations.FIN_03).
         image: Image ID or type used for the instance.
         startup_script_id: ID of the startup script to run.
         is_spot: Whether the instance is a spot instance.
@@ -57,7 +57,7 @@ class Instance:
     ip: Optional[str] = None
     # Can be None if instance is still not provisioned
     os_volume_id: Optional[str] = None
-    location: str = Locations.FIN_01
+    location: str = Locations.FIN_03
     image: Optional[str] = None
     startup_script_id: Optional[str] = None
     is_spot: bool = False
@@ -118,7 +118,7 @@ class InstancesService:
         hostname: str,
         description: str,
         ssh_key_ids: list = [],
-        location: str = Locations.FIN_01,
+        location: str = Locations.FIN_03,
         startup_script_id: Optional[str] = None,
         volumes: Optional[List[Dict]] = None,
         existing_volumes: Optional[List[str]] = None,
@@ -141,7 +141,7 @@ class InstancesService:
             hostname: Network hostname for the instance.
             description: Human-readable description of the instance.
             ssh_key_ids: List of SSH key IDs to associate with the instance.
-            location: Datacenter location code (default: Locations.FIN_01).
+            location: Datacenter location code (default: Locations.FIN_03).
             startup_script_id: Optional ID of startup script to run.
             volumes: Optional list of volume configurations to create.
             existing_volumes: Optional list of existing volume IDs to attach.

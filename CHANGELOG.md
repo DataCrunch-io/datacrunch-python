@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Changed default datacenter location to `FIN-03`
 - Migrated to `uv`
 - Removed `datacrunch.__version__.VERSION`. Use standard [importlib.metadata.version()](https://docs.python.org/3/library/importlib.metadata.html#importlib.metadata.version) instead:
   ```python
@@ -29,6 +30,10 @@ If you are working on the library itself, do a fresh clone or upgrade your local
   # run example
   uv run python examples/simple_create_instance.py
   ```
+
+### Added
+
+- Added constants for `FIN-02` and `FIN-03`.
 
 ## [1.15.0] - 2025-10-23
 
