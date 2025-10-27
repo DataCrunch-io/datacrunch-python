@@ -52,12 +52,12 @@ class TestAuthenticationService:
         auth_data = authentication_service.authenticate()
 
         # assert
-        assert type(auth_data) == dict
+        assert isinstance(auth_data, dict)
         assert authentication_service._access_token == ACCESS_TOKEN
         assert authentication_service._refresh_token == REFRESH_TOKEN
         assert authentication_service._scope == SCOPE
         assert authentication_service._token_type == TOKEN_TYPE
-        assert authentication_service._expires_at != None
+        assert authentication_service._expires_at is not None
         assert responses.assert_call_count(endpoint, 1) is True
 
     def test_authenticate_failed(self, authentication_service, endpoint):
@@ -117,23 +117,23 @@ class TestAuthenticationService:
         auth_data = authentication_service.authenticate()  # authenticate first
 
         # assert
-        assert type(auth_data) == dict
+        assert isinstance(auth_data, dict)
         assert authentication_service._access_token == ACCESS_TOKEN
         assert authentication_service._refresh_token == REFRESH_TOKEN
         assert authentication_service._scope == SCOPE
         assert authentication_service._token_type == TOKEN_TYPE
-        assert authentication_service._expires_at != None
+        assert authentication_service._expires_at is not None
         assert responses.calls[0].request.body == f'{{"grant_type": "client_credentials", "client_id": "{CLIENT_ID}", "client_secret": "{CLIENT_SECRET}"}}'.encode(
         )
 
         auth_data2 = authentication_service.refresh()  # refresh
 
-        assert type(auth_data2) == dict
+        assert isinstance(auth_data2, dict)
         assert authentication_service._access_token == ACCESS_TOKEN2
         assert authentication_service._refresh_token == REFRESH_TOKEN2
         assert authentication_service._scope == SCOPE
         assert authentication_service._token_type == TOKEN_TYPE
-        assert authentication_service._expires_at != None
+        assert authentication_service._expires_at is not None
         assert responses.calls[1].request.body == f'{{"grant_type": "refresh_token", "refresh_token": "{REFRESH_TOKEN}"}}'.encode(
         )
         assert responses.assert_call_count(endpoint, 2) is True
@@ -196,5 +196,5 @@ class TestAuthenticationService:
         is_expired_future = authentication_service.is_expired()
 
         # assert
-        assert is_expired_current == True
-        assert is_expired_future == False
+        assert is_expired_current
+        assert not is_expired_future

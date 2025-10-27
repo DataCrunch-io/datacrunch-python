@@ -213,13 +213,13 @@ class TestContainersService:
         deployment = deployments[0]
 
         # assert
-        assert type(deployments) == list
+        assert isinstance(deployments, list)
         assert len(deployments) == 1
-        assert type(deployment) == Deployment
+        assert isinstance(deployment, Deployment)
         assert deployment.name == DEPLOYMENT_NAME
         assert len(deployment.containers) == 1
-        assert type(deployment.containers[0]) == Container
-        assert type(deployment.compute) == ComputeResource
+        assert isinstance(deployment.containers[0], Container)
+        assert isinstance(deployment.compute, ComputeResource)
         assert deployment.compute.name == COMPUTE_RESOURCE_NAME_GENERAL_COMPUTE
         assert responses.assert_call_count(deployments_endpoint, 1) is True
 
@@ -238,7 +238,7 @@ class TestContainersService:
         deployment = containers_service.get_deployment_by_name(DEPLOYMENT_NAME)
 
         # assert
-        assert type(deployment) == Deployment
+        assert isinstance(deployment, Deployment)
         assert deployment.name == DEPLOYMENT_NAME
         assert len(deployment.containers) == 1
         assert deployment.containers[0].name == CONTAINER_NAME
@@ -306,7 +306,7 @@ class TestContainersService:
         created_deployment = containers_service.create_deployment(deployment)
 
         # assert
-        assert type(created_deployment) == Deployment
+        assert isinstance(created_deployment, Deployment)
         assert created_deployment.name == DEPLOYMENT_NAME
         assert len(created_deployment.containers) == 1
         assert created_deployment.containers[0].name == CONTAINER_NAME
@@ -349,7 +349,7 @@ class TestContainersService:
             DEPLOYMENT_NAME, deployment)
 
         # assert
-        assert type(updated_deployment) == Deployment
+        assert isinstance(updated_deployment, Deployment)
         assert updated_deployment.name == DEPLOYMENT_NAME
         assert len(updated_deployment.containers) == 1
         assert updated_deployment.containers[0].name == CONTAINER_NAME
@@ -649,12 +649,12 @@ class TestContainersService:
         resources = containers_service.get_compute_resources()
 
         # assert
-        assert type(resources) == list
+        assert isinstance(resources, list)
         assert len(resources) == 2
-        assert type(resources[0]) == ComputeResource
+        assert isinstance(resources[0], ComputeResource)
         assert resources[0].name == COMPUTE_RESOURCE_NAME_GENERAL_COMPUTE
         assert resources[0].size == 1
-        assert resources[0].is_available == True
+        assert resources[0].is_available
         assert responses.assert_call_count(
             compute_resources_endpoint, 1) is True
 
@@ -672,12 +672,12 @@ class TestContainersService:
         resources = containers_service.get_compute_resources(size=4)
 
         # assert
-        assert type(resources) == list
+        assert isinstance(resources, list)
         assert len(resources) == 1
-        assert type(resources[0]) == ComputeResource
+        assert isinstance(resources[0], ComputeResource)
         assert resources[0].name == COMPUTE_RESOURCE_NAME_H100
         assert resources[0].size == 4
-        assert resources[0].is_available == True
+        assert resources[0].is_available
         assert responses.assert_call_count(
             compute_resources_endpoint, 1) is True
 
@@ -695,9 +695,9 @@ class TestContainersService:
         resources = containers_service.get_compute_resources(is_available=True)
 
         # assert
-        assert type(resources) == list
+        assert isinstance(resources, list)
         assert len(resources) == 2
-        assert all(r.is_available == True for r in resources)
+        assert all(r.is_available for r in resources)
         assert responses.assert_call_count(
             compute_resources_endpoint, 1) is True
 
@@ -716,11 +716,11 @@ class TestContainersService:
             size=1, is_available=True)
 
         # assert
-        assert type(resources) == list
+        assert isinstance(resources, list)
         assert len(resources) == 1
         assert resources[0].name == COMPUTE_RESOURCE_NAME_GENERAL_COMPUTE
         assert resources[0].size == 1
-        assert resources[0].is_available == True
+        assert resources[0].is_available
         assert responses.assert_call_count(
             compute_resources_endpoint, 1) is True
 
@@ -738,9 +738,9 @@ class TestContainersService:
         secrets = containers_service.get_secrets()
 
         # assert
-        assert type(secrets) == list
+        assert isinstance(secrets, list)
         assert len(secrets) == 1
-        assert type(secrets[0]) == Secret
+        assert isinstance(secrets[0], Secret)
         assert secrets[0].name == SECRET_NAME
         assert responses.assert_call_count(secrets_endpoint, 1) is True
 
@@ -815,9 +815,9 @@ class TestContainersService:
         credentials = containers_service.get_registry_credentials()
 
         # assert
-        assert type(credentials) == list
+        assert isinstance(credentials, list)
         assert len(credentials) == 1
-        assert type(credentials[0]) == RegistryCredential
+        assert isinstance(credentials[0], RegistryCredential)
         assert credentials[0].name == REGISTRY_CREDENTIAL_NAME
         assert responses.assert_call_count(
             registry_credentials_endpoint, 1) is True

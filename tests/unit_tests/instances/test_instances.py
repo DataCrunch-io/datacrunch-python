@@ -87,10 +87,10 @@ class TestInstancesService:
         instance = instances[0]
 
         # assert
-        assert type(instances) == list
+        assert isinstance(instances, list)
         assert len(instances) == 1
-        assert type(instance) == Instance
-        assert type(instance.ssh_key_ids) == list
+        assert isinstance(instance, Instance)
+        assert isinstance(instance.ssh_key_ids, list)
         assert instance.id == INSTANCE_ID
         assert instance.ssh_key_ids == [SSH_KEY_ID]
         assert instance.status == INSTANCE_STATUS
@@ -102,10 +102,10 @@ class TestInstancesService:
         assert instance.hostname == INSTANCE_HOSTNAME
         assert instance.ip == INSTANCE_IP
         assert instance.created_at == INSTANCE_CREATED_AT
-        assert type(instance.cpu) == dict
-        assert type(instance.gpu) == dict
-        assert type(instance.memory) == dict
-        assert type(instance.storage) == dict
+        assert isinstance(instance.cpu, dict)
+        assert isinstance(instance.gpu, dict)
+        assert isinstance(instance.memory, dict)
+        assert isinstance(instance.storage, dict)
         assert responses.assert_call_count(endpoint, 1) is True
 
     def test_get_instances_by_status_successful(self, instances_service, endpoint):
@@ -123,10 +123,10 @@ class TestInstancesService:
         instance = instances[0]
 
         # assert
-        assert type(instances) == list
+        assert isinstance(instances, list)
         assert len(instances) == 1
-        assert type(instance) == Instance
-        assert type(instance.ssh_key_ids) == list
+        assert isinstance(instance, Instance)
+        assert isinstance(instance.ssh_key_ids, list)
         assert instance.id == INSTANCE_ID
         assert instance.ssh_key_ids == [SSH_KEY_ID]
         assert instance.status == INSTANCE_STATUS
@@ -138,10 +138,10 @@ class TestInstancesService:
         assert instance.hostname == INSTANCE_HOSTNAME
         assert instance.ip == INSTANCE_IP
         assert instance.created_at == INSTANCE_CREATED_AT
-        assert type(instance.cpu) == dict
-        assert type(instance.gpu) == dict
-        assert type(instance.memory) == dict
-        assert type(instance.storage) == dict
+        assert isinstance(instance.cpu, dict)
+        assert isinstance(instance.gpu, dict)
+        assert isinstance(instance.memory, dict)
+        assert isinstance(instance.storage, dict)
         assert responses.assert_call_count(url, 1) is True
 
     def test_get_instances_by_status_failed(self, instances_service, endpoint):
@@ -177,7 +177,7 @@ class TestInstancesService:
         instance = instances_service.get_by_id(INSTANCE_ID)
 
         # assert
-        assert type(instance) == Instance
+        assert isinstance(instance, Instance)
         assert instance.id == INSTANCE_ID
         assert instance.ssh_key_ids == [SSH_KEY_ID]
         assert instance.status == INSTANCE_STATUS
@@ -189,10 +189,10 @@ class TestInstancesService:
         assert instance.hostname == INSTANCE_HOSTNAME
         assert instance.ip == INSTANCE_IP
         assert instance.created_at == INSTANCE_CREATED_AT
-        assert type(instance.cpu) == dict
-        assert type(instance.gpu) == dict
-        assert type(instance.memory) == dict
-        assert type(instance.storage) == dict
+        assert isinstance(instance.cpu, dict)
+        assert isinstance(instance.gpu, dict)
+        assert isinstance(instance.memory, dict)
+        assert isinstance(instance.storage, dict)
         assert responses.assert_call_count(url, 1) is True
 
     def test_get_instance_by_id_failed(self, instances_service, endpoint):
@@ -243,7 +243,7 @@ class TestInstancesService:
         )
 
         # assert
-        assert type(instance) == Instance
+        assert isinstance(instance, Instance)
         assert instance.id == INSTANCE_ID
         assert instance.ssh_key_ids == [SSH_KEY_ID]
         assert instance.status == INSTANCE_STATUS
@@ -256,14 +256,14 @@ class TestInstancesService:
         assert instance.ip == INSTANCE_IP
         assert instance.created_at == INSTANCE_CREATED_AT
         assert instance.os_volume_id == OS_VOLUME_ID
-        assert type(instance.cpu) == dict
-        assert type(instance.gpu) == dict
-        assert type(instance.memory) == dict
-        assert type(instance.gpu_memory) == dict
-        assert type(instance.storage) == dict
+        assert isinstance(instance.cpu, dict)
+        assert isinstance(instance.gpu, dict)
+        assert isinstance(instance.memory, dict)
+        assert isinstance(instance.gpu_memory, dict)
+        assert isinstance(instance.storage, dict)
         assert responses.assert_call_count(endpoint, 1) is True
         assert responses.assert_call_count(url, 1) is True
-        assert type(instance.__str__()) == str
+        assert isinstance(instance.__str__(), str)
 
     def test_create_spot_instance_successful(self, instances_service, endpoint):
         # arrange - add response mock
@@ -294,7 +294,7 @@ class TestInstancesService:
         )
 
         # assert
-        assert type(instance) == Instance
+        assert isinstance(instance, Instance)
         assert instance.id == INSTANCE_ID
         assert instance.ssh_key_ids == [SSH_KEY_ID]
         assert instance.status == INSTANCE_STATUS
@@ -307,12 +307,12 @@ class TestInstancesService:
         assert instance.ip == INSTANCE_IP
         assert instance.created_at == INSTANCE_CREATED_AT
         assert instance.os_volume_id == OS_VOLUME_ID
-        assert instance.is_spot == True
-        assert type(instance.cpu) == dict
-        assert type(instance.gpu) == dict
-        assert type(instance.memory) == dict
-        assert type(instance.gpu_memory) == dict
-        assert type(instance.storage) == dict
+        assert instance.is_spot
+        assert isinstance(instance.cpu, dict)
+        assert isinstance(instance.gpu, dict)
+        assert isinstance(instance.memory, dict)
+        assert isinstance(instance.gpu_memory, dict)
+        assert isinstance(instance.storage, dict)
         assert responses.assert_call_count(endpoint, 1) is True
         assert responses.assert_call_count(url, 1) is True
 
@@ -343,7 +343,7 @@ class TestInstancesService:
         )
 
         # assert
-        assert type(instance) == Instance
+        assert isinstance(instance, Instance)
         assert instance.id == INSTANCE_ID
         assert instance.ssh_key_ids == [SSH_KEY_ID]
         assert instance.status == INSTANCE_STATUS
@@ -356,11 +356,11 @@ class TestInstancesService:
         assert instance.ip == INSTANCE_IP
         assert instance.created_at == INSTANCE_CREATED_AT
         assert instance.os_volume_id == OS_VOLUME_ID
-        assert type(instance.cpu) == dict
-        assert type(instance.gpu) == dict
-        assert type(instance.memory) == dict
-        assert type(instance.gpu_memory) == dict
-        assert type(instance.storage) == dict
+        assert isinstance(instance.cpu, dict)
+        assert isinstance(instance.gpu, dict)
+        assert isinstance(instance.memory, dict)
+        assert isinstance(instance.gpu_memory, dict)
+        assert isinstance(instance.storage, dict)
         assert responses.assert_call_count(endpoint, 1) is True
         assert responses.assert_call_count(url, 1) is True
 
