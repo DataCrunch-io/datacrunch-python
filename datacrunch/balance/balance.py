@@ -1,4 +1,3 @@
-
 BALANCE_ENDPOINT = '/balance'
 
 
@@ -48,4 +47,4 @@ class BalanceService:
         :rtype: Balance
         """
         balance = self._http_client.get(BALANCE_ENDPOINT).json()
-        return Balance(balance["amount"], balance["currency"])
+        return Balance(balance['amount'], balance['currency'])

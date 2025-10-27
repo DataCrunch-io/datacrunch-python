@@ -15,12 +15,14 @@ ssh_keys = datacrunch.ssh_keys.get()
 ssh_keys_ids = list(map(lambda ssh_key: ssh_key.id, ssh_keys))
 
 # Create a new instance
-instance = datacrunch.instances.create(instance_type='1V100.6V',
-                                       image='ubuntu-22.04-cuda-12.0-docker',
-                                       location=Locations.FIN_01,
-                                       ssh_key_ids=ssh_keys_ids,
-                                       hostname='example',
-                                       description='example instance')
+instance = datacrunch.instances.create(
+    instance_type='1V100.6V',
+    image='ubuntu-22.04-cuda-12.0-docker',
+    location=Locations.FIN_01,
+    ssh_key_ids=ssh_keys_ids,
+    hostname='example',
+    description='example instance',
+)
 
 # Wait for instance to enter running state
 while instance.status != InstanceStatus.RUNNING:
@@ -30,5 +32,4 @@ while instance.status != InstanceStatus.RUNNING:
 print(instance)
 
 # Delete instance
-datacrunch.instances.action(
-    instance.id, datacrunch.constants.instance_actions.DELETE)
+datacrunch.instances.action(instance.id, datacrunch.constants.instance_actions.DELETE)

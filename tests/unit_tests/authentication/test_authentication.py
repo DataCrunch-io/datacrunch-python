@@ -9,8 +9,8 @@ from datacrunch.authentication.authentication import AuthenticationService
 INVALID_REQUEST = 'invalid_request'
 INVALID_REQUEST_MESSAGE = 'Your existence is invalid'
 
-BASE_URL = "https://api-testing.datacrunch.io/v1"
-CLIENT_ID = "0123456789xyz"
+BASE_URL = 'https://api-testing.datacrunch.io/v1'
+CLIENT_ID = '0123456789xyz'
 CLIENT_SECRET = 'zyx987654321'
 
 ACCESS_TOKEN = 'access'
@@ -24,14 +24,13 @@ REFRESH_TOKEN2 = 'refresh2'
 
 
 class TestAuthenticationService:
-
     @pytest.fixture
     def authentication_service(self):
         return AuthenticationService(CLIENT_ID, CLIENT_SECRET, BASE_URL)
 
     @pytest.fixture
     def endpoint(self, http_client):
-        return http_client._base_url + "/oauth2/token"
+        return http_client._base_url + '/oauth2/token'
 
     def test_authenticate_successful(self, authentication_service, endpoint):
         # arrange - add response mock
@@ -43,9 +42,9 @@ class TestAuthenticationService:
                 'refresh_token': REFRESH_TOKEN,
                 'scope': SCOPE,
                 'token_type': TOKEN_TYPE,
-                'expires_in': EXPIRES_IN
+                'expires_in': EXPIRES_IN,
             },
-            status=200
+            status=200,
         )
 
         # act
@@ -65,8 +64,8 @@ class TestAuthenticationService:
         responses.add(
             responses.POST,
             endpoint,
-            json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
-            status=400
+            json={'code': INVALID_REQUEST, 'message': INVALID_REQUEST_MESSAGE},
+            status=400,
         )
 
         # act
@@ -77,7 +76,9 @@ class TestAuthenticationService:
         assert excinfo.value.code == INVALID_REQUEST
         assert excinfo.value.message == INVALID_REQUEST_MESSAGE
         assert responses.assert_call_count(endpoint, 1) is True
-        assert responses.calls[0].request.body == f'{{"grant_type": "client_credentials", "client_id": "{CLIENT_ID}", "client_secret": "{CLIENT_SECRET}"}}'.encode(
+        assert (
+            responses.calls[0].request.body
+            == f'{{"grant_type": "client_credentials", "client_id": "{CLIENT_ID}", "client_secret": "{CLIENT_SECRET}"}}'.encode()
         )
 
     def test_refresh_successful(self, authentication_service, endpoint):
@@ -90,11 +91,18 @@ class TestAuthenticationService:
                 'refresh_token': REFRESH_TOKEN,
                 'scope': SCOPE,
                 'token_type': TOKEN_TYPE,
-                'expires_in': EXPIRES_IN
+                'expires_in': EXPIRES_IN,
             },
-            match=[matchers.json_params_matcher(
-                {"grant_type": "client_credentials", "client_id": CLIENT_ID, "client_secret": CLIENT_SECRET})],
-            status=200
+            match=[
+                matchers.json_params_matcher(
+                    {
+                        'grant_type': 'client_credentials',
+                        'client_id': CLIENT_ID,
+                        'client_secret': CLIENT_SECRET,
+                    }
+                )
+            ],
+            status=200,
         )
 
         # add another response for the refresh token grant
@@ -106,11 +114,14 @@ class TestAuthenticationService:
                 'refresh_token': REFRESH_TOKEN2,
                 'scope': SCOPE,
                 'token_type': TOKEN_TYPE,
-                'expires_in': EXPIRES_IN
+                'expires_in': EXPIRES_IN,
             },
-            match=[matchers.json_params_matcher(
-                {"grant_type": "refresh_token", "refresh_token": REFRESH_TOKEN})],
-            status=200
+            match=[
+                matchers.json_params_matcher(
+                    {'grant_type': 'refresh_token', 'refresh_token': REFRESH_TOKEN}
+                )
+            ],
+            status=200,
         )
 
         # act
@@ -123,7 +134,9 @@ class TestAuthenticationService:
         assert authentication_service._scope == SCOPE
         assert authentication_service._token_type == TOKEN_TYPE
         assert authentication_service._expires_at is not None
-        assert responses.calls[0].request.body == f'{{"grant_type": "client_credentials", "client_id": "{CLIENT_ID}", "client_secret": "{CLIENT_SECRET}"}}'.encode(
+        assert (
+            responses.calls[0].request.body
+            == f'{{"grant_type": "client_credentials", "client_id": "{CLIENT_ID}", "client_secret": "{CLIENT_SECRET}"}}'.encode()
         )
 
         auth_data2 = authentication_service.refresh()  # refresh
@@ -134,7 +147,9 @@ class TestAuthenticationService:
         assert authentication_service._scope == SCOPE
         assert authentication_service._token_type == TOKEN_TYPE
         assert authentication_service._expires_at is not None
-        assert responses.calls[1].request.body == f'{{"grant_type": "refresh_token", "refresh_token": "{REFRESH_TOKEN}"}}'.encode(
+        assert (
+            responses.calls[1].request.body
+            == f'{{"grant_type": "refresh_token", "refresh_token": "{REFRESH_TOKEN}"}}'.encode()
         )
         assert responses.assert_call_count(endpoint, 2) is True
 
@@ -149,21 +164,31 @@ class TestAuthenticationService:
                 'refresh_token': REFRESH_TOKEN,
                 'scope': SCOPE,
                 'token_type': TOKEN_TYPE,
-                'expires_in': EXPIRES_IN
+                'expires_in': EXPIRES_IN,
             },
-            match=[matchers.json_params_matcher(
-                {"grant_type": "client_credentials", "client_id": CLIENT_ID, "client_secret": CLIENT_SECRET})],
-            status=200
+            match=[
+                matchers.json_params_matcher(
+                    {
+                        'grant_type': 'client_credentials',
+                        'client_id': CLIENT_ID,
+                        'client_secret': CLIENT_SECRET,
+                    }
+                )
+            ],
+            status=200,
         )
 
         # second response for the refresh - failed
         responses.add(
             responses.POST,
             endpoint,
-            json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
-            match=[matchers.json_params_matcher(
-                {"grant_type": "refresh_token", "refresh_token": REFRESH_TOKEN})],
-            status=500
+            json={'code': INVALID_REQUEST, 'message': INVALID_REQUEST_MESSAGE},
+            match=[
+                matchers.json_params_matcher(
+                    {'grant_type': 'refresh_token', 'refresh_token': REFRESH_TOKEN}
+                )
+            ],
+            status=500,
         )
 
         # act
@@ -176,9 +201,13 @@ class TestAuthenticationService:
         assert excinfo.value.code == INVALID_REQUEST
         assert excinfo.value.message == INVALID_REQUEST_MESSAGE
         assert responses.assert_call_count(endpoint, 2) is True
-        assert responses.calls[0].request.body == f'{{"grant_type": "client_credentials", "client_id": "{CLIENT_ID}", "client_secret": "{CLIENT_SECRET}"}}'.encode(
+        assert (
+            responses.calls[0].request.body
+            == f'{{"grant_type": "client_credentials", "client_id": "{CLIENT_ID}", "client_secret": "{CLIENT_SECRET}"}}'.encode()
         )
-        assert responses.calls[1].request.body == f'{{"grant_type": "refresh_token", "refresh_token": "{REFRESH_TOKEN}"}}'.encode(
+        assert (
+            responses.calls[1].request.body
+            == f'{{"grant_type": "refresh_token", "refresh_token": "{REFRESH_TOKEN}"}}'.encode()
         )
 
     def test_is_expired(self, authentication_service, endpoint):

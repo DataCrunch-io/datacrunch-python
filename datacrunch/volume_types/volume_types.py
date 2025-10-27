@@ -4,10 +4,7 @@ VOLUME_TYPES_ENDPOINT = '/volume-types'
 
 
 class VolumeType:
-
-    def __init__(self,
-                 type: str,
-                 price_per_month_per_gb: float) -> None:
+    def __init__(self, type: str, price_per_month_per_gb: float) -> None:
         """Initialize a volume type object
 
         :param type: volume type name
@@ -58,9 +55,14 @@ class VolumeTypesService:
         :rtype: List[VolumesType]
         """
         volume_types = self._http_client.get(VOLUME_TYPES_ENDPOINT).json()
-        volume_type_objects = list(map(lambda volume_type: VolumeType(
-            type=volume_type['type'],
-            price_per_month_per_gb=volume_type['price']['price_per_month_per_gb'],
-        ), volume_types))
+        volume_type_objects = list(
+            map(
+                lambda volume_type: VolumeType(
+                    type=volume_type['type'],
+                    price_per_month_per_gb=volume_type['price']['price_per_month_per_gb'],
+                ),
+                volume_types,
+            )
+        )
 
         return volume_type_objects

@@ -3,28 +3,30 @@ import pytest
 from datacrunch.datacrunch import DataCrunchClient
 from datacrunch.constants import Locations
 
-IN_GITHUB_ACTIONS = os.getenv("GITHUB_ACTIONS") == "true"
+IN_GITHUB_ACTIONS = os.getenv('GITHUB_ACTIONS') == 'true'
 
 location_codes = [Locations.FIN_01, Locations.ICE_01]
 
 
 @pytest.mark.skipif(IN_GITHUB_ACTIONS, reason="Test doesn't work in Github Actions.")
 @pytest.mark.withoutresponses
-class TestLocations():
-
-    def test_specific_instance_availability_in_specific_location(self, datacrunch_client: DataCrunchClient):
+class TestLocations:
+    def test_specific_instance_availability_in_specific_location(
+        self, datacrunch_client: DataCrunchClient
+    ):
         # call the instance availability endpoint, for a specific location
         availability = datacrunch_client.instances.is_available(
-            'CPU.4V', location_code=Locations.FIN_01)
+            'CPU.4V', location_code=Locations.FIN_01
+        )
 
         assert availability is not None
         assert isinstance(availability, bool)
 
     def test_all_availabilies_in_specific_location(self, datacrunch_client: DataCrunchClient):
-
         # call the instance availability endpoint, for a specific location
         availabilities = datacrunch_client.instances.get_availabilities(
-            location_code=Locations.FIN_01)
+            location_code=Locations.FIN_01
+        )
 
         assert availabilities is not None
         assert isinstance(availabilities, list)

@@ -4,18 +4,19 @@ INSTANCE_TYPES_ENDPOINT = '/instance-types'
 
 
 class InstanceType:
-
-    def __init__(self,
-                 id: str,
-                 instance_type: str,
-                 price_per_hour: float,
-                 spot_price_per_hour: float,
-                 description: str,
-                 cpu: dict,
-                 gpu: dict,
-                 memory: dict,
-                 gpu_memory: dict,
-                 storage: dict) -> None:
+    def __init__(
+        self,
+        id: str,
+        instance_type: str,
+        price_per_hour: float,
+        spot_price_per_hour: float,
+        description: str,
+        cpu: dict,
+        gpu: dict,
+        memory: dict,
+        gpu_memory: dict,
+        storage: dict,
+    ) -> None:
         """Initialize an instance type object
 
         :param id: instance type id
@@ -146,17 +147,18 @@ class InstanceType:
         :return: instance type string representation
         :rtype: str
         """
-        return (f'id: {self._id}\n'
-                f'instance type: {self._instance_type}\n'
-                f'price_per_hour: ${self._price_per_hour}\n'
-                f'spot_price_per_hour: ${self._spot_price_per_hour}\n'
-                f'description: {self._description}\n'
-                f'cpu: {self._cpu}\n'
-                f'gpu: {self._gpu}\n'
-                f'memory :{self._memory}\n'
-                f'gpu_memory :{self._gpu_memory}\n'
-                f'storage :{self._storage}\n'
-                )
+        return (
+            f'id: {self._id}\n'
+            f'instance type: {self._instance_type}\n'
+            f'price_per_hour: ${self._price_per_hour}\n'
+            f'spot_price_per_hour: ${self._spot_price_per_hour}\n'
+            f'description: {self._description}\n'
+            f'cpu: {self._cpu}\n'
+            f'gpu: {self._gpu}\n'
+            f'memory :{self._memory}\n'
+            f'gpu_memory :{self._gpu_memory}\n'
+            f'storage :{self._storage}\n'
+        )
 
 
 class InstanceTypesService:
@@ -172,17 +174,22 @@ class InstanceTypesService:
         :rtype: List[InstanceType]
         """
         instance_types = self._http_client.get(INSTANCE_TYPES_ENDPOINT).json()
-        instance_type_objects = list(map(lambda instance_type: InstanceType(
-            id=instance_type['id'],
-            instance_type=instance_type['instance_type'],
-            price_per_hour=instance_type['price_per_hour'],
-            spot_price_per_hour=instance_type['spot_price'],
-            description=instance_type['description'],
-            cpu=instance_type['cpu'],
-            gpu=instance_type['gpu'],
-            memory=instance_type['memory'],
-            gpu_memory=instance_type['gpu_memory'],
-            storage=instance_type['storage']
-        ), instance_types))
+        instance_type_objects = list(
+            map(
+                lambda instance_type: InstanceType(
+                    id=instance_type['id'],
+                    instance_type=instance_type['instance_type'],
+                    price_per_hour=instance_type['price_per_hour'],
+                    spot_price_per_hour=instance_type['spot_price'],
+                    description=instance_type['description'],
+                    cpu=instance_type['cpu'],
+                    gpu=instance_type['gpu'],
+                    memory=instance_type['memory'],
+                    gpu_memory=instance_type['gpu_memory'],
+                    storage=instance_type['storage'],
+                ),
+                instance_types,
+            )
+        )
 
         return instance_type_objects

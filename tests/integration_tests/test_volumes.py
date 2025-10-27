@@ -4,7 +4,7 @@ import pytest
 from datacrunch.datacrunch import DataCrunchClient
 from datacrunch.constants import Locations, VolumeTypes, VolumeStatus
 
-IN_GITHUB_ACTIONS = os.getenv("GITHUB_ACTIONS") == "true"
+IN_GITHUB_ACTIONS = os.getenv('GITHUB_ACTIONS') == 'true'
 
 
 NVMe = VolumeTypes.NVMe
@@ -12,12 +12,10 @@ NVMe = VolumeTypes.NVMe
 
 @pytest.mark.skipif(IN_GITHUB_ACTIONS, reason="Test doesn't work in Github Actions.")
 @pytest.mark.withoutresponses
-class TestVolumes():
-
+class TestVolumes:
     def test_get_volumes_from_trash(self, datacrunch_client: DataCrunchClient):
         # create new volume
-        volume = datacrunch_client.volumes.create(
-            type=NVMe, name="test_volume", size=100)
+        volume = datacrunch_client.volumes.create(type=NVMe, name='test_volume', size=100)
 
         # delete volume
         datacrunch_client.volumes.delete(volume.id)
@@ -33,8 +31,7 @@ class TestVolumes():
 
     def test_permanently_delete_detached_volumes(seld, datacrunch_client):
         # create new volume
-        volume = datacrunch_client.volumes.create(
-            type=NVMe, name="test_volume", size=100)
+        volume = datacrunch_client.volumes.create(type=NVMe, name='test_volume', size=100)
 
         # permanently delete the detached volume
         datacrunch_client.volumes.delete(volume.id, is_permanent=True)
@@ -56,8 +53,7 @@ class TestVolumes():
 
     def test_permanently_delete_a_deleted_volume_from_trash(self, datacrunch_client):
         # create new volume
-        volume = datacrunch_client.volumes.create(
-            type=NVMe, name="test_volume", size=100)
+        volume = datacrunch_client.volumes.create(type=NVMe, name='test_volume', size=100)
 
         # delete volume
         datacrunch_client.volumes.delete(volume.id)
@@ -83,7 +79,8 @@ class TestVolumes():
     def test_create_volume(self, datacrunch_client):
         # create new volume
         volume = datacrunch_client.volumes.create(
-            type=NVMe, name="test_volume", size=100, location=Locations.FIN_01)
+            type=NVMe, name='test_volume', size=100, location=Locations.FIN_01
+        )
 
         # assert volume is created
         assert volume.id is not None

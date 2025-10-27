@@ -13,7 +13,10 @@ DATACRUNCH_INFERENCE_KEY = os.environ.get('DATACRUNCH_INFERENCE_KEY')
 
 # DataCrunch client instance
 datacrunch = DataCrunchClient(
-    DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET, inference_key=DATACRUNCH_INFERENCE_KEY)
+    DATACRUNCH_CLIENT_ID,
+    DATACRUNCH_CLIENT_SECRET,
+    inference_key=DATACRUNCH_INFERENCE_KEY,
+)
 
 # Get the deployment
 deployment = datacrunch.containers.get_deployment_by_name(DEPLOYMENT_NAME)
@@ -21,16 +24,14 @@ deployment = datacrunch.containers.get_deployment_by_name(DEPLOYMENT_NAME)
 # Make an asynchronous request to the endpoint.
 # This example demonstrates calling a SGLang deployment which serves LLMs using an OpenAI-compatible API format
 data = {
-    "model": "deepseek-ai/deepseek-llm-7b-chat",
-    "prompt": "Is consciousness fundamentally computational, or is there something more to subjective experience that cannot be reduced to information processing?",
-    "max_tokens": 128,
-    "temperature": 0.7,
-    "top_p": 0.9
+    'model': 'deepseek-ai/deepseek-llm-7b-chat',
+    'prompt': 'Is consciousness fundamentally computational, or is there something more to subjective experience that cannot be reduced to information processing?',
+    'max_tokens': 128,
+    'temperature': 0.7,
+    'top_p': 0.9,
 }
 
-header = {
-    "Content-Type": "application/json"
-}
+header = {'Content-Type': 'application/json'}
 
 response = deployment.run(
     data=data,

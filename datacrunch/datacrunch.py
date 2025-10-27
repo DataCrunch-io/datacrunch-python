@@ -17,7 +17,13 @@ from datacrunch._version import __version__
 class DataCrunchClient:
     """Client for interacting with DataCrunch's public API"""
 
-    def __init__(self, client_id: str, client_secret: str, base_url: str = "https://api.datacrunch.io/v1", inference_key: str = None) -> None:
+    def __init__(
+        self,
+        client_id: str,
+        client_secret: str,
+        base_url: str = 'https://api.datacrunch.io/v1',
+        inference_key: str = None,
+    ) -> None:
         """The DataCrunch client
 
         :param client_id: client id
@@ -32,8 +38,7 @@ class DataCrunchClient:
 
         # Validate that client_id and client_secret are not empty
         if not client_id or not client_secret:
-            raise ValueError(
-                "client_id and client_secret must be provided")
+            raise ValueError('client_id and client_secret must be provided')
 
         # Constants
         self.constants: Constants = Constants(base_url, __version__)
@@ -41,9 +46,9 @@ class DataCrunchClient:
 
         # Services
         self._authentication: AuthenticationService = AuthenticationService(
-            client_id, client_secret, self.constants.base_url)
-        self._http_client: HTTPClient = HTTPClient(
-            self._authentication, self.constants.base_url)
+            client_id, client_secret, self.constants.base_url
+        )
+        self._http_client: HTTPClient = HTTPClient(self._authentication, self.constants.base_url)
 
         self.balance: BalanceService = BalanceService(self._http_client)
         """Balance service. Get client balance"""
@@ -51,8 +56,7 @@ class DataCrunchClient:
         self.images: ImagesService = ImagesService(self._http_client)
         """Image service"""
 
-        self.instance_types: InstanceTypesService = InstanceTypesService(
-            self._http_client)
+        self.instance_types: InstanceTypesService = InstanceTypesService(self._http_client)
         """Instance type service"""
 
         self.instances: InstancesService = InstancesService(self._http_client)
@@ -61,21 +65,17 @@ class DataCrunchClient:
         self.ssh_keys: SSHKeysService = SSHKeysService(self._http_client)
         """SSH keys service"""
 
-        self.startup_scripts: StartupScriptsService = StartupScriptsService(
-            self._http_client)
+        self.startup_scripts: StartupScriptsService = StartupScriptsService(self._http_client)
         """Startup Scripts service"""
 
-        self.volume_types: VolumeTypesService = VolumeTypesService(
-            self._http_client)
+        self.volume_types: VolumeTypesService = VolumeTypesService(self._http_client)
         """Volume type service"""
 
         self.volumes: VolumesService = VolumesService(self._http_client)
         """Volume service. Create, attach, detach, get, rename, delete volumes"""
 
-        self.locations: LocationsService = LocationsService(
-            self._http_client)
+        self.locations: LocationsService = LocationsService(self._http_client)
         """Locations service. Get locations"""
 
-        self.containers: ContainersService = ContainersService(
-            self._http_client, inference_key)
+        self.containers: ContainersService = ContainersService(self._http_client, inference_key)
         """Containers service. Deploy, manage, and monitor container deployments"""

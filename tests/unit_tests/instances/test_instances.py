@@ -12,56 +12,41 @@ INSTANCE_ID = 'deadc0de-a5d2-4972-ae4e-d429115d055b'
 SSH_KEY_ID = '12345dc1-a5d2-4972-ae4e-d429115d055b'
 OS_VOLUME_ID = '46fc0247-8f65-4d8a-ad73-852a8b3dc1d3'
 
-INSTANCE_TYPE = "1V100.6V"
-INSTANCE_IMAGE = "ubuntu-24.04-cuda-12.8-open-docker"
+INSTANCE_TYPE = '1V100.6V'
+INSTANCE_IMAGE = 'ubuntu-24.04-cuda-12.8-open-docker'
 INSTANCE_HOSTNAME = "I'll be your host for today"
-INSTANCE_DESCRIPTION = "hope you enjoy your GPU"
+INSTANCE_DESCRIPTION = 'hope you enjoy your GPU'
 INSTANCE_STATUS = 'running'
 INSTANCE_PRICE_PER_HOUR = 0.60
 INSTANCE_LOCATION = Locations.FIN_01
 INSTANCE_IP = '1.2.3.4'
-INSTANCE_CREATED_AT = "whatchalookingatboy?"
-INSTANCE_OS_VOLUME = {"name": "os volume", "size": 50}
+INSTANCE_CREATED_AT = 'whatchalookingatboy?'
+INSTANCE_OS_VOLUME = {'name': 'os volume', 'size': 50}
 
 PAYLOAD = [
     {
-        "created_at": INSTANCE_CREATED_AT,
-        "status": INSTANCE_STATUS,
-        "ip": INSTANCE_IP,
-        "cpu": {
-            "description": "super-duper-cpu",
-            "number_of_cores": 6
-        },
-        "gpu": {
-            "description": "super-duper-gpu",
-            "number_of_gpus": 1
-        },
-        "memory": {
-            "description": "super-duper-memory",
-            "size_in_gigabytes": 32
-        },
-        "gpu_memory": {
-            "description": "super-duper-memory",
-            "size_in_gigabytes": 20
-        },
-        "storage": {
-            "description": "super-duper-storage",
-            "size_in_gigabytes": 320
-        },
-        "hostname": INSTANCE_HOSTNAME,
-        "description": INSTANCE_DESCRIPTION,
-        "location": INSTANCE_LOCATION,
-        "price_per_hour": INSTANCE_PRICE_PER_HOUR,
-        "instance_type": INSTANCE_TYPE,
-        "image": INSTANCE_IMAGE,
-        "id": INSTANCE_ID,
-        "ssh_key_ids": [SSH_KEY_ID],
-        "os_volume_id": OS_VOLUME_ID
+        'created_at': INSTANCE_CREATED_AT,
+        'status': INSTANCE_STATUS,
+        'ip': INSTANCE_IP,
+        'cpu': {'description': 'super-duper-cpu', 'number_of_cores': 6},
+        'gpu': {'description': 'super-duper-gpu', 'number_of_gpus': 1},
+        'memory': {'description': 'super-duper-memory', 'size_in_gigabytes': 32},
+        'gpu_memory': {'description': 'super-duper-memory', 'size_in_gigabytes': 20},
+        'storage': {'description': 'super-duper-storage', 'size_in_gigabytes': 320},
+        'hostname': INSTANCE_HOSTNAME,
+        'description': INSTANCE_DESCRIPTION,
+        'location': INSTANCE_LOCATION,
+        'price_per_hour': INSTANCE_PRICE_PER_HOUR,
+        'instance_type': INSTANCE_TYPE,
+        'image': INSTANCE_IMAGE,
+        'id': INSTANCE_ID,
+        'ssh_key_ids': [SSH_KEY_ID],
+        'os_volume_id': OS_VOLUME_ID,
     }
 ]
 
 PAYLOAD_SPOT = PAYLOAD
-PAYLOAD_SPOT[0]["is_spot"] = True
+PAYLOAD_SPOT[0]['is_spot'] = True
 
 
 class TestInstancesService:
@@ -71,16 +56,11 @@ class TestInstancesService:
 
     @pytest.fixture
     def endpoint(self, http_client):
-        return http_client._base_url + "/instances"
+        return http_client._base_url + '/instances'
 
     def test_get_instances(self, instances_service, endpoint):
         # arrange - add response mock
-        responses.add(
-            responses.GET,
-            endpoint,
-            json=PAYLOAD,
-            status=200
-        )
+        responses.add(responses.GET, endpoint, json=PAYLOAD, status=200)
 
         # act
         instances = instances_service.get()
@@ -110,13 +90,8 @@ class TestInstancesService:
 
     def test_get_instances_by_status_successful(self, instances_service, endpoint):
         # arrange - add response mock
-        url = endpoint + "?status=running"
-        responses.add(
-            responses.GET,
-            url,
-            json=PAYLOAD,
-            status=200
-        )
+        url = endpoint + '?status=running'
+        responses.add(responses.GET, url, json=PAYLOAD, status=200)
 
         # act
         instances = instances_service.get(status='running')
@@ -146,12 +121,12 @@ class TestInstancesService:
 
     def test_get_instances_by_status_failed(self, instances_service, endpoint):
         # arrange - add response mock
-        url = endpoint + "?status=blabbering"
+        url = endpoint + '?status=blabbering'
         responses.add(
             responses.GET,
             url,
-            json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
-            status=400
+            json={'code': INVALID_REQUEST, 'message': INVALID_REQUEST_MESSAGE},
+            status=400,
         )
 
         # act
@@ -166,12 +141,7 @@ class TestInstancesService:
     def test_get_instance_by_id_successful(self, instances_service, endpoint):
         # arrange - add response mock
         url = endpoint + '/' + INSTANCE_ID
-        responses.add(
-            responses.GET,
-            url,
-            json=PAYLOAD[0],
-            status=200
-        )
+        responses.add(responses.GET, url, json=PAYLOAD[0], status=200)
 
         # act
         instance = instances_service.get_by_id(INSTANCE_ID)
@@ -201,8 +171,8 @@ class TestInstancesService:
         responses.add(
             responses.GET,
             url,
-            json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
-            status=400
+            json={'code': INVALID_REQUEST, 'message': INVALID_REQUEST_MESSAGE},
+            status=400,
         )
 
         # act
@@ -217,20 +187,10 @@ class TestInstancesService:
     def test_create_instance_successful(self, instances_service, endpoint):
         # arrange - add response mock
         # create instance
-        responses.add(
-            responses.POST,
-            endpoint,
-            body=INSTANCE_ID,
-            status=200
-        )
+        responses.add(responses.POST, endpoint, body=INSTANCE_ID, status=200)
         # get instance by id
         url = endpoint + '/' + INSTANCE_ID
-        responses.add(
-            responses.GET,
-            url,
-            json=PAYLOAD[0],
-            status=200
-        )
+        responses.add(responses.GET, url, json=PAYLOAD[0], status=200)
 
         # act
         instance = instances_service.create(
@@ -239,7 +199,7 @@ class TestInstancesService:
             ssh_key_ids=[SSH_KEY_ID],
             hostname=INSTANCE_HOSTNAME,
             description=INSTANCE_DESCRIPTION,
-            os_volume=INSTANCE_OS_VOLUME
+            os_volume=INSTANCE_OS_VOLUME,
         )
 
         # assert
@@ -268,20 +228,10 @@ class TestInstancesService:
     def test_create_spot_instance_successful(self, instances_service, endpoint):
         # arrange - add response mock
         # add response mock for the create instance endpoint
-        responses.add(
-            responses.POST,
-            endpoint,
-            body=INSTANCE_ID,
-            status=200
-        )
+        responses.add(responses.POST, endpoint, body=INSTANCE_ID, status=200)
         # add response mock for the get instance by id endpoint
         url = endpoint + '/' + INSTANCE_ID
-        responses.add(
-            responses.GET,
-            url,
-            json=PAYLOAD_SPOT[0],
-            status=200
-        )
+        responses.add(responses.GET, url, json=PAYLOAD_SPOT[0], status=200)
 
         # act
         instance = instances_service.create(
@@ -290,7 +240,7 @@ class TestInstancesService:
             ssh_key_ids=[SSH_KEY_ID],
             hostname=INSTANCE_HOSTNAME,
             description=INSTANCE_DESCRIPTION,
-            os_volume=INSTANCE_OS_VOLUME
+            os_volume=INSTANCE_OS_VOLUME,
         )
 
         # assert
@@ -319,20 +269,10 @@ class TestInstancesService:
     def test_create_instance_attached_os_volume_successful(self, instances_service, endpoint):
         # arrange - add response mock
         # create instance
-        responses.add(
-            responses.POST,
-            endpoint,
-            body=INSTANCE_ID,
-            status=200
-        )
+        responses.add(responses.POST, endpoint, body=INSTANCE_ID, status=200)
         # get instance by id
         url = endpoint + '/' + INSTANCE_ID
-        responses.add(
-            responses.GET,
-            url,
-            json=PAYLOAD[0],
-            status=200
-        )
+        responses.add(responses.GET, url, json=PAYLOAD[0], status=200)
 
         # act
         instance = instances_service.create(
@@ -369,8 +309,8 @@ class TestInstancesService:
         responses.add(
             responses.POST,
             endpoint,
-            json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
-            status=400
+            json={'code': INVALID_REQUEST, 'message': INVALID_REQUEST_MESSAGE},
+            status=400,
         )
 
         # act
@@ -391,15 +331,10 @@ class TestInstancesService:
     def test_action_successful(self, instances_service, endpoint):
         # arrange - add response mock
         url = endpoint
-        responses.add(
-            responses.PUT,
-            url,
-            status=202
-        )
+        responses.add(responses.PUT, url, status=202)
 
         # act
-        result = instances_service.action(
-            id_list=[INSTANCE_ID], action=Actions.SHUTDOWN)
+        result = instances_service.action(id_list=[INSTANCE_ID], action=Actions.SHUTDOWN)
 
         # assert
         assert result is None
@@ -411,14 +346,13 @@ class TestInstancesService:
         responses.add(
             responses.PUT,
             url,
-            json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
-            status=400
+            json={'code': INVALID_REQUEST, 'message': INVALID_REQUEST_MESSAGE},
+            status=400,
         )
 
         # act
         with pytest.raises(APIException) as excinfo:
-            instances_service.action(
-                id_list=[INSTANCE_ID], action="fluxturcate")
+            instances_service.action(id_list=[INSTANCE_ID], action='fluxturcate')
 
         # assert
         assert excinfo.value.code == INVALID_REQUEST
@@ -427,14 +361,13 @@ class TestInstancesService:
 
     def test_is_available_successful(self, instances_service):
         # arrange - add response mock
-        url = instances_service._http_client._base_url + \
-            '/instance-availability/' + INSTANCE_TYPE + "?isSpot=false"
-        responses.add(
-            responses.GET,
-            url,
-            json=True,
-            status=200
+        url = (
+            instances_service._http_client._base_url
+            + '/instance-availability/'
+            + INSTANCE_TYPE
+            + '?isSpot=false'
         )
+        responses.add(responses.GET, url, json=True, status=200)
 
         # act
         is_available = instances_service.is_available(INSTANCE_TYPE)
@@ -445,18 +378,16 @@ class TestInstancesService:
 
     def test_is_spot_available_successful(self, instances_service):
         # arrange - add response mock
-        url = instances_service._http_client._base_url + \
-            '/instance-availability/' + INSTANCE_TYPE + '?isSpot=true'
-        responses.add(
-            responses.GET,
-            url,
-            json=True,
-            status=200
+        url = (
+            instances_service._http_client._base_url
+            + '/instance-availability/'
+            + INSTANCE_TYPE
+            + '?isSpot=true'
         )
+        responses.add(responses.GET, url, json=True, status=200)
 
         # act
-        is_available = instances_service.is_available(
-            INSTANCE_TYPE, is_spot=True)
+        is_available = instances_service.is_available(INSTANCE_TYPE, is_spot=True)
 
         # assert
         assert is_available is True
@@ -464,13 +395,14 @@ class TestInstancesService:
 
     def test_is_available_failed(self, instances_service):
         # arrange - add response mock
-        url = instances_service._http_client._base_url + \
-            '/instance-availability/x' + "?isSpot=false"
+        url = (
+            instances_service._http_client._base_url + '/instance-availability/x' + '?isSpot=false'
+        )
         responses.add(
             responses.GET,
             url,
-            json={"code": INVALID_REQUEST, "message": INVALID_REQUEST_MESSAGE},
-            status=400
+            json={'code': INVALID_REQUEST, 'message': INVALID_REQUEST_MESSAGE},
+            status=400,
         )
 
         # act

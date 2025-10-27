@@ -76,12 +76,18 @@ class ImagesService:
         self._http_client = http_client
 
     def get(self) -> List[Image]:
-        """Get the available instance images 
+        """Get the available instance images
 
         :return: list of images objects
         :rtype: List[Image]
         """
         images = self._http_client.get(IMAGES_ENDPOINT).json()
-        image_objects = list(map(lambda image: Image(
-            image['id'], image['name'], image['image_type'], image['details']), images))
+        image_objects = list(
+            map(
+                lambda image: Image(
+                    image['id'], image['name'], image['image_type'], image['details']
+                ),
+                images,
+            )
+        )
         return image_objects

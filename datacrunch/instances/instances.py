@@ -90,9 +90,11 @@ class InstancesService:
         Returns:
             List of instance objects matching the criteria.
         """
-        instances_dict = self._http_client.get(
-            INSTANCES_ENDPOINT, params={'status': status}).json()
-        return [Instance.from_dict(instance_dict, infer_missing=True) for instance_dict in instances_dict]
+        instances_dict = self._http_client.get(INSTANCES_ENDPOINT, params={'status': status}).json()
+        return [
+            Instance.from_dict(instance_dict, infer_missing=True)
+            for instance_dict in instances_dict
+        ]
 
     def get_by_id(self, id: str) -> Instance:
         """Retrieves a specific instance by its ID.
@@ -106,30 +108,31 @@ class InstancesService:
         Raises:
             HTTPError: If the instance is not found or other API error occurs.
         """
-        instance_dict = self._http_client.get(
-            INSTANCES_ENDPOINT + f'/{id}').json()
+        instance_dict = self._http_client.get(INSTANCES_ENDPOINT + f'/{id}').json()
         return Instance.from_dict(instance_dict, infer_missing=True)
 
-    def create(self,
-               instance_type: str,
-               image: str,
-               hostname: str,
-               description: str,
-               ssh_key_ids: list = [],
-               location: str = Locations.FIN_01,
-               startup_script_id: Optional[str] = None,
-               volumes: Optional[List[Dict]] = None,
-               existing_volumes: Optional[List[str]] = None,
-               os_volume: Optional[Dict] = None,
-               is_spot: bool = False,
-               contract: Optional[Contract] = None,
-               pricing: Optional[Pricing] = None,
-               coupon: Optional[str] = None,
-               *,
-               max_wait_time: float = 180,
-               initial_interval: float = 0.5,
-               max_interval: float = 5,
-               backoff_coefficient: float = 2.0) -> Instance:
+    def create(
+        self,
+        instance_type: str,
+        image: str,
+        hostname: str,
+        description: str,
+        ssh_key_ids: list = [],
+        location: str = Locations.FIN_01,
+        startup_script_id: Optional[str] = None,
+        volumes: Optional[List[Dict]] = None,
+        existing_volumes: Optional[List[str]] = None,
+        os_volume: Optional[Dict] = None,
+        is_spot: bool = False,
+        contract: Optional[Contract] = None,
+        pricing: Optional[Pricing] = None,
+        coupon: Optional[str] = None,
+        *,
+        max_wait_time: float = 180,
+        initial_interval: float = 0.5,
+        max_interval: float = 5,
+        backoff_coefficient: float = 2.0,
+    ) -> Instance:
         """Creates and deploys a new cloud instance.
 
         Args:
@@ -159,18 +162,18 @@ class InstancesService:
             HTTPError: If instance creation fails or other API error occurs.
         """
         payload = {
-            "instance_type": instance_type,
-            "image": image,
-            "ssh_key_ids": ssh_key_ids,
-            "startup_script_id": startup_script_id,
-            "hostname": hostname,
-            "description": description,
-            "location_code": location,
-            "os_volume": os_volume,
-            "volumes": volumes,
-            "existing_volumes": existing_volumes,
-            "is_spot": is_spot,
-            "coupon": coupon,
+            'instance_type': instance_type,
+            'image': image,
+            'ssh_key_ids': ssh_key_ids,
+            'startup_script_id': startup_script_id,
+            'hostname': hostname,
+            'description': description,
+            'location_code': location,
+            'os_volume': os_volume,
+            'volumes': volumes,
+            'existing_volumes': existing_volumes,
+            'is_spot': is_spot,
+            'coupon': coupon,
         }
         if contract:
             payload['contract'] = contract
@@ -188,12 +191,18 @@ class InstancesService:
             now = time.monotonic()
             if now >= deadline:
                 raise TimeoutError(
-                    f"Instance {id} did not enter provisioning state within {max_wait_time:.1f} seconds")
+                    f'Instance {id} did not enter provisioning state within {max_wait_time:.1f} seconds'
+                )
 
-            interval = min(initial_interval * backoff_coefficient ** i, max_interval, deadline - now)
+            interval = min(initial_interval * backoff_coefficient**i, max_interval, deadline - now)
             time.sleep(interval)
 
-    def action(self, id_list: Union[List[str], str], action: str, volume_ids: Optional[List[str]] = None) -> None:
+    def action(
+        self,
+        id_list: Union[List[str], str],
+        action: str,
+        volume_ids: Optional[List[str]] = None,
+    ) -> None:
         """Performs an action on one or more instances.
 
         Args:
@@ -207,16 +216,17 @@ class InstancesService:
         if type(id_list) is str:
             id_list = [id_list]
 
-        payload = {
-            "id": id_list,
-            "action": action,
-            "volume_ids": volume_ids
-        }
+        payload = {'id': id_list, 'action': action, 'volume_ids': volume_ids}
 
         self._http_client.put(INSTANCES_ENDPOINT, json=payload)
         return
 
-    def is_available(self, instance_type: str, is_spot: bool = False, location_code: Optional[str] = None) -> bool:
+    def is_available(
+        self,
+        instance_type: str,
+        is_spot: bool = False,
+        location_code: Optional[str] = None,
+    ) -> bool:
         """Checks if a specific instance type is available for deployment.
 
         Args:
@@ -232,7 +242,9 @@ class InstancesService:
         url = f'/instance-availability/{instance_type}'
         return self._http_client.get(url, query_params).json()
 
-    def get_availabilities(self, is_spot: Optional[bool] = None, location_code: Optional[str] = None) -> List[Dict]:
+    def get_availabilities(
+        self, is_spot: Optional[bool] = None, location_code: Optional[str] = None
+    ) -> List[Dict]:
         """Retrieves a list of available instance types across locations.
 
         Args:

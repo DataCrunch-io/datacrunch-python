@@ -10,7 +10,6 @@ class LocationsService:
         self._http_client = http_client
 
     def get(self) -> List[dict]:
-        """Get all locations
-        """
+        """Get all locations"""
         locations = self._http_client.get(LOCATIONS_ENDPOINT).json()
         return locations

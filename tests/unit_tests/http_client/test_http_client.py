@@ -13,7 +13,7 @@ UNAUTHORIZED_REQUEST_MESSAGE = 'Access token is missing or invalid'
 class TestHttpClient:
     def test_add_base_url(self, http_client):
         # arrange
-        path = "/test"
+        path = '/test'
         base = http_client._base_url
 
         # act
@@ -83,8 +83,9 @@ class TestHttpClient:
         responses.add(
             method=responses.GET,
             url=(http_client._base_url + '/test'),
-            status=200, body='{}',
-            content_type='application/json'
+            status=200,
+            body='{}',
+            content_type='application/json',
         )
 
         # act
@@ -103,8 +104,9 @@ class TestHttpClient:
         responses.add(
             method=responses.POST,
             url=(http_client._base_url + '/test'),
-            status=200, body='{}',
-            content_type='application/json'
+            status=200,
+            body='{}',
+            content_type='application/json',
         )
 
         # act
@@ -124,7 +126,7 @@ class TestHttpClient:
             method=responses.DELETE,
             url=(http_client._base_url + '/test'),
             status=200,
-            content_type='application/json'
+            content_type='application/json',
         )
 
         # act
@@ -142,8 +144,11 @@ class TestHttpClient:
             method=responses.GET,
             url=(http_client._base_url + '/test'),
             status=401,
-            json={'code': UNAUTHORIZED_REQUEST, 'message': UNAUTHORIZED_REQUEST_MESSAGE},
-            content_type='application/json'
+            json={
+                'code': UNAUTHORIZED_REQUEST,
+                'message': UNAUTHORIZED_REQUEST_MESSAGE,
+            },
+            content_type='application/json',
         )
         error_str = f'error code: {UNAUTHORIZED_REQUEST}\nmessage: {UNAUTHORIZED_REQUEST_MESSAGE}'
 
@@ -163,7 +168,7 @@ class TestHttpClient:
             url=(http_client._base_url + '/test'),
             status=400,
             json={'code': INVALID_REQUEST, 'message': INVALID_REQUEST_MESSAGE},
-            content_type='application/json'
+            content_type='application/json',
         )
 
         # act
@@ -181,7 +186,7 @@ class TestHttpClient:
             url=(http_client._base_url + '/test'),
             status=400,
             json={'code': INVALID_REQUEST, 'message': INVALID_REQUEST_MESSAGE},
-            content_type='application/json'
+            content_type='application/json',
         )
 
         # act

@@ -26,11 +26,12 @@ DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
 
 try:
     # Create datcrunch client
-    datacrunch = DataCrunchClient(
-        DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET)
+    datacrunch = DataCrunchClient(DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET)
 
     # Create new SSH key
-    public_key = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI0qq2Qjt5GPi7DKdcnBHOkvk8xNsG9dA607tnWagOkHC test_key'
+    public_key = (
+        'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI0qq2Qjt5GPi7DKdcnBHOkvk8xNsG9dA607tnWagOkHC test_key'
+    )
     ssh_key = datacrunch.ssh_keys.create('my test key', public_key)
 
     # Get all SSH keys
@@ -51,21 +52,22 @@ try:
 
             if price_per_hour * DURATION < balance.amount:
                 # Deploy a new 8V instance
-                instance = datacrunch.instances.create(instance_type=INSTANCE_TYPE_8V,
-                                                       image='ubuntu-22.04-cuda-12.0-docker',
-                                                       ssh_key_ids=ssh_keys_ids,
-                                                       hostname='example',
-                                                       description='large instance',
-                                                       os_volume={
-                                                           "name": "Large OS volume",
-                                                           "size": 95
-                                                       })
+                instance = datacrunch.instances.create(
+                    instance_type=INSTANCE_TYPE_8V,
+                    image='ubuntu-22.04-cuda-12.0-docker',
+                    ssh_key_ids=ssh_keys_ids,
+                    hostname='example',
+                    description='large instance',
+                    os_volume={'name': 'Large OS volume', 'size': 95},
+                )
             else:
                 # Deploy a new 4V instance
-                instance = datacrunch.instances.create(instance_type=INSTANCE_TYPE_4V,
-                                                       image='ubuntu-22.04-cuda-12.0-docker',
-                                                       ssh_key_ids=ssh_keys_ids,
-                                                       hostname='example',
-                                                       description='medium instance')
+                instance = datacrunch.instances.create(
+                    instance_type=INSTANCE_TYPE_4V,
+                    image='ubuntu-22.04-cuda-12.0-docker',
+                    ssh_key_ids=ssh_keys_ids,
+                    hostname='example',
+                    description='medium instance',
+                )
 except APIException as exception:
     print(exception)

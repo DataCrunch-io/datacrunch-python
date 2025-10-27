@@ -2,58 +2,58 @@ import responses  # https://github.com/getsentry/responses
 
 from datacrunch.instance_types.instance_types import InstanceTypesService, InstanceType
 
-TYPE_ID = "01cf5dc1-a5d2-4972-ae4e-d429115d055b"
-CPU_DESCRIPTION = "48 CPU 3.5GHz"
+TYPE_ID = '01cf5dc1-a5d2-4972-ae4e-d429115d055b'
+CPU_DESCRIPTION = '48 CPU 3.5GHz'
 NUMBER_OF_CORES = 48
-GPU_DESCRIPTION = "8x NVidia Tesla V100"
+GPU_DESCRIPTION = '8x NVidia Tesla V100'
 NUMBER_OF_GPUS = 8
-MEMORY_DESCRIPTION = "192GB RAM"
+MEMORY_DESCRIPTION = '192GB RAM'
 MEMORY_SIZE = 192
-GPU_MEMORY_DESCRIPTION = "128GB VRAM"
+GPU_MEMORY_DESCRIPTION = '128GB VRAM'
 GPU_MEMORY_SIZE = 128
-STORAGE_DESCRIPTION = "1800GB NVME"
+STORAGE_DESCRIPTION = '1800GB NVME'
 STORAGE_SIZE = 1800
-INSTANCE_TYPE_DESCRIPTION = "Dedicated Bare metal Server"
+INSTANCE_TYPE_DESCRIPTION = 'Dedicated Bare metal Server'
 PRICE_PER_HOUR = 5.0
 SPOT_PRICE_PER_HOUR = 2.5
-INSTANCE_TYPE = "8V100.48M"
+INSTANCE_TYPE = '8V100.48M'
 
 
 def test_instance_types(http_client):
     # arrange - add response mock
     responses.add(
         responses.GET,
-        http_client._base_url + "/instance-types",
+        http_client._base_url + '/instance-types',
         json=[
             {
-                "id": TYPE_ID,
-                "cpu": {
-                    "description": CPU_DESCRIPTION,
-                    "number_of_cores": NUMBER_OF_CORES
+                'id': TYPE_ID,
+                'cpu': {
+                    'description': CPU_DESCRIPTION,
+                    'number_of_cores': NUMBER_OF_CORES,
                 },
-                "gpu": {
-                    "description": GPU_DESCRIPTION,
-                    "number_of_gpus": NUMBER_OF_GPUS
+                'gpu': {
+                    'description': GPU_DESCRIPTION,
+                    'number_of_gpus': NUMBER_OF_GPUS,
                 },
-                "memory": {
-                    "description": MEMORY_DESCRIPTION,
-                    "size_in_gigabytes": MEMORY_SIZE
+                'memory': {
+                    'description': MEMORY_DESCRIPTION,
+                    'size_in_gigabytes': MEMORY_SIZE,
                 },
-                "gpu_memory": {
-                    "description": GPU_MEMORY_DESCRIPTION,
-                    "size_in_gigabytes": GPU_MEMORY_SIZE
+                'gpu_memory': {
+                    'description': GPU_MEMORY_DESCRIPTION,
+                    'size_in_gigabytes': GPU_MEMORY_SIZE,
                 },
-                "storage": {
-                    "description": STORAGE_DESCRIPTION,
-                    "size_in_gigabytes": STORAGE_SIZE
+                'storage': {
+                    'description': STORAGE_DESCRIPTION,
+                    'size_in_gigabytes': STORAGE_SIZE,
                 },
-                "description": INSTANCE_TYPE_DESCRIPTION,
-                "price_per_hour": "5.00",
-                "spot_price": "2.50",
-                "instance_type": INSTANCE_TYPE
+                'description': INSTANCE_TYPE_DESCRIPTION,
+                'price_per_hour': '5.00',
+                'spot_price': '2.50',
+                'instance_type': INSTANCE_TYPE,
             }
         ],
-        status=200
+        status=200,
     )
 
     instance_types_service = InstanceTypesService(http_client)

@@ -56,8 +56,7 @@ class HTTPClient:
         url = self._add_base_url(url)
         headers = self._generate_headers()
 
-        response = requests.post(
-            url, json=json, headers=headers, params=params, **kwargs)
+        response = requests.post(url, json=json, headers=headers, params=params, **kwargs)
         handle_error(response)
 
         return response
@@ -86,8 +85,7 @@ class HTTPClient:
         url = self._add_base_url(url)
         headers = self._generate_headers()
 
-        response = requests.put(
-            url, json=json, headers=headers, params=params, **kwargs)
+        response = requests.put(url, json=json, headers=headers, params=params, **kwargs)
         handle_error(response)
 
         return response
@@ -119,7 +117,9 @@ class HTTPClient:
 
         return response
 
-    def patch(self, url: str, json: dict = None, params: dict = None, **kwargs) -> requests.Response:
+    def patch(
+        self, url: str, json: dict = None, params: dict = None, **kwargs
+    ) -> requests.Response:
         """Sends a PATCH request.
 
         A wrapper for the requests.patch method.
@@ -143,13 +143,14 @@ class HTTPClient:
         url = self._add_base_url(url)
         headers = self._generate_headers()
 
-        response = requests.patch(
-            url, json=json, headers=headers, params=params, **kwargs)
+        response = requests.patch(url, json=json, headers=headers, params=params, **kwargs)
         handle_error(response)
 
         return response
 
-    def delete(self, url: str, json: dict = None, params: dict = None, **kwargs) -> requests.Response:
+    def delete(
+        self, url: str, json: dict = None, params: dict = None, **kwargs
+    ) -> requests.Response:
         """Sends a DELETE request.
 
         A wrapper for the requests.delete method.
@@ -173,8 +174,7 @@ class HTTPClient:
         url = self._add_base_url(url)
         headers = self._generate_headers()
 
-        response = requests.delete(
-            url, headers=headers, json=json, params=params, **kwargs)
+        response = requests.delete(url, headers=headers, json=json, params=params, **kwargs)
         handle_error(response)
 
         return response
@@ -186,7 +186,7 @@ class HTTPClient:
 
         :raises APIException: an api exception with message and error type code
         """
-        if (self._auth_service.is_expired()):
+        if self._auth_service.is_expired():
             # try to refresh. if refresh token has expired, reauthenticate
             try:
                 self._auth_service.refresh()
@@ -202,7 +202,7 @@ class HTTPClient:
         headers = {
             'Authorization': self._generate_bearer_header(),
             'User-Agent': self._generate_user_agent(),
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         }
         return headers
 

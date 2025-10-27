@@ -34,13 +34,12 @@ class AuthenticationService:
         """
         url = self._base_url + TOKEN_ENDPOINT
         payload = {
-            "grant_type": CLIENT_CREDENTIALS,
-            "client_id": self._client_id,
-            "client_secret": self._client_secret
+            'grant_type': CLIENT_CREDENTIALS,
+            'client_id': self._client_id,
+            'client_secret': self._client_secret,
         }
 
-        response = requests.post(
-            url, json=payload, headers=self._generate_headers())
+        response = requests.post(url, json=payload, headers=self._generate_headers())
         handle_error(response)
 
         auth_data = response.json()
@@ -71,13 +70,9 @@ class AuthenticationService:
         """
         url = self._base_url + TOKEN_ENDPOINT
 
-        payload = {
-            "grant_type": REFRESH_TOKEN,
-            "refresh_token": self._refresh_token
-        }
+        payload = {'grant_type': REFRESH_TOKEN, 'refresh_token': self._refresh_token}
 
-        response = requests.post(
-            url, json=payload, headers=self._generate_headers())
+        response = requests.post(url, json=payload, headers=self._generate_headers())
 
         # if refresh token is also expired, authenticate again:
         if response.status_code == 401 or response.status_code == 400:
@@ -98,9 +93,7 @@ class AuthenticationService:
     def _generate_headers(self):
         # get the first 10 chars of the client id
         client_id_truncated = self._client_id[:10]
-        headers = {
-            'User-Agent': 'datacrunch-python-' + client_id_truncated
-        }
+        headers = {'User-Agent': 'datacrunch-python-' + client_id_truncated}
         return headers
 
     def is_expired(self) -> bool:

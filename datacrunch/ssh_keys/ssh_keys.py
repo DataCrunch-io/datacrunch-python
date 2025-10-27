@@ -61,8 +61,7 @@ class SSHKeysService:
         :rtype: List[SSHKey]
         """
         keys = self._http_client.get(SSHKEYS_ENDPOINT).json()
-        keys_object_list = list(map(lambda key: SSHKey(
-            key['id'], key['name'], key['key']), keys))
+        keys_object_list = list(map(lambda key: SSHKey(key['id'], key['name'], key['key']), keys))
 
         return keys_object_list
 
@@ -84,7 +83,7 @@ class SSHKeysService:
         :param id_list: list of SSH keys ids
         :type id_list: List[str]
         """
-        payload = {"keys": id_list}
+        payload = {'keys': id_list}
         self._http_client.delete(SSHKEYS_ENDPOINT, json=payload)
         return
 
@@ -107,6 +106,6 @@ class SSHKeysService:
         :return: new SSH key object
         :rtype: SSHKey
         """
-        payload = {"name": name, "key": key}
+        payload = {'name': name, 'key': key}
         id = self._http_client.post(SSHKEYS_ENDPOINT, json=payload).text
         return SSHKey(id, name, key)

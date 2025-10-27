@@ -49,3 +49,8 @@ module-root = ""
 [tool.ruff]
 # TODO(shamrin) fix these errors and stop ignoring them
 lint.ignore = ["F401"]
+line-length = 100
+
+[tool.ruff.format]
+quote-style = "single"
+docstring-code-format = true

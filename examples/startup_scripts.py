@@ -17,7 +17,7 @@ mkdir cats && cd cats
 # download a cat picture
 curl https://http.cat/200 --output cat.jpg
 """
-script = datacrunch.startup_scripts.create("catty businness", bash_script)
+script = datacrunch.startup_scripts.create('catty businness', bash_script)
 
 # Print new startup script id, name, script code
 print(script.id)
