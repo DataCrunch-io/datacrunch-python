@@ -16,7 +16,7 @@ class TestInstances:
         # create instance
         instance = datacrunch_client.instances.create(
             hostname='test-instance',
-            location=Locations.FIN_01,
+            location=Locations.FIN_03,
             instance_type='CPU.4V',
             description='test instance',
             image='ubuntu-18.04',
