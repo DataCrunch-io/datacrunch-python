@@ -993,7 +993,7 @@ class ContainersService:
 
         Args:
             size: Optional size to filter resources by (e.g. 8 for 8x GPUs)
-            available: Optional boolean to filter by availability status
+            is_available: Optional boolean to filter by availability status
 
         Returns:
             List[ComputeResource]: List of compute resources matching the filters.
@@ -1089,6 +1089,7 @@ class ContainersService:
         self, secret_name: str, file_paths: list[str]
     ) -> None:
         """Creates a new fileset secret.
+
         A fileset secret is a secret that contains several files,
         and can be used to mount a directory with the files in a container.
 

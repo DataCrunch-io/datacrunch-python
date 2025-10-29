@@ -2,7 +2,7 @@ import json
 
 
 def stringify_class_object_properties(class_object: type) -> str:
-    """Generates a json string representation of a class object's properties and values
+    """Generates a json string representation of a class object's properties and values.
 
     :param class_object: An instance of a class
     :type class_object: Type

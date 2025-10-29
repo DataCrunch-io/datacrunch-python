@@ -16,6 +16,8 @@ class InferenceClientError(Exception):
 
 
 class AsyncStatus(str, Enum):
+    """Async status."""
+
     Initialized = 'Initialized'
     Queue = 'Queue'
     Inference = 'Inference'
@@ -25,6 +27,8 @@ class AsyncStatus(str, Enum):
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class InferenceResponse:
+    """Inference response."""
+
     headers: CaseInsensitiveDict[str]
     status_code: int
     status_text: str
@@ -66,6 +70,7 @@ class InferenceResponse:
         )
 
     def output(self, is_text: bool = False) -> Any:
+        """Get response output as a string or object."""
         try:
             if is_text:
                 return self._original_response.text
@@ -99,11 +104,12 @@ class InferenceResponse:
 
 
 class InferenceClient:
+    """Inference client."""
+
     def __init__(
         self, inference_key: str, endpoint_base_url: str, timeout_seconds: int = 60 * 5
     ) -> None:
-        """
-        Initialize the InferenceClient.
+        """Initialize the InferenceClient.
 
         Args:
             inference_key: The authentication key for the API
@@ -139,8 +145,7 @@ class InferenceClient:
 
     @property
     def global_headers(self) -> dict[str, str]:
-        """
-        Get the current global headers that will be used for all requests.
+        """Get the current global headers that will be used for all requests.
 
         Returns:
             Dictionary of current global headers
@@ -148,8 +153,7 @@ class InferenceClient:
         return self._global_headers.copy()
 
     def set_global_header(self, key: str, value: str) -> None:
-        """
-        Set or update a global header that will be used for all requests.
+        """Set or update a global header that will be used for all requests.
 
         Args:
             key: Header name
@@ -158,8 +162,7 @@ class InferenceClient:
         self._global_headers[key] = value
 
     def set_global_headers(self, headers: dict[str, str]) -> None:
-        """
-        Set multiple global headers at once that will be used for all requests.
+        """Set multiple global headers at once that will be used for all requests.
 
         Args:
             headers: Dictionary of headers to set globally
@@ -167,8 +170,7 @@ class InferenceClient:
         self._global_headers.update(headers)
 
     def remove_global_header(self, key: str) -> None:
-        """
-        Remove a global header.
+        """Remove a global header.
 
         Args:
             key: Header name to remove from global headers
@@ -183,8 +185,7 @@ class InferenceClient:
     def _build_request_headers(
         self, request_headers: dict[str, str] | None = None
     ) -> dict[str, str]:
-        """
-        Build the final headers by merging global headers with request-specific headers.
+        """Build the final headers by merging global headers with request-specific headers.
 
         Args:
             request_headers: Optional headers specific to this request
@@ -198,8 +199,7 @@ class InferenceClient:
         return headers
 
     def _make_request(self, method: str, path: str, **kwargs) -> requests.Response:
-        """
-        Make an HTTP request with error handling.
+        """Make an HTTP request with error handling.
 
         Args:
             method: HTTP method to use
@@ -224,7 +224,9 @@ class InferenceClient:
             response.raise_for_status()
             return response
         except requests.exceptions.Timeout as e:
-            raise InferenceClientError(f'Request to {path} timed out after {timeout} seconds') from e
+            raise InferenceClientError(
+                f'Request to {path} timed out after {timeout} seconds'
+            ) from e
         except requests.exceptions.RequestException as e:
             raise InferenceClientError(f'Request to {path} failed: {str(e)}') from e
 
@@ -331,6 +333,7 @@ class InferenceClient:
         headers: dict[str, str] | None = None,
         timeout_seconds: int | None = None,
     ) -> requests.Response:
+        """Make GET request."""
         return self._make_request(
             'GET', path, params=params, headers=headers, timeout_seconds=timeout_seconds
         )
@@ -344,6 +347,7 @@ class InferenceClient:
         headers: dict[str, str] | None = None,
         timeout_seconds: int | None = None,
     ) -> requests.Response:
+        """Make POST request."""
         return self._make_request(
             'POST',
             path,
@@ -363,6 +367,7 @@ class InferenceClient:
         headers: dict[str, str] | None = None,
         timeout_seconds: int | None = None,
     ) -> requests.Response:
+        """Make PUT request."""
         return self._make_request(
             'PUT',
             path,
@@ -380,6 +385,7 @@ class InferenceClient:
         headers: dict[str, str] | None = None,
         timeout_seconds: int | None = None,
     ) -> requests.Response:
+        """Make DELETE request."""
         return self._make_request(
             'DELETE',
             path,
@@ -397,6 +403,7 @@ class InferenceClient:
         headers: dict[str, str] | None = None,
         timeout_seconds: int | None = None,
     ) -> requests.Response:
+        """Make PATCH request."""
         return self._make_request(
             'PATCH',
             path,
@@ -414,6 +421,7 @@ class InferenceClient:
         headers: dict[str, str] | None = None,
         timeout_seconds: int | None = None,
     ) -> requests.Response:
+        """Make HEAD request."""
         return self._make_request(
             'HEAD',
             path,
@@ -429,6 +437,7 @@ class InferenceClient:
         headers: dict[str, str] | None = None,
         timeout_seconds: int | None = None,
     ) -> requests.Response:
+        """Make OPTIONS request."""
         return self._make_request(
             'OPTIONS',
             path,
@@ -438,8 +447,7 @@ class InferenceClient:
         )
 
     def health(self, healthcheck_path: str = '/health') -> requests.Response:
-        """
-        Check the health status of the API.
+        """Check the health status of the API.
 
         Returns:
             requests.Response: The response from the health check
@@ -456,22 +464,23 @@ class InferenceClient:
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class AsyncInferenceExecution:
+    """Async inference execution."""
+
     _inference_client: 'InferenceClient'
     id: str
     _status: AsyncStatus
     INFERENCE_ID_HEADER = 'X-Inference-Id'
 
     def status(self) -> AsyncStatus:
-        """Get the current stored status of the async inference execution. Only the status value type
+        """Get the current stored status of the async inference execution. Only the status value type.
 
         Returns:
             AsyncStatus: The status object
         """
-
         return self._status
 
     def status_json(self) -> dict[str, Any]:
-        """Get the current status of the async inference execution. Return the status json
+        """Get the current status of the async inference execution. Return the status json.
 
         Returns:
             Dict[str, Any]: The status response containing the execution status and other metadata

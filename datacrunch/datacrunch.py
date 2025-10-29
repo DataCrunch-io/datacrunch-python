@@ -15,7 +15,7 @@ from datacrunch.volumes.volumes import VolumesService
 
 
 class DataCrunchClient:
-    """Client for interacting with DataCrunch's public API"""
+    """Client for interacting with DataCrunch's public API."""
 
     def __init__(
         self,
@@ -24,7 +24,7 @@ class DataCrunchClient:
         base_url: str = 'https://api.datacrunch.io/v1',
         inference_key: str = None,
     ) -> None:
-        """The DataCrunch client
+        """The DataCrunch client.
 
         :param client_id: client id
         :type client_id: str
@@ -35,7 +35,6 @@ class DataCrunchClient:
         :param inference_key: inference key, optional
         :type inference_key: str, optional
         """
-
         # Validate that client_id and client_secret are not empty
         if not client_id or not client_secret:
             raise ValueError('client_id and client_secret must be provided')

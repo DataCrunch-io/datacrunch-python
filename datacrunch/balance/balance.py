@@ -2,10 +2,10 @@ BALANCE_ENDPOINT = '/balance'
 
 
 class Balance:
-    """A balance model class"""
+    """A balance model class."""
 
     def __init__(self, amount: float, currency: str) -> None:
-        """Initialize a new Balance object
+        """Initialize a new Balance object.
 
         :param amount: Balance amount
         :type amount: float
@@ -17,7 +17,7 @@ class Balance:
 
     @property
     def amount(self) -> float:
-        """Get the balance amount
+        """Get the balance amount.
 
         :return: amount
         :rtype: float
@@ -26,7 +26,7 @@ class Balance:
 
     @property
     def currency(self) -> str:
-        """Get the currency code
+        """Get the currency code.
 
         :return: currency code
         :rtype: str
@@ -35,13 +35,13 @@ class Balance:
 
 
 class BalanceService:
-    """A service for interacting with the balance endpoint"""
+    """A service for interacting with the balance endpoint."""
 
     def __init__(self, http_client) -> None:
         self._http_client = http_client
 
     def get(self) -> Balance:
-        """Get the client's current balance
+        """Get the client's current balance.
 
         :return: Balance object containing the amount and currency.
         :rtype: Balance

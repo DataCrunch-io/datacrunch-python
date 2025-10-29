@@ -7,7 +7,7 @@ from datacrunch.exceptions import APIException
 
 
 def handle_error(response: requests.Response) -> None:
-    """checks for the response status code and raises an exception if it's 400 or higher.
+    """Checks for the response status code and raises an exception if it's 400 or higher.
 
     :param response: the API call response
     :raises APIException: an api exception with message and error type code
@@ -181,7 +181,7 @@ class HTTPClient:
         return response
 
     def _refresh_token_if_expired(self) -> None:
-        """refreshes the access token if it expired.
+        """Refreshes the access token if it expired.
 
         Uses the refresh token to refresh, and if the refresh token is also expired, uses the client credentials.
 
@@ -195,7 +195,7 @@ class HTTPClient:
                 self._auth_service.authenticate()
 
     def _generate_headers(self) -> dict:
-        """generate the default headers for every request
+        """Generate the default headers for every request.
 
         :return: dict with request headers
         :rtype: dict
@@ -208,7 +208,7 @@ class HTTPClient:
         return headers
 
     def _generate_bearer_header(self) -> str:
-        """generate the authorization header Bearer string
+        """Generate the authorization header Bearer string.
 
         :return: Authorization header Bearer string
         :rtype: str
@@ -216,7 +216,7 @@ class HTTPClient:
         return f'Bearer {self._auth_service._access_token}'
 
     def _generate_user_agent(self) -> str:
-        """generate the user agent string.
+        """Generate the user agent string.
 
         :return: user agent string
         :rtype: str
@@ -227,9 +227,9 @@ class HTTPClient:
         return f'datacrunch-python-v{self._version}-{client_id_truncated}'
 
     def _add_base_url(self, url: str) -> str:
-        """Adds the base url to the relative url
+        """Adds the base url to the relative url.
 
-        example:
+        Example:
         if the relative url is '/balance'
         and the base url is 'https://api.datacrunch.io/v1'
         then this method will return 'https://api.datacrunch.io/v1/balance'

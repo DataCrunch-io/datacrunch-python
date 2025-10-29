@@ -2,6 +2,8 @@ INSTANCE_TYPES_ENDPOINT = '/instance-types'
 
 
 class InstanceType:
+    """Instance type."""
+
     def __init__(
         self,
         id: str,
@@ -15,7 +17,7 @@ class InstanceType:
         gpu_memory: dict,
         storage: dict,
     ) -> None:
-        """Initialize an instance type object
+        """Initialize an instance type object.
 
         :param id: instance type id
         :type id: str
@@ -51,7 +53,7 @@ class InstanceType:
 
     @property
     def id(self) -> str:
-        """Get the instance type id
+        """Get the instance type id.
 
         :return: instance type id
         :rtype: str
@@ -60,7 +62,7 @@ class InstanceType:
 
     @property
     def instance_type(self) -> str:
-        """Get the instance type
+        """Get the instance type.
 
         :return: instance type. e.g. '8V100.48M'
         :rtype: str
@@ -69,7 +71,7 @@ class InstanceType:
 
     @property
     def price_per_hour(self) -> float:
-        """Get the instance type price per hour
+        """Get the instance type price per hour.
 
         :return: price per hour
         :rtype: float
@@ -78,7 +80,7 @@ class InstanceType:
 
     @property
     def spot_price_per_hour(self) -> float:
-        """Get the instance spot price per hour
+        """Get the instance spot price per hour.
 
         :return: spot price per hour
         :rtype: float
@@ -87,7 +89,7 @@ class InstanceType:
 
     @property
     def description(self) -> str:
-        """Get the instance type description
+        """Get the instance type description.
 
         :return: instance type description
         :rtype: str
@@ -96,7 +98,7 @@ class InstanceType:
 
     @property
     def cpu(self) -> dict:
-        """Get the instance type cpu details
+        """Get the instance type cpu details.
 
         :return: cpu details
         :rtype: dict
@@ -105,7 +107,7 @@ class InstanceType:
 
     @property
     def gpu(self) -> dict:
-        """Get the instance type gpu details
+        """Get the instance type gpu details.
 
         :return: gpu details
         :rtype: dict
@@ -114,7 +116,7 @@ class InstanceType:
 
     @property
     def memory(self) -> dict:
-        """Get the instance type memory details
+        """Get the instance type memory details.
 
         :return: memory details
         :rtype: dict
@@ -123,7 +125,7 @@ class InstanceType:
 
     @property
     def gpu_memory(self) -> dict:
-        """Get the instance type gpu_memory details
+        """Get the instance type gpu_memory details.
 
         :return: gpu_memory details
         :rtype: dict
@@ -132,7 +134,7 @@ class InstanceType:
 
     @property
     def storage(self) -> dict:
-        """Get the instance type storage details
+        """Get the instance type storage details.
 
         :return: storage details
         :rtype: dict
@@ -140,7 +142,7 @@ class InstanceType:
         return self._storage
 
     def __str__(self) -> str:
-        """Prints the instance type
+        """Prints the instance type.
 
         :return: instance type string representation
         :rtype: str
@@ -160,29 +162,32 @@ class InstanceType:
 
 
 class InstanceTypesService:
-    """A service for interacting with the instance-types endpoint"""
+    """A service for interacting with the instance-types endpoint."""
 
     def __init__(self, http_client) -> None:
         self._http_client = http_client
 
     def get(self) -> list[InstanceType]:
-        """Get all instance types
+        """Get all instance types.
 
         :return: list of instance type objects
         :rtype: List[InstanceType]
         """
         instance_types = self._http_client.get(INSTANCE_TYPES_ENDPOINT).json()
-        instance_type_objects = [InstanceType(
-                    id=instance_type['id'],
-                    instance_type=instance_type['instance_type'],
-                    price_per_hour=instance_type['price_per_hour'],
-                    spot_price_per_hour=instance_type['spot_price'],
-                    description=instance_type['description'],
-                    cpu=instance_type['cpu'],
-                    gpu=instance_type['gpu'],
-                    memory=instance_type['memory'],
-                    gpu_memory=instance_type['gpu_memory'],
-                    storage=instance_type['storage'],
-                ) for instance_type in instance_types]
+        instance_type_objects = [
+            InstanceType(
+                id=instance_type['id'],
+                instance_type=instance_type['instance_type'],
+                price_per_hour=instance_type['price_per_hour'],
+                spot_price_per_hour=instance_type['spot_price'],
+                description=instance_type['description'],
+                cpu=instance_type['cpu'],
+                gpu=instance_type['gpu'],
+                memory=instance_type['memory'],
+                gpu_memory=instance_type['gpu_memory'],
+                storage=instance_type['storage'],
+            )
+            for instance_type in instance_types
+        ]
 
         return instance_type_objects
