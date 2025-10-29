@@ -33,7 +33,9 @@ class HTTPClient:
         self._auth_service = auth_service
         self._auth_service.authenticate()
 
-    def post(self, url: str, json: dict = None, params: dict = None, **kwargs) -> requests.Response:
+    def post(
+        self, url: str, json: dict | None = None, params: dict | None = None, **kwargs
+    ) -> requests.Response:
         """Sends a POST request.
 
         A wrapper for the requests.post method.
@@ -62,7 +64,9 @@ class HTTPClient:
 
         return response
 
-    def put(self, url: str, json: dict = None, params: dict = None, **kwargs) -> requests.Response:
+    def put(
+        self, url: str, json: dict | None = None, params: dict | None = None, **kwargs
+    ) -> requests.Response:
         """Sends a PUT request.
 
         A wrapper for the requests.put method.
@@ -91,7 +95,7 @@ class HTTPClient:
 
         return response
 
-    def get(self, url: str, params: dict = None, **kwargs) -> requests.Response:
+    def get(self, url: str, params: dict | None = None, **kwargs) -> requests.Response:
         """Sends a GET request.
 
         A wrapper for the requests.get method.
@@ -119,7 +123,7 @@ class HTTPClient:
         return response
 
     def patch(
-        self, url: str, json: dict = None, params: dict = None, **kwargs
+        self, url: str, json: dict | None = None, params: dict | None = None, **kwargs
     ) -> requests.Response:
         """Sends a PATCH request.
 
@@ -150,7 +154,7 @@ class HTTPClient:
         return response
 
     def delete(
-        self, url: str, json: dict = None, params: dict = None, **kwargs
+        self, url: str, json: dict | None = None, params: dict | None = None, **kwargs
     ) -> requests.Response:
         """Sends a DELETE request.
 

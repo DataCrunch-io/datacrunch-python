@@ -22,7 +22,7 @@ class DataCrunchClient:
         client_id: str,
         client_secret: str,
         base_url: str = 'https://api.datacrunch.io/v1',
-        inference_key: str = None,
+        inference_key: str | None = None,
     ) -> None:
         """The DataCrunch client.
 

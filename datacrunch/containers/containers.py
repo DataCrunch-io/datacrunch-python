@@ -386,7 +386,7 @@ class Deployment:
         # Get all attributes except _inference_client
         attrs = {k: v for k, v in self.__dict__.items() if k != '_inference_client'}
         # Format each attribute
-        attr_strs = [f'{k}={repr(v)}' for k, v in attrs.items()]
+        attr_strs = [f'{k}={v!r}' for k, v in attrs.items()]
         return f'Deployment({", ".join(attr_strs)})'
 
     def __repr__(self):
@@ -399,7 +399,7 @@ class Deployment:
 
     @classmethod
     def from_dict_with_inference_key(
-        cls, data: dict[str, Any], inference_key: str = None
+        cls, data: dict[str, Any], inference_key: str | None = None
     ) -> 'Deployment':
         """Creates a Deployment instance from a dictionary with an inference key.
 
@@ -731,7 +731,7 @@ class ContainersService:
     deployment API, including CRUD operations for deployments and related resources.
     """
 
-    def __init__(self, http_client: HTTPClient, inference_key: str = None) -> None:
+    def __init__(self, http_client: HTTPClient, inference_key: str | None = None) -> None:
         """Initializes the containers service.
 
         Args:
@@ -987,7 +987,7 @@ class ContainersService:
         return result
 
     def get_compute_resources(
-        self, size: int = None, is_available: bool = None
+        self, size: int | None = None, is_available: bool | None = None
     ) -> list[ComputeResource]:
         """Retrieves compute resources, optionally filtered by size and availability.
 

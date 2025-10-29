@@ -16,11 +16,11 @@ class Volume:
         type: str,
         is_os_volume: bool,
         created_at: str,
-        target: str = None,
+        target: str | None = None,
         location: str = Locations.FIN_03,
-        instance_id: str = None,
+        instance_id: str | None = None,
         ssh_key_ids: list[str] = [],
-        deleted_at: str = None,
+        deleted_at: str | None = None,
     ) -> None:
         """Initialize the volume object.
 
@@ -209,7 +209,7 @@ class VolumesService:
     def __init__(self, http_client) -> None:
         self._http_client = http_client
 
-    def get(self, status: str = None) -> list[Volume]:
+    def get(self, status: str | None = None) -> list[Volume]:
         """Get all of the client's non-deleted volumes, or volumes with specific status.
 
         :param status: optional, status of the volumes, defaults to None
@@ -247,7 +247,7 @@ class VolumesService:
         type: str,
         name: str,
         size: int,
-        instance_id: str = None,
+        instance_id: str | None = None,
         location: str = Locations.FIN_03,
     ) -> Volume:
         """Create new volume.
@@ -311,7 +311,7 @@ class VolumesService:
         self._http_client.put(VOLUMES_ENDPOINT, json=payload)
         return
 
-    def clone(self, id: str, name: str = None, type: str = None) -> Volume:
+    def clone(self, id: str, name: str | None = None, type: str | None = None) -> Volume:
         """Clone a volume or multiple volumes.
 
         :param id: volume id or list of volume ids
