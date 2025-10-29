@@ -74,8 +74,8 @@ class InferenceResponse:
             if self._is_stream_response(self._original_response.headers):
                 raise InferenceClientError(
                     'Response might be a stream, use the stream method instead'
-                )
-            raise InferenceClientError(f'Failed to parse response as JSON: {str(e)}')
+                ) from e
+            raise InferenceClientError(f'Failed to parse response as JSON: {str(e)}') from e
 
     def stream(self, chunk_size: int = 512, as_text: bool = True) -> Generator[Any, None, None]:
         """Stream the response content.
@@ -222,10 +222,10 @@ class InferenceClient:
             )
             response.raise_for_status()
             return response
-        except requests.exceptions.Timeout:
-            raise InferenceClientError(f'Request to {path} timed out after {timeout} seconds')
+        except requests.exceptions.Timeout as e:
+            raise InferenceClientError(f'Request to {path} timed out after {timeout} seconds') from e
         except requests.exceptions.RequestException as e:
-            raise InferenceClientError(f'Request to {path} failed: {str(e)}')
+            raise InferenceClientError(f'Request to {path} failed: {str(e)}') from e
 
     def run_sync(
         self,
@@ -449,7 +449,7 @@ class InferenceClient:
         try:
             return self.get(healthcheck_path)
         except InferenceClientError as e:
-            raise InferenceClientError(f'Health check failed: {str(e)}')
+            raise InferenceClientError(f'Health check failed: {str(e)}') from e
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)

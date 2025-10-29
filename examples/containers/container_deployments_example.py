@@ -57,7 +57,7 @@ def wait_for_deployment_health(
     Returns:
         bool: True if deployment is healthy, False otherwise
     """
-    for attempt in range(max_attempts):
+    for _attempt in range(max_attempts):
         try:
             status = client.containers.get_deployment_status(deployment_name)
             print(f'Deployment status: {status}')
