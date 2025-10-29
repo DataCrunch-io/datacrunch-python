@@ -1,8 +1,7 @@
 import responses  # https://github.com/getsentry/responses
 
-from datacrunch.volume_types.volume_types import VolumeTypesService, VolumeType
 from datacrunch.constants import VolumeTypes
-
+from datacrunch.volume_types.volume_types import VolumeType, VolumeTypesService
 
 USD = 'usd'
 NVMe_PRICE = 0.2

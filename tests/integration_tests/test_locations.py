@@ -1,7 +1,9 @@
 import os
+
 import pytest
-from datacrunch.datacrunch import DataCrunchClient
+
 from datacrunch.constants import Locations
+from datacrunch.datacrunch import DataCrunchClient
 
 IN_GITHUB_ACTIONS = os.getenv('GITHUB_ACTIONS') == 'true'
 

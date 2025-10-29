@@ -1,6 +1,8 @@
+from unittest.mock import Mock
+
 import pytest
 import responses  # https://github.com/getsentry/responses
-from unittest.mock import Mock
+
 from datacrunch.exceptions import APIException
 
 INVALID_REQUEST = 'invalid_request'

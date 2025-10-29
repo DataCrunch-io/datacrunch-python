@@ -1,10 +1,11 @@
+import time
+
 import pytest
 import responses  # https://github.com/getsentry/responses
 from responses import matchers
-import time
 
-from datacrunch.exceptions import APIException
 from datacrunch.authentication.authentication import AuthenticationService
+from datacrunch.exceptions import APIException
 
 INVALID_REQUEST = 'invalid_request'
 INVALID_REQUEST_MESSAGE = 'Your existence is invalid'

@@ -1,11 +1,12 @@
 import os
+
 from datacrunch import DataCrunchClient
 from datacrunch.containers import (
-    DockerHubCredentials,
-    GithubCredentials,
-    GCRCredentials,
     AWSECRCredentials,
     CustomRegistryCredentials,
+    DockerHubCredentials,
+    GCRCredentials,
+    GithubCredentials,
 )
 
 # Get client secret and id from environment variables

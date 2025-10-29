@@ -1,9 +1,11 @@
-import time
 import itertools
-from typing import List, Union, Optional, Dict, Literal
+import time
 from dataclasses import dataclass
+from typing import Dict, List, Literal, Optional, Union
+
 from dataclasses_json import dataclass_json
-from datacrunch.constants import Locations, InstanceStatus
+
+from datacrunch.constants import InstanceStatus, Locations
 
 INSTANCES_ENDPOINT = '/instances'
 

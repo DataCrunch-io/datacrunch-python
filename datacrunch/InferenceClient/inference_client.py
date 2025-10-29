@@ -1,10 +1,11 @@
 from dataclasses import dataclass
-from dataclasses_json import dataclass_json, Undefined  # type: ignore
-import requests
-from requests.structures import CaseInsensitiveDict
-from typing import Optional, Dict, Any, Union, Generator
-from urllib.parse import urlparse
 from enum import Enum
+from typing import Any, Dict, Generator, Optional, Union
+from urllib.parse import urlparse
+
+import requests
+from dataclasses_json import Undefined, dataclass_json  # type: ignore
+from requests.structures import CaseInsensitiveDict
 
 
 class InferenceClientError(Exception):

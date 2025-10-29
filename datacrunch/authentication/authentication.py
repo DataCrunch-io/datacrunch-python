@@ -1,5 +1,6 @@
-import requests
 import time
+
+import requests
 
 from datacrunch.http_client.http_client import handle_error
 

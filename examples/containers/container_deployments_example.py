@@ -8,25 +8,25 @@ import os
 import time
 
 from datacrunch import DataCrunchClient
-from datacrunch.exceptions import APIException
 from datacrunch.containers import (
-    Container,
     ComputeResource,
+    Container,
+    ContainerDeploymentStatus,
+    ContainerRegistrySettings,
+    Deployment,
     EnvVar,
     EnvVarType,
+    GeneralStorageMount,
+    HealthcheckSettings,
+    QueueLoadScalingTrigger,
     ScalingOptions,
     ScalingPolicy,
     ScalingTriggers,
-    QueueLoadScalingTrigger,
-    UtilizationScalingTrigger,
-    HealthcheckSettings,
-    GeneralStorageMount,
     SecretMount,
     SharedFileSystemMount,
-    ContainerRegistrySettings,
-    Deployment,
-    ContainerDeploymentStatus,
+    UtilizationScalingTrigger,
 )
+from datacrunch.exceptions import APIException
 
 # Configuration constants
 DEPLOYMENT_NAME = 'my-deployment'

@@ -1,8 +1,9 @@
-import requests
 import json
 
-from datacrunch.exceptions import APIException
+import requests
+
 from datacrunch._version import __version__
+from datacrunch.exceptions import APIException
 
 
 def handle_error(response: requests.Response) -> None:

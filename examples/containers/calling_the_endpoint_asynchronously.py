@@ -1,5 +1,6 @@
 import os
 from time import sleep
+
 from datacrunch import DataCrunchClient
 from datacrunch.InferenceClient.inference_client import AsyncStatus
 

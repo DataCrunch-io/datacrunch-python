@@ -8,9 +8,10 @@ It shows how to:
 """
 
 import os
-from datacrunch.containers import EnvVar, EnvVarType
-from datacrunch import DataCrunchClient
 from typing import Dict, List
+
+from datacrunch import DataCrunchClient
+from datacrunch.containers import EnvVar, EnvVarType
 
 # Get client secret and id from environment variables
 DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')

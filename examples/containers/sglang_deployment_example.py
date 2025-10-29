@@ -4,29 +4,30 @@ This script provides an example of deploying a SGLang server with deepseek-ai/de
 including creation, monitoring, testing, and cleanup.
 """
 
+import json
 import os
-import time
 import signal
 import sys
-import json
+import time
 from datetime import datetime
+
 from datacrunch import DataCrunchClient
-from datacrunch.exceptions import APIException
 from datacrunch.containers import (
-    Container,
     ComputeResource,
-    ScalingOptions,
-    ScalingPolicy,
-    ScalingTriggers,
-    QueueLoadScalingTrigger,
-    UtilizationScalingTrigger,
-    HealthcheckSettings,
+    Container,
+    ContainerDeploymentStatus,
+    Deployment,
     EntrypointOverridesSettings,
     EnvVar,
     EnvVarType,
-    Deployment,
-    ContainerDeploymentStatus,
+    HealthcheckSettings,
+    QueueLoadScalingTrigger,
+    ScalingOptions,
+    ScalingPolicy,
+    ScalingTriggers,
+    UtilizationScalingTrigger,
 )
+from datacrunch.exceptions import APIException
 
 CURRENT_TIMESTAMP = datetime.now().strftime('%Y%m%d-%H%M%S').lower()  # e.g. 20250403-120000
 

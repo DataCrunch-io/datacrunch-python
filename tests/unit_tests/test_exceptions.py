@@ -1,4 +1,5 @@
 import pytest
+
 from datacrunch.exceptions import APIException
 
 ERROR_CODE = 'test_code'

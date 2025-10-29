@@ -1,5 +1,5 @@
-from typing import Type
 import json
+from typing import Type
 
 
 def stringify_class_object_properties(class_object: Type) -> str:

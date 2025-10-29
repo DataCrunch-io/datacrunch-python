@@ -1,4 +1,5 @@
 import os
+
 from datacrunch.InferenceClient import InferenceClient
 
 # Get inference key and endpoint base url from environment variables

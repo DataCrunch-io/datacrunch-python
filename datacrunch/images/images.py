@@ -1,4 +1,5 @@
 from typing import List
+
 from datacrunch.helpers import stringify_class_object_properties
 
 IMAGES_ENDPOINT = '/images'

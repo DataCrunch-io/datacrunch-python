@@ -1,7 +1,8 @@
-import time
 import os
+import time
+
 from datacrunch import DataCrunchClient
-from datacrunch.constants import Locations, InstanceStatus
+from datacrunch.constants import InstanceStatus, Locations
 
 # Get client secret and id from environment variables
 DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')

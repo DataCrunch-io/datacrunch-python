@@ -7,13 +7,13 @@ creation, updates, deletion, and monitoring of containerized applications.
 import base64
 import os
 from dataclasses import dataclass, field
-from dataclasses_json import dataclass_json, Undefined  # type: ignore
-from typing import List, Optional, Dict, Any, Union
 from enum import Enum
+from typing import Any, Dict, List, Optional, Union
+
+from dataclasses_json import Undefined, dataclass_json  # type: ignore
 
 from datacrunch.http_client.http_client import HTTPClient
 from datacrunch.InferenceClient import InferenceClient, InferenceResponse
-
 
 # API endpoints
 CONTAINER_DEPLOYMENTS_ENDPOINT = '/container-deployments'
