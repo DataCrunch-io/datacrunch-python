@@ -745,7 +745,7 @@ class ContainersService:
         """Retrieves all container deployments.
 
         Returns:
-            List[Deployment]: List of all deployments.
+            list[Deployment]: List of all deployments.
         """
         response = self.client.get(CONTAINER_DEPLOYMENTS_ENDPOINT)
         return [
@@ -860,7 +860,7 @@ class ContainersService:
             deployment_name: Name of the deployment.
 
         Returns:
-            List[ReplicaInfo]: List of replica information.
+            list[ReplicaInfo]: List of replica information.
         """
         response = self.client.get(f'{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/replicas')
         return [ReplicaInfo.from_dict(replica) for replica in response.json()['list']]
@@ -896,7 +896,7 @@ class ContainersService:
             deployment_name: Name of the deployment.
 
         Returns:
-            Dict[str, List[EnvVar]]: Dictionary mapping container names to their environment variables.
+            dict[str, list[EnvVar]]: Dictionary mapping container names to their environment variables.
         """
         response = self.client.get(
             f'{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/environment-variables'
@@ -919,7 +919,7 @@ class ContainersService:
             env_vars: List of environment variables to add.
 
         Returns:
-            Dict[str, List[EnvVar]]: Updated environment variables for all containers.
+            dict[str, list[EnvVar]]: Updated environment variables for all containers.
         """
         response = self.client.post(
             f'{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/environment-variables',
@@ -946,7 +946,7 @@ class ContainersService:
             env_vars: List of updated environment variables.
 
         Returns:
-            Dict[str, List[EnvVar]]: Updated environment variables for all containers.
+            dict[str, list[EnvVar]]: Updated environment variables for all containers.
         """
         response = self.client.patch(
             f'{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/environment-variables',
@@ -973,7 +973,7 @@ class ContainersService:
             env_var_names: List of environment variable names to delete.
 
         Returns:
-            Dict[str, List[EnvVar]]: Updated environment variables for all containers.
+            dict[str, list[EnvVar]]: Updated environment variables for all containers.
         """
         response = self.client.delete(
             f'{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/environment-variables',
@@ -996,7 +996,7 @@ class ContainersService:
             is_available: Optional boolean to filter by availability status
 
         Returns:
-            List[ComputeResource]: List of compute resources matching the filters.
+            list[ComputeResource]: List of compute resources matching the filters.
                                  If no filters provided, returns all resources.
         """
         response = self.client.get(SERVERLESS_COMPUTE_RESOURCES_ENDPOINT)
@@ -1017,7 +1017,7 @@ class ContainersService:
         """Retrieves all secrets.
 
         Returns:
-            List[Secret]: List of all secrets.
+            list[Secret]: List of all secrets.
         """
         response = self.client.get(SECRETS_ENDPOINT)
         return [Secret.from_dict(secret) for secret in response.json()]
@@ -1046,7 +1046,7 @@ class ContainersService:
         """Retrieves all registry credentials.
 
         Returns:
-            List[RegistryCredential]: List of all registry credentials.
+            list[RegistryCredential]: List of all registry credentials.
         """
         response = self.client.get(CONTAINER_REGISTRY_CREDENTIALS_ENDPOINT)
         return [RegistryCredential.from_dict(credential) for credential in response.json()]

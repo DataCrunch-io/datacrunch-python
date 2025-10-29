@@ -16,7 +16,7 @@ class Image:
         :param image_type: image type, e.g. 'ubuntu-20.04-cuda-11.0'
         :type image_type: str
         :param details: image details
-        :type details: List[str]
+        :type details: list[str]
         """
         self._id = id
         self._name = name
@@ -55,7 +55,7 @@ class Image:
         """Get the image details.
 
         :return: image details
-        :rtype: List[str]
+        :rtype: list[str]
         """
         return self._details
 
@@ -78,7 +78,7 @@ class ImagesService:
         """Get the available instance images.
 
         :return: list of images objects
-        :rtype: List[Image]
+        :rtype: list[Image]
         """
         images = self._http_client.get(IMAGES_ENDPOINT).json()
         image_objects = [

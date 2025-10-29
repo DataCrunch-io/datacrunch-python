@@ -56,7 +56,7 @@ class SSHKeysService:
         """Get all of the client's SSH keys.
 
         :return: list of SSH keys objects
-        :rtype: List[SSHKey]
+        :rtype: list[SSHKey]
         """
         keys = self._http_client.get(SSHKEYS_ENDPOINT).json()
         keys_object_list = [SSHKey(key['id'], key['name'], key['key']) for key in keys]
@@ -79,7 +79,7 @@ class SSHKeysService:
         """Delete multiple SSH keys by id.
 
         :param id_list: list of SSH keys ids
-        :type id_list: List[str]
+        :type id_list: list[str]
         """
         payload = {'keys': id_list}
         self._http_client.delete(SSHKEYS_ENDPOINT, json=payload)

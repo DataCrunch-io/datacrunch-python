@@ -45,7 +45,7 @@ class Volume:
         :param instance_id: the instance id the volume is attached to, None if detached
         :type instance_id: str
         :param ssh_key_ids: list of ssh keys ids
-        :type ssh_key_ids: List[str]
+        :type ssh_key_ids: list[str]
         :param deleted_at: the time the volume was deleted (UTC), defaults to None
         :type deleted_at: str, optional
         """
@@ -157,7 +157,7 @@ class Volume:
         """Get the SSH key IDs of the instance.
 
         :return: SSH key IDs
-        :rtype: List[str]
+        :rtype: list[str]
         """
         return self._ssh_key_ids
 
@@ -215,7 +215,7 @@ class VolumesService:
         :param status: optional, status of the volumes, defaults to None
         :type status: str, optional
         :return: list of volume details objects
-        :rtype: List[Volume]
+        :rtype: list[Volume]
         """
         volumes_dict = self._http_client.get(VOLUMES_ENDPOINT, params={'status': status}).json()
         return list(map(Volume.create_from_dict, volumes_dict))
@@ -236,7 +236,7 @@ class VolumesService:
         """Get all volumes that are in trash.
 
         :return: list of volume details objects
-        :rtype: List[Volume]
+        :rtype: list[Volume]
         """
         volumes_dicts = self._http_client.get(VOLUMES_ENDPOINT + '/trash').json()
 
@@ -282,7 +282,7 @@ class VolumesService:
         Note: the instance needs to be shut-down (offline)
 
         :param id_list: list of volume ids, or a volume id
-        :type id_list: Union[List[str], str]
+        :type id_list: Union[list[str], str]
         :param instance_id: instance id the volume(s) will be attached to
         :type instance_id: str
         """
@@ -301,7 +301,7 @@ class VolumesService:
         Note: the instances need to be shut-down (offline)
 
         :param id_list: list of volume ids, or a volume id
-        :type id_list: Union[List[str], str]
+        :type id_list: Union[list[str], str]
         """
         payload = {
             'id': id_list,
@@ -315,13 +315,13 @@ class VolumesService:
         """Clone a volume or multiple volumes.
 
         :param id: volume id or list of volume ids
-        :type id: str or List[str]
+        :type id: str or list[str]
         :param name: new volume name
         :type name: str
         :param type: volume type
         :type type: str, optional
         :return: the new volume object, or a list of volume objects if cloned mutliple volumes
-        :rtype: Volume or List[Volume]
+        :rtype: Volume or list[Volume]
         """
         payload = {'id': id, 'action': VolumeActions.CLONE, 'name': name, 'type': type}
 
@@ -342,7 +342,7 @@ class VolumesService:
         """Rename multiple volumes or single volume.
 
         :param id_list: list of volume ids, or a volume id
-        :type id_list: Union[List[str], str]
+        :type id_list: Union[list[str], str]
         :param name: new name
         :type name: str
         """
@@ -355,7 +355,7 @@ class VolumesService:
         """Increase size of multiple volumes or single volume.
 
         :param id_list: list of volume ids, or a volume id
-        :type id_list: Union[List[str], str]
+        :type id_list: Union[list[str], str]
         :param size: new size in GB
         :type size: int
         """
@@ -374,7 +374,7 @@ class VolumesService:
         Note: if attached to any instances, they need to be shut-down (offline)
 
         :param id_list: list of volume ids, or a volume id
-        :type id_list: Union[List[str], str]
+        :type id_list: Union[list[str], str]
         """
         payload = {
             'id': id_list,

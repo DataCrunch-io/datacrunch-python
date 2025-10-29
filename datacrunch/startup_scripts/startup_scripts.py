@@ -56,7 +56,7 @@ class StartupScriptsService:
         """Get all of the client's startup scripts.
 
         :return: list of startup script objects
-        :rtype: List[StartupScript]
+        :rtype: list[StartupScript]
         """
         scripts = self._http_client.get(STARTUP_SCRIPTS_ENDPOINT).json()
         scripts_objects = [
@@ -80,7 +80,7 @@ class StartupScriptsService:
         """Delete multiple startup scripts by id.
 
         :param id_list: list of startup scripts ids
-        :type id_list: List[str]
+        :type id_list: list[str]
         """
         payload = {'scripts': id_list}
         self._http_client.delete(STARTUP_SCRIPTS_ENDPOINT, json=payload)

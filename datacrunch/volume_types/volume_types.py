@@ -52,7 +52,7 @@ class VolumeTypesService:
         """Get all volume types.
 
         :return: list of volume type objects
-        :rtype: List[VolumesType]
+        :rtype: list[VolumesType]
         """
         volume_types = self._http_client.get(VOLUME_TYPES_ENDPOINT).json()
         volume_type_objects = [

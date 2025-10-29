@@ -483,7 +483,7 @@ class AsyncInferenceExecution:
         """Get the current status of the async inference execution. Return the status json.
 
         Returns:
-            Dict[str, Any]: The status response containing the execution status and other metadata
+            dict[str, Any]: The status response containing the execution status and other metadata
         """
         url = (
             f'{self._inference_client.base_domain}/status/{self._inference_client.deployment_name}'
@@ -504,7 +504,7 @@ class AsyncInferenceExecution:
         """Get the results of the async inference execution.
 
         Returns:
-            Dict[str, Any]: The results of the inference execution
+            dict[str, Any]: The results of the inference execution
         """
         url = (
             f'{self._inference_client.base_domain}/result/{self._inference_client.deployment_name}'

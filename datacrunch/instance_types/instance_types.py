@@ -171,7 +171,7 @@ class InstanceTypesService:
         """Get all instance types.
 
         :return: list of instance type objects
-        :rtype: List[InstanceType]
+        :rtype: list[InstanceType]
         """
         instance_types = self._http_client.get(INSTANCE_TYPES_ENDPOINT).json()
         instance_type_objects = [
