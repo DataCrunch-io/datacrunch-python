@@ -82,12 +82,7 @@ class ImagesService:
         :rtype: List[Image]
         """
         images = self._http_client.get(IMAGES_ENDPOINT).json()
-        image_objects = list(
-            map(
-                lambda image: Image(
+        image_objects = [Image(
                     image['id'], image['name'], image['image_type'], image['details']
-                ),
-                images,
-            )
-        )
+                ) for image in images]
         return image_objects

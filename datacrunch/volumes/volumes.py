@@ -329,7 +329,7 @@ class VolumesService:
         volume_ids_array = self._http_client.put(VOLUMES_ENDPOINT, json=payload).json()
 
         # map the IDs into Volume objects
-        volumes_array = list(map(lambda volume_id: self.get_by_id(volume_id), volume_ids_array))
+        volumes_array = [self.get_by_id(volume_id) for volume_id in volume_ids_array]
 
         # if the array has only one element, return that element
         if len(volumes_array) == 1:

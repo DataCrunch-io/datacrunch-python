@@ -61,7 +61,7 @@ class SSHKeysService:
         :rtype: List[SSHKey]
         """
         keys = self._http_client.get(SSHKEYS_ENDPOINT).json()
-        keys_object_list = list(map(lambda key: SSHKey(key['id'], key['name'], key['key']), keys))
+        keys_object_list = [SSHKey(key['id'], key['name'], key['key']) for key in keys]
 
         return keys_object_list
 

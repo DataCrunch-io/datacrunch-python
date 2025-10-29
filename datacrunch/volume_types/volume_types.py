@@ -55,14 +55,9 @@ class VolumeTypesService:
         :rtype: List[VolumesType]
         """
         volume_types = self._http_client.get(VOLUME_TYPES_ENDPOINT).json()
-        volume_type_objects = list(
-            map(
-                lambda volume_type: VolumeType(
+        volume_type_objects = [VolumeType(
                     type=volume_type['type'],
                     price_per_month_per_gb=volume_type['price']['price_per_month_per_gb'],
-                ),
-                volume_types,
-            )
-        )
+                ) for volume_type in volume_types]
 
         return volume_type_objects

@@ -12,7 +12,7 @@ datacrunch = DataCrunchClient(DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET)
 
 # Get all SSH keys id's
 ssh_keys = datacrunch.ssh_keys.get()
-ssh_keys_ids = list(map(lambda ssh_key: ssh_key.id, ssh_keys))
+ssh_keys_ids = [ssh_key.id for ssh_key in ssh_keys]
 
 # Create a new instance
 instance = datacrunch.instances.create(

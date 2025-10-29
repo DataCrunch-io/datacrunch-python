@@ -61,12 +61,7 @@ class StartupScriptsService:
         :rtype: List[StartupScript]
         """
         scripts = self._http_client.get(STARTUP_SCRIPTS_ENDPOINT).json()
-        scripts_objects = list(
-            map(
-                lambda script: StartupScript(script['id'], script['name'], script['script']),
-                scripts,
-            )
-        )
+        scripts_objects = [StartupScript(script['id'], script['name'], script['script']) for script in scripts]
         return scripts_objects
 
     def get_by_id(self, id) -> StartupScript:

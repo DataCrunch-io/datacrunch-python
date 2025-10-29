@@ -174,9 +174,7 @@ class InstanceTypesService:
         :rtype: List[InstanceType]
         """
         instance_types = self._http_client.get(INSTANCE_TYPES_ENDPOINT).json()
-        instance_type_objects = list(
-            map(
-                lambda instance_type: InstanceType(
+        instance_type_objects = [InstanceType(
                     id=instance_type['id'],
                     instance_type=instance_type['instance_type'],
                     price_per_hour=instance_type['price_per_hour'],
@@ -187,9 +185,6 @@ class InstanceTypesService:
                     memory=instance_type['memory'],
                     gpu_memory=instance_type['gpu_memory'],
                     storage=instance_type['storage'],
-                ),
-                instance_types,
-            )
-        )
+                ) for instance_type in instance_types]
 
         return instance_type_objects
