@@ -1,6 +1,7 @@
+from collections.abc import Generator
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Generator, Optional, Union
+from typing import Any
 from urllib.parse import urlparse
 
 import requests
@@ -137,7 +138,7 @@ class InferenceClient:
         self._session.close()
 
     @property
-    def global_headers(self) -> Dict[str, str]:
+    def global_headers(self) -> dict[str, str]:
         """
         Get the current global headers that will be used for all requests.
 
@@ -156,7 +157,7 @@ class InferenceClient:
         """
         self._global_headers[key] = value
 
-    def set_global_headers(self, headers: Dict[str, str]) -> None:
+    def set_global_headers(self, headers: dict[str, str]) -> None:
         """
         Set multiple global headers at once that will be used for all requests.
 
@@ -180,8 +181,8 @@ class InferenceClient:
         return f'{self.endpoint_base_url}/{path.lstrip("/")}'
 
     def _build_request_headers(
-        self, request_headers: Optional[Dict[str, str]] = None
-    ) -> Dict[str, str]:
+        self, request_headers: dict[str, str] | None = None
+    ) -> dict[str, str]:
         """
         Build the final headers by merging global headers with request-specific headers.
 
@@ -229,10 +230,10 @@ class InferenceClient:
 
     def run_sync(
         self,
-        data: Dict[str, Any],
+        data: dict[str, Any],
         path: str = '',
         timeout_seconds: int = 60 * 5,
-        headers: Optional[Dict[str, str]] = None,
+        headers: dict[str, str] | None = None,
         http_method: str = 'POST',
         stream: bool = False,
     ):
@@ -270,10 +271,10 @@ class InferenceClient:
 
     def run(
         self,
-        data: Dict[str, Any],
+        data: dict[str, Any],
         path: str = '',
         timeout_seconds: int = 60 * 5,
-        headers: Optional[Dict[str, str]] = None,
+        headers: dict[str, str] | None = None,
         http_method: str = 'POST',
         no_response: bool = False,
     ):
@@ -326,9 +327,9 @@ class InferenceClient:
     def get(
         self,
         path: str,
-        params: Optional[Dict[str, Any]] = None,
-        headers: Optional[Dict[str, str]] = None,
-        timeout_seconds: Optional[int] = None,
+        params: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
+        timeout_seconds: int | None = None,
     ) -> requests.Response:
         return self._make_request(
             'GET', path, params=params, headers=headers, timeout_seconds=timeout_seconds
@@ -337,11 +338,11 @@ class InferenceClient:
     def post(
         self,
         path: str,
-        json: Optional[Dict[str, Any]] = None,
-        data: Optional[Union[str, Dict[str, Any]]] = None,
-        params: Optional[Dict[str, Any]] = None,
-        headers: Optional[Dict[str, str]] = None,
-        timeout_seconds: Optional[int] = None,
+        json: dict[str, Any] | None = None,
+        data: str | dict[str, Any] | None = None,
+        params: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
+        timeout_seconds: int | None = None,
     ) -> requests.Response:
         return self._make_request(
             'POST',
@@ -356,11 +357,11 @@ class InferenceClient:
     def put(
         self,
         path: str,
-        json: Optional[Dict[str, Any]] = None,
-        data: Optional[Union[str, Dict[str, Any]]] = None,
-        params: Optional[Dict[str, Any]] = None,
-        headers: Optional[Dict[str, str]] = None,
-        timeout_seconds: Optional[int] = None,
+        json: dict[str, Any] | None = None,
+        data: str | dict[str, Any] | None = None,
+        params: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
+        timeout_seconds: int | None = None,
     ) -> requests.Response:
         return self._make_request(
             'PUT',
@@ -375,9 +376,9 @@ class InferenceClient:
     def delete(
         self,
         path: str,
-        params: Optional[Dict[str, Any]] = None,
-        headers: Optional[Dict[str, str]] = None,
-        timeout_seconds: Optional[int] = None,
+        params: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
+        timeout_seconds: int | None = None,
     ) -> requests.Response:
         return self._make_request(
             'DELETE',
@@ -390,11 +391,11 @@ class InferenceClient:
     def patch(
         self,
         path: str,
-        json: Optional[Dict[str, Any]] = None,
-        data: Optional[Union[str, Dict[str, Any]]] = None,
-        params: Optional[Dict[str, Any]] = None,
-        headers: Optional[Dict[str, str]] = None,
-        timeout_seconds: Optional[int] = None,
+        json: dict[str, Any] | None = None,
+        data: str | dict[str, Any] | None = None,
+        params: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
+        timeout_seconds: int | None = None,
     ) -> requests.Response:
         return self._make_request(
             'PATCH',
@@ -409,9 +410,9 @@ class InferenceClient:
     def head(
         self,
         path: str,
-        params: Optional[Dict[str, Any]] = None,
-        headers: Optional[Dict[str, str]] = None,
-        timeout_seconds: Optional[int] = None,
+        params: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
+        timeout_seconds: int | None = None,
     ) -> requests.Response:
         return self._make_request(
             'HEAD',
@@ -424,9 +425,9 @@ class InferenceClient:
     def options(
         self,
         path: str,
-        params: Optional[Dict[str, Any]] = None,
-        headers: Optional[Dict[str, str]] = None,
-        timeout_seconds: Optional[int] = None,
+        params: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
+        timeout_seconds: int | None = None,
     ) -> requests.Response:
         return self._make_request(
             'OPTIONS',
@@ -469,7 +470,7 @@ class AsyncInferenceExecution:
 
         return self._status
 
-    def status_json(self) -> Dict[str, Any]:
+    def status_json(self) -> dict[str, Any]:
         """Get the current status of the async inference execution. Return the status json
 
         Returns:
@@ -490,7 +491,7 @@ class AsyncInferenceExecution:
 
         return response_json
 
-    def result(self) -> Dict[str, Any]:
+    def result(self) -> dict[str, Any]:
         """Get the results of the async inference execution.
 
         Returns:

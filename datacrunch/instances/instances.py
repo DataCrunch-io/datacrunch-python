@@ -1,7 +1,7 @@
 import itertools
 import time
 from dataclasses import dataclass
-from typing import Dict, List, Literal, Optional, Union
+from typing import Literal
 
 from dataclasses_json import dataclass_json
 
@@ -49,22 +49,22 @@ class Instance:
     description: str
     status: str
     created_at: str
-    ssh_key_ids: List[str]
+    ssh_key_ids: list[str]
     cpu: dict
     gpu: dict
     memory: dict
     storage: dict
     gpu_memory: dict
     # Can be None if instance is still not provisioned
-    ip: Optional[str] = None
+    ip: str | None = None
     # Can be None if instance is still not provisioned
-    os_volume_id: Optional[str] = None
+    os_volume_id: str | None = None
     location: str = Locations.FIN_03
-    image: Optional[str] = None
-    startup_script_id: Optional[str] = None
+    image: str | None = None
+    startup_script_id: str | None = None
     is_spot: bool = False
-    contract: Optional[Contract] = None
-    pricing: Optional[Pricing] = None
+    contract: Contract | None = None
+    pricing: Pricing | None = None
 
 
 class InstancesService:
@@ -82,7 +82,7 @@ class InstancesService:
         """
         self._http_client = http_client
 
-    def get(self, status: Optional[str] = None) -> List[Instance]:
+    def get(self, status: str | None = None) -> list[Instance]:
         """Retrieves all non-deleted instances or instances with specific status.
 
         Args:
@@ -121,14 +121,14 @@ class InstancesService:
         description: str,
         ssh_key_ids: list = [],
         location: str = Locations.FIN_03,
-        startup_script_id: Optional[str] = None,
-        volumes: Optional[List[Dict]] = None,
-        existing_volumes: Optional[List[str]] = None,
-        os_volume: Optional[Dict] = None,
+        startup_script_id: str | None = None,
+        volumes: list[dict] | None = None,
+        existing_volumes: list[str] | None = None,
+        os_volume: dict | None = None,
         is_spot: bool = False,
-        contract: Optional[Contract] = None,
-        pricing: Optional[Pricing] = None,
-        coupon: Optional[str] = None,
+        contract: Contract | None = None,
+        pricing: Pricing | None = None,
+        coupon: str | None = None,
         *,
         max_wait_time: float = 180,
         initial_interval: float = 0.5,
@@ -201,9 +201,9 @@ class InstancesService:
 
     def action(
         self,
-        id_list: Union[List[str], str],
+        id_list: list[str] | str,
         action: str,
-        volume_ids: Optional[List[str]] = None,
+        volume_ids: list[str] | None = None,
     ) -> None:
         """Performs an action on one or more instances.
 
@@ -227,7 +227,7 @@ class InstancesService:
         self,
         instance_type: str,
         is_spot: bool = False,
-        location_code: Optional[str] = None,
+        location_code: str | None = None,
     ) -> bool:
         """Checks if a specific instance type is available for deployment.
 
@@ -245,8 +245,8 @@ class InstancesService:
         return self._http_client.get(url, query_params).json()
 
     def get_availabilities(
-        self, is_spot: Optional[bool] = None, location_code: Optional[str] = None
-    ) -> List[Dict]:
+        self, is_spot: bool | None = None, location_code: str | None = None
+    ) -> list[dict]:
         """Retrieves a list of available instance types across locations.
 
         Args:

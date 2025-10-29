@@ -8,7 +8,7 @@ import base64
 import os
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from dataclasses_json import Undefined, dataclass_json  # type: ignore
 
@@ -81,8 +81,8 @@ class HealthcheckSettings:
     """
 
     enabled: bool = True
-    port: Optional[int] = None
-    path: Optional[str] = None
+    port: int | None = None
+    path: str | None = None
 
 
 @dataclass_json
@@ -97,8 +97,8 @@ class EntrypointOverridesSettings:
     """
 
     enabled: bool = True
-    entrypoint: Optional[List[str]] = None
-    cmd: Optional[List[str]] = None
+    entrypoint: list[str] | None = None
+    cmd: list[str] | None = None
 
 
 @dataclass_json
@@ -131,7 +131,7 @@ class VolumeMount:
     type: VolumeMountType
     mount_path: str
     # Deprecated: use MemoryMount for memory volumes instead.
-    size_in_mb: Optional[int] = field(default=None, kw_only=True)
+    size_in_mb: int | None = field(default=None, kw_only=True)
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -161,9 +161,9 @@ class SecretMount(VolumeMount):
     """
 
     secret_name: str
-    file_names: Optional[List[str]] = None
+    file_names: list[str] | None = None
 
-    def __init__(self, mount_path: str, secret_name: str, file_names: Optional[List[str]] = None):
+    def __init__(self, mount_path: str, secret_name: str, file_names: list[str] | None = None):
         self.secret_name = secret_name
         self.file_names = file_names
         super().__init__(type=VolumeMountType.SECRET, mount_path=mount_path)
@@ -218,13 +218,13 @@ class Container:
         volume_mounts: Optional list of volume mounts.
     """
 
-    image: Union[str, dict]
+    image: str | dict
     exposed_port: int
-    name: Optional[str] = None
-    healthcheck: Optional[HealthcheckSettings] = None
-    entrypoint_overrides: Optional[EntrypointOverridesSettings] = None
-    env: Optional[List[EnvVar]] = None
-    volume_mounts: Optional[List[VolumeMount]] = None
+    name: str | None = None
+    healthcheck: HealthcheckSettings | None = None
+    entrypoint_overrides: EntrypointOverridesSettings | None = None
+    env: list[EnvVar] | None = None
+    volume_mounts: list[VolumeMount] | None = None
 
 
 @dataclass_json
@@ -250,7 +250,7 @@ class ContainerRegistrySettings:
     """
 
     is_private: bool
-    credentials: Optional[ContainerRegistryCredentials] = None
+    credentials: ContainerRegistryCredentials | None = None
 
 
 @dataclass_json
@@ -267,7 +267,7 @@ class ComputeResource:
     name: str
     size: int
     # Made optional since it's only used in API responses
-    is_available: Optional[bool] = None
+    is_available: bool | None = None
 
 
 @dataclass_json
@@ -305,7 +305,7 @@ class UtilizationScalingTrigger:
     """
 
     enabled: bool
-    threshold: Optional[float] = None
+    threshold: float | None = None
 
 
 @dataclass_json
@@ -319,9 +319,9 @@ class ScalingTriggers:
         gpu_utilization: Optional trigger based on GPU utilization.
     """
 
-    queue_load: Optional[QueueLoadScalingTrigger] = None
-    cpu_utilization: Optional[UtilizationScalingTrigger] = None
-    gpu_utilization: Optional[UtilizationScalingTrigger] = None
+    queue_load: QueueLoadScalingTrigger | None = None
+    cpu_utilization: UtilizationScalingTrigger | None = None
+    gpu_utilization: UtilizationScalingTrigger | None = None
 
 
 @dataclass_json
@@ -365,17 +365,17 @@ class Deployment:
     """
 
     name: str
-    containers: List[Container]
+    containers: list[Container]
     compute: ComputeResource
     container_registry_settings: ContainerRegistrySettings = field(
         default_factory=lambda: ContainerRegistrySettings(is_private=False)
     )
     is_spot: bool = False
-    endpoint_base_url: Optional[str] = None
-    scaling: Optional[ScalingOptions] = None
-    created_at: Optional[str] = None
+    endpoint_base_url: str | None = None
+    scaling: ScalingOptions | None = None
+    created_at: str | None = None
 
-    _inference_client: Optional[InferenceClient] = None
+    _inference_client: InferenceClient | None = None
 
     def __str__(self):
         """Returns a string representation of the deployment, excluding sensitive information.
@@ -399,7 +399,7 @@ class Deployment:
 
     @classmethod
     def from_dict_with_inference_key(
-        cls, data: Dict[str, Any], inference_key: str = None
+        cls, data: dict[str, Any], inference_key: str = None
     ) -> 'Deployment':
         """Creates a Deployment instance from a dictionary with an inference key.
 
@@ -446,10 +446,10 @@ class Deployment:
 
     def run_sync(
         self,
-        data: Dict[str, Any],
+        data: dict[str, Any],
         path: str = '',
         timeout_seconds: int = 60 * 5,
-        headers: Optional[Dict[str, str]] = None,
+        headers: dict[str, str] | None = None,
         http_method: str = 'POST',
         stream: bool = False,
     ) -> InferenceResponse:
@@ -476,10 +476,10 @@ class Deployment:
 
     def run(
         self,
-        data: Dict[str, Any],
+        data: dict[str, Any],
         path: str = '',
         timeout_seconds: int = 60 * 5,
-        headers: Optional[Dict[str, str]] = None,
+        headers: dict[str, str] | None = None,
         http_method: str = 'POST',
         stream: bool = False,
     ):
@@ -741,7 +741,7 @@ class ContainersService:
         self.client = http_client
         self._inference_key = inference_key
 
-    def get_deployments(self) -> List[Deployment]:
+    def get_deployments(self) -> list[Deployment]:
         """Retrieves all container deployments.
 
         Returns:
@@ -853,7 +853,7 @@ class ContainersService:
         )
         return ScalingOptions.from_dict(response.json())
 
-    def get_deployment_replicas(self, deployment_name: str) -> List[ReplicaInfo]:
+    def get_deployment_replicas(self, deployment_name: str) -> list[ReplicaInfo]:
         """Retrieves information about deployment replicas.
 
         Args:
@@ -889,7 +889,7 @@ class ContainersService:
         """
         self.client.post(f'{CONTAINER_DEPLOYMENTS_ENDPOINT}/{deployment_name}/resume')
 
-    def get_deployment_environment_variables(self, deployment_name: str) -> Dict[str, List[EnvVar]]:
+    def get_deployment_environment_variables(self, deployment_name: str) -> dict[str, list[EnvVar]]:
         """Retrieves environment variables for a deployment.
 
         Args:
@@ -909,8 +909,8 @@ class ContainersService:
         return result
 
     def add_deployment_environment_variables(
-        self, deployment_name: str, container_name: str, env_vars: List[EnvVar]
-    ) -> Dict[str, List[EnvVar]]:
+        self, deployment_name: str, container_name: str, env_vars: list[EnvVar]
+    ) -> dict[str, list[EnvVar]]:
         """Adds environment variables to a container in a deployment.
 
         Args:
@@ -936,8 +936,8 @@ class ContainersService:
         return result
 
     def update_deployment_environment_variables(
-        self, deployment_name: str, container_name: str, env_vars: List[EnvVar]
-    ) -> Dict[str, List[EnvVar]]:
+        self, deployment_name: str, container_name: str, env_vars: list[EnvVar]
+    ) -> dict[str, list[EnvVar]]:
         """Updates environment variables for a container in a deployment.
 
         Args:
@@ -963,8 +963,8 @@ class ContainersService:
         return result
 
     def delete_deployment_environment_variables(
-        self, deployment_name: str, container_name: str, env_var_names: List[str]
-    ) -> Dict[str, List[EnvVar]]:
+        self, deployment_name: str, container_name: str, env_var_names: list[str]
+    ) -> dict[str, list[EnvVar]]:
         """Deletes environment variables from a container in a deployment.
 
         Args:
@@ -988,7 +988,7 @@ class ContainersService:
 
     def get_compute_resources(
         self, size: int = None, is_available: bool = None
-    ) -> List[ComputeResource]:
+    ) -> list[ComputeResource]:
         """Retrieves compute resources, optionally filtered by size and availability.
 
         Args:
@@ -1013,7 +1013,7 @@ class ContainersService:
     # Function alias
     get_gpus = get_compute_resources
 
-    def get_secrets(self) -> List[Secret]:
+    def get_secrets(self) -> list[Secret]:
         """Retrieves all secrets.
 
         Returns:
@@ -1042,7 +1042,7 @@ class ContainersService:
             f'{SECRETS_ENDPOINT}/{secret_name}', params={'force': str(force).lower()}
         )
 
-    def get_registry_credentials(self) -> List[RegistryCredential]:
+    def get_registry_credentials(self) -> list[RegistryCredential]:
         """Retrieves all registry credentials.
 
         Returns:
@@ -1068,7 +1068,7 @@ class ContainersService:
         """
         self.client.delete(f'{CONTAINER_REGISTRY_CREDENTIALS_ENDPOINT}/{credentials_name}')
 
-    def get_fileset_secrets(self) -> List[Secret]:
+    def get_fileset_secrets(self) -> list[Secret]:
         """Retrieves all fileset secrets.
 
         Returns:
@@ -1086,7 +1086,7 @@ class ContainersService:
         self.client.delete(f'{FILESET_SECRETS_ENDPOINT}/{secret_name}')
 
     def create_fileset_secret_from_file_paths(
-        self, secret_name: str, file_paths: List[str]
+        self, secret_name: str, file_paths: list[str]
     ) -> None:
         """Creates a new fileset secret.
         A fileset secret is a secret that contains several files,

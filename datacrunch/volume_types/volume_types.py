@@ -1,5 +1,3 @@
-from typing import List
-
 VOLUME_TYPES_ENDPOINT = '/volume-types'
 
 
@@ -48,7 +46,7 @@ class VolumeTypesService:
     def __init__(self, http_client) -> None:
         self._http_client = http_client
 
-    def get(self) -> List[VolumeType]:
+    def get(self) -> list[VolumeType]:
         """Get all volume types
 
         :return: list of volume type objects

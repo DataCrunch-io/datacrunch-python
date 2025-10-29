@@ -1,5 +1,3 @@
-from typing import List
-
 STARTUP_SCRIPTS_ENDPOINT = '/scripts'
 
 
@@ -54,7 +52,7 @@ class StartupScriptsService:
     def __init__(self, http_client) -> None:
         self._http_client = http_client
 
-    def get(self) -> List[StartupScript]:
+    def get(self) -> list[StartupScript]:
         """Get all of the client's startup scripts
 
         :return: list of startup script objects
@@ -76,7 +74,7 @@ class StartupScriptsService:
 
         return StartupScript(script['id'], script['name'], script['script'])
 
-    def delete(self, id_list: List[str]) -> None:
+    def delete(self, id_list: list[str]) -> None:
         """Delete multiple startup scripts by id
 
         :param id_list: list of startup scripts ids

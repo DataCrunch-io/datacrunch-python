@@ -1,5 +1,3 @@
-from typing import List
-
 from datacrunch.helpers import stringify_class_object_properties
 
 IMAGES_ENDPOINT = '/images'
@@ -8,7 +6,7 @@ IMAGES_ENDPOINT = '/images'
 class Image:
     """An image model class"""
 
-    def __init__(self, id: str, name: str, image_type: str, details: List[str]) -> None:
+    def __init__(self, id: str, name: str, image_type: str, details: list[str]) -> None:
         """Initialize an image object
 
         :param id: image id
@@ -53,7 +51,7 @@ class Image:
         return self._image_type
 
     @property
-    def details(self) -> List[str]:
+    def details(self) -> list[str]:
         """Get the image details
 
         :return: image details
@@ -76,7 +74,7 @@ class ImagesService:
     def __init__(self, http_client) -> None:
         self._http_client = http_client
 
-    def get(self) -> List[Image]:
+    def get(self) -> list[Image]:
         """Get the available instance images
 
         :return: list of images objects

@@ -1,5 +1,3 @@
-from typing import List
-
 SSHKEYS_ENDPOINT = '/sshkeys'
 
 
@@ -54,7 +52,7 @@ class SSHKeysService:
     def __init__(self, http_client) -> None:
         self._http_client = http_client
 
-    def get(self) -> List[SSHKey]:
+    def get(self) -> list[SSHKey]:
         """Get all of the client's SSH keys
 
         :return: list of SSH keys objects
@@ -77,7 +75,7 @@ class SSHKeysService:
         key_object = SSHKey(key_dict['id'], key_dict['name'], key_dict['key'])
         return key_object
 
-    def delete(self, id_list: List[str]) -> None:
+    def delete(self, id_list: list[str]) -> None:
         """Delete multiple SSH keys by id
 
         :param id_list: list of SSH keys ids

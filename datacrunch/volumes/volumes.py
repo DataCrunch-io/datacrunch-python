@@ -1,5 +1,3 @@
-from typing import List, Optional, Union
-
 from datacrunch.constants import Locations, VolumeActions
 from datacrunch.helpers import stringify_class_object_properties
 
@@ -21,7 +19,7 @@ class Volume:
         target: str = None,
         location: str = Locations.FIN_03,
         instance_id: str = None,
-        ssh_key_ids: List[str] = [],
+        ssh_key_ids: list[str] = [],
         deleted_at: str = None,
     ) -> None:
         """Initialize the volume object
@@ -128,7 +126,7 @@ class Volume:
         return self._created_at
 
     @property
-    def target(self) -> Optional[str]:
+    def target(self) -> str | None:
         """Get the target device
 
         :return: target device
@@ -146,7 +144,7 @@ class Volume:
         return self._location
 
     @property
-    def instance_id(self) -> Optional[str]:
+    def instance_id(self) -> str | None:
         """Get the instance id the volume is attached to, if attached. Otherwise None
 
         :return: instance id if attached, None otherwise
@@ -155,7 +153,7 @@ class Volume:
         return self._instance_id
 
     @property
-    def ssh_key_ids(self) -> List[str]:
+    def ssh_key_ids(self) -> list[str]:
         """Get the SSH key IDs of the instance
 
         :return: SSH key IDs
@@ -164,7 +162,7 @@ class Volume:
         return self._ssh_key_ids
 
     @property
-    def deleted_at(self) -> Optional[str]:
+    def deleted_at(self) -> str | None:
         """Get the time when the volume was deleted (UTC)
 
         :return: time
@@ -212,7 +210,7 @@ class VolumesService:
     def __init__(self, http_client) -> None:
         self._http_client = http_client
 
-    def get(self, status: str = None) -> List[Volume]:
+    def get(self, status: str = None) -> list[Volume]:
         """Get all of the client's non-deleted volumes, or volumes with specific status.
 
         :param status: optional, status of the volumes, defaults to None
@@ -235,7 +233,7 @@ class VolumesService:
 
         return Volume.create_from_dict(volume_dict)
 
-    def get_in_trash(self) -> List[Volume]:
+    def get_in_trash(self) -> list[Volume]:
         """Get all volumes that are in trash
 
         :return: list of volume details objects
@@ -279,7 +277,7 @@ class VolumesService:
         volume = self.get_by_id(id)
         return volume
 
-    def attach(self, id_list: Union[List[str], str], instance_id: str) -> None:
+    def attach(self, id_list: list[str] | str, instance_id: str) -> None:
         """Attach multiple volumes or single volume to an instance
         Note: the instance needs to be shut-down (offline)
 
@@ -297,7 +295,7 @@ class VolumesService:
         self._http_client.put(VOLUMES_ENDPOINT, json=payload)
         return
 
-    def detach(self, id_list: Union[List[str], str]) -> None:
+    def detach(self, id_list: list[str] | str) -> None:
         """Detach multiple volumes or single volume from an instance(s)
         Note: the instances need to be shut-down (offline)
 
@@ -339,7 +337,7 @@ class VolumesService:
         # otherwise return the volumes array
         return volumes_array
 
-    def rename(self, id_list: Union[List[str], str], name: str) -> None:
+    def rename(self, id_list: list[str] | str, name: str) -> None:
         """Rename multiple volumes or single volume
 
         :param id_list: list of volume ids, or a volume id
@@ -352,7 +350,7 @@ class VolumesService:
         self._http_client.put(VOLUMES_ENDPOINT, json=payload)
         return
 
-    def increase_size(self, id_list: Union[List[str], str], size: int) -> None:
+    def increase_size(self, id_list: list[str] | str, size: int) -> None:
         """Increase size of multiple volumes or single volume
 
         :param id_list: list of volume ids, or a volume id
@@ -369,7 +367,7 @@ class VolumesService:
         self._http_client.put(VOLUMES_ENDPOINT, json=payload)
         return
 
-    def delete(self, id_list: Union[List[str], str], is_permanent: bool = False) -> None:
+    def delete(self, id_list: list[str] | str, is_permanent: bool = False) -> None:
         """Delete multiple volumes or single volume
         Note: if attached to any instances, they need to be shut-down (offline)
 

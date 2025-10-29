@@ -8,7 +8,6 @@ It shows how to:
 """
 
 import os
-from typing import Dict, List
 
 from datacrunch import DataCrunchClient
 from datacrunch.containers import EnvVar, EnvVarType
@@ -25,7 +24,7 @@ DEPLOYMENT_NAME = 'my-deployment'
 CONTAINER_NAME = 'main'
 
 
-def print_env_vars(env_vars: Dict[str, List[EnvVar]]) -> None:
+def print_env_vars(env_vars: dict[str, list[EnvVar]]) -> None:
     """Helper function to print environment variables"""
     print('\nCurrent environment variables:')
     for container_name, vars in env_vars.items():

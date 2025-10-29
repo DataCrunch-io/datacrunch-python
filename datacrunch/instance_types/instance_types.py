@@ -1,5 +1,3 @@
-from typing import List
-
 INSTANCE_TYPES_ENDPOINT = '/instance-types'
 
 
@@ -167,7 +165,7 @@ class InstanceTypesService:
     def __init__(self, http_client) -> None:
         self._http_client = http_client
 
-    def get(self) -> List[InstanceType]:
+    def get(self) -> list[InstanceType]:
         """Get all instance types
 
         :return: list of instance type objects
