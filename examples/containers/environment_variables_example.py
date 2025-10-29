@@ -27,9 +27,9 @@ CONTAINER_NAME = 'main'
 def print_env_vars(env_vars: dict[str, list[EnvVar]]) -> None:
     """Helper function to print environment variables"""
     print('\nCurrent environment variables:')
-    for container_name, vars in env_vars.items():
+    for container_name, ev in env_vars.items():
         print(f'\nContainer: {container_name}')
-        for var in vars:
+        for var in ev:
             print(f'  {var.name}: {var.value_or_reference_to_secret} ({var.type})')
 
 

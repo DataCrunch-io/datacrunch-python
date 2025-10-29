@@ -211,7 +211,7 @@ class TestAuthenticationService:
             == f'{{"grant_type": "refresh_token", "refresh_token": "{REFRESH_TOKEN}"}}'.encode()
         )
 
-    def test_is_expired(self, authentication_service, endpoint):
+    def test_is_expired(self, authentication_service):
         # arrange
         current_time = time.time()
         future_time = current_time + 3600

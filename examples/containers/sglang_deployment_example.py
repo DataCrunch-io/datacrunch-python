@@ -89,7 +89,7 @@ def cleanup_resources(datacrunch_client: DataCrunchClient) -> None:
         print(f'Error during cleanup: {e}')
 
 
-def graceful_shutdown(signum, frame) -> None:
+def graceful_shutdown(signum, _frame) -> None:
     """Handle graceful shutdown on signals."""
     print(f'\nSignal {signum} received, cleaning up resources...')
     try:

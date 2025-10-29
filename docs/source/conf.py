@@ -23,7 +23,7 @@ from recommonmark.parser import CommonMarkParser
 current_year = datetime.datetime.now().year
 
 project = 'DataCrunch Python SDK'
-copyright = f'{current_year}, DataCrunch.io'
+copyright = f'{current_year}, DataCrunch.io'  # noqa: A001
 author = 'DataCrunch.io'
 
 try:
