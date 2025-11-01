@@ -1,4 +1,5 @@
 import os
+
 from datacrunch import DataCrunchClient
 
 # Get client secret and id from environment variables

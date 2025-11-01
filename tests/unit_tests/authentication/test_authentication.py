@@ -1,10 +1,11 @@
+import time
+
 import pytest
 import responses  # https://github.com/getsentry/responses
 from responses import matchers
-import time
 
-from datacrunch.exceptions import APIException
 from datacrunch.authentication.authentication import AuthenticationService
+from datacrunch.exceptions import APIException
 
 INVALID_REQUEST = 'invalid_request'
 INVALID_REQUEST_MESSAGE = 'Your existence is invalid'
@@ -210,7 +211,7 @@ class TestAuthenticationService:
             == f'{{"grant_type": "refresh_token", "refresh_token": "{REFRESH_TOKEN}"}}'.encode()
         )
 
-    def test_is_expired(self, authentication_service, endpoint):
+    def test_is_expired(self, authentication_service):
         # arrange
         current_time = time.time()
         future_time = current_time + 3600

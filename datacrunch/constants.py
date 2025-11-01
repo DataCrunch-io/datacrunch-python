@@ -1,4 +1,6 @@
 class Actions:
+    """Instance actions."""
+
     START = 'start'
     SHUTDOWN = 'shutdown'
     DELETE = 'delete'
@@ -10,6 +12,8 @@ class Actions:
 
 
 class VolumeActions:
+    """Storage volume actions."""
+
     ATTACH = 'attach'
     DETACH = 'detach'
     RENAME = 'rename'
@@ -22,6 +26,8 @@ class VolumeActions:
 
 
 class InstanceStatus:
+    """Instance status."""
+
     ORDERED = 'ordered'
     RUNNING = 'running'
     PROVISIONING = 'provisioning'
@@ -36,6 +42,8 @@ class InstanceStatus:
 
 
 class VolumeStatus:
+    """Storage volume status."""
+
     ORDERED = 'ordered'
     CREATING = 'creating'
     ATTACHED = 'attached'
@@ -49,6 +57,8 @@ class VolumeStatus:
 
 
 class VolumeTypes:
+    """Storage volume types."""
+
     NVMe = 'NVMe'
     HDD = 'HDD'
 
@@ -57,6 +67,8 @@ class VolumeTypes:
 
 
 class Locations:
+    """Datacenter locations."""
+
     FIN_01: str = 'FIN-01'
     FIN_02: str = 'FIN-02'
     FIN_03: str = 'FIN-03'
@@ -67,6 +79,8 @@ class Locations:
 
 
 class ErrorCodes:
+    """Error codes."""
+
     INVALID_REQUEST = 'invalid_request'
     UNAUTHORIZED_REQUEST = 'unauthorized_request'
     INSUFFICIENT_FUNDS = 'insufficient_funds'
@@ -80,6 +94,8 @@ class ErrorCodes:
 
 
 class Constants:
+    """Constants."""
+
     def __init__(self, base_url, version):
         self.instance_actions: Actions = Actions()
         """Available actions to perform on an instance"""

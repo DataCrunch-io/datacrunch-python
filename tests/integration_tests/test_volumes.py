@@ -1,8 +1,10 @@
 import os
 import time
+
 import pytest
+
+from datacrunch.constants import Locations, VolumeStatus, VolumeTypes
 from datacrunch.datacrunch import DataCrunchClient
-from datacrunch.constants import Locations, VolumeTypes, VolumeStatus
 
 IN_GITHUB_ACTIONS = os.getenv('GITHUB_ACTIONS') == 'true'
 

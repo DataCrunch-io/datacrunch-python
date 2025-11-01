@@ -1,6 +1,7 @@
 """Example script demonstrating deleting a deployment using the DataCrunch API."""
 
 import os
+
 from datacrunch import DataCrunchClient
 
 DEPLOYMENT_NAME = 'sglang-deployment-example-20250411-160652'

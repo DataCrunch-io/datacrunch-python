@@ -8,25 +8,25 @@ import os
 import time
 
 from datacrunch import DataCrunchClient
-from datacrunch.exceptions import APIException
 from datacrunch.containers import (
-    Container,
     ComputeResource,
+    Container,
+    ContainerDeploymentStatus,
+    ContainerRegistrySettings,
+    Deployment,
     EnvVar,
     EnvVarType,
+    GeneralStorageMount,
+    HealthcheckSettings,
+    QueueLoadScalingTrigger,
     ScalingOptions,
     ScalingPolicy,
     ScalingTriggers,
-    QueueLoadScalingTrigger,
-    UtilizationScalingTrigger,
-    HealthcheckSettings,
-    GeneralStorageMount,
     SecretMount,
     SharedFileSystemMount,
-    ContainerRegistrySettings,
-    Deployment,
-    ContainerDeploymentStatus,
+    UtilizationScalingTrigger,
 )
+from datacrunch.exceptions import APIException
 
 # Configuration constants
 DEPLOYMENT_NAME = 'my-deployment'
@@ -57,7 +57,7 @@ def wait_for_deployment_health(
     Returns:
         bool: True if deployment is healthy, False otherwise
     """
-    for attempt in range(max_attempts):
+    for _attempt in range(max_attempts):
         try:
             status = client.containers.get_deployment_status(deployment_name)
             print(f'Deployment status: {status}')

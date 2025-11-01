@@ -1,6 +1,6 @@
 import responses  # https://github.com/getsentry/responses
 
-from datacrunch.images.images import ImagesService, Image
+from datacrunch.images.images import Image, ImagesService
 
 
 def test_images(http_client):

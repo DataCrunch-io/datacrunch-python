@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Configuration file for the Sphinx documentation builder.
 #
@@ -13,16 +12,18 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import datetime
-from importlib.metadata import version as pkg_version, PackageNotFoundError
-from recommonmark.parser import CommonMarkParser
 import os
 import sys
+from importlib.metadata import PackageNotFoundError
+from importlib.metadata import version as pkg_version
+
+from recommonmark.parser import CommonMarkParser
 
 # -- Project information -----------------------------------------------------
 current_year = datetime.datetime.now().year
 
 project = 'DataCrunch Python SDK'
-copyright = f'{current_year}, DataCrunch.io'
+copyright = f'{current_year}, DataCrunch.io'  # noqa: A001
 author = 'DataCrunch.io'
 
 try:

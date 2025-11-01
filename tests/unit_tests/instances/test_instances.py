@@ -1,9 +1,9 @@
 import pytest
 import responses  # https://github.com/getsentry/responses
 
-from datacrunch.exceptions import APIException
-from datacrunch.instances.instances import InstancesService, Instance
 from datacrunch.constants import Actions, ErrorCodes, Locations
+from datacrunch.exceptions import APIException
+from datacrunch.instances.instances import Instance, InstancesService
 
 INVALID_REQUEST = ErrorCodes.INVALID_REQUEST
 INVALID_REQUEST_MESSAGE = 'Your existence is invalid'

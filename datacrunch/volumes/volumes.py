@@ -1,12 +1,11 @@
-from typing import List, Union, Optional
-from datacrunch.constants import VolumeActions, Locations
+from datacrunch.constants import Locations, VolumeActions
 from datacrunch.helpers import stringify_class_object_properties
 
 VOLUMES_ENDPOINT = '/volumes'
 
 
 class Volume:
-    """A volume model class"""
+    """A volume model class."""
 
     def __init__(
         self,
@@ -17,13 +16,13 @@ class Volume:
         type: str,
         is_os_volume: bool,
         created_at: str,
-        target: str = None,
+        target: str | None = None,
         location: str = Locations.FIN_03,
-        instance_id: str = None,
-        ssh_key_ids: List[str] = [],
-        deleted_at: str = None,
+        instance_id: str | None = None,
+        ssh_key_ids: list[str] = [],
+        deleted_at: str | None = None,
     ) -> None:
-        """Initialize the volume object
+        """Initialize the volume object.
 
         :param id: volume id
         :type id: str
@@ -46,7 +45,7 @@ class Volume:
         :param instance_id: the instance id the volume is attached to, None if detached
         :type instance_id: str
         :param ssh_key_ids: list of ssh keys ids
-        :type ssh_key_ids: List[str]
+        :type ssh_key_ids: list[str]
         :param deleted_at: the time the volume was deleted (UTC), defaults to None
         :type deleted_at: str, optional
         """
@@ -65,7 +64,7 @@ class Volume:
 
     @property
     def id(self) -> str:
-        """Get the volume id
+        """Get the volume id.
 
         :return: volume id
         :rtype: str
@@ -74,7 +73,7 @@ class Volume:
 
     @property
     def status(self) -> str:
-        """Get the volume status
+        """Get the volume status.
 
         :return: volume status
         :rtype: str
@@ -83,7 +82,7 @@ class Volume:
 
     @property
     def name(self) -> str:
-        """Get the volume name
+        """Get the volume name.
 
         :return: volume name
         :rtype: str
@@ -92,7 +91,7 @@ class Volume:
 
     @property
     def size(self) -> int:
-        """Get the volume size
+        """Get the volume size.
 
         :return: volume size
         :rtype: int
@@ -101,7 +100,7 @@ class Volume:
 
     @property
     def type(self) -> int:
-        """Get the volume type
+        """Get the volume type.
 
         :return: volume type
         :rtype: string
@@ -110,7 +109,7 @@ class Volume:
 
     @property
     def is_os_volume(self) -> bool:
-        """Return true iff the volume contains an operating system
+        """Return true iff the volume contains an operating system.
 
         :return: true iff the volume contains an OS
         :rtype: bool
@@ -119,7 +118,7 @@ class Volume:
 
     @property
     def created_at(self) -> str:
-        """Get the time when the volume was created (UTC)
+        """Get the time when the volume was created (UTC).
 
         :return: time
         :rtype: str
@@ -127,8 +126,8 @@ class Volume:
         return self._created_at
 
     @property
-    def target(self) -> Optional[str]:
-        """Get the target device
+    def target(self) -> str | None:
+        """Get the target device.
 
         :return: target device
         :rtype: str, optional
@@ -137,7 +136,7 @@ class Volume:
 
     @property
     def location(self) -> str:
-        """Get the volume datacenter location
+        """Get the volume datacenter location.
 
         :return: datacenter location
         :rtype: str
@@ -145,8 +144,8 @@ class Volume:
         return self._location
 
     @property
-    def instance_id(self) -> Optional[str]:
-        """Get the instance id the volume is attached to, if attached. Otherwise None
+    def instance_id(self) -> str | None:
+        """Get the instance id the volume is attached to, if attached. Otherwise None.
 
         :return: instance id if attached, None otherwise
         :rtype: str, optional
@@ -154,17 +153,17 @@ class Volume:
         return self._instance_id
 
     @property
-    def ssh_key_ids(self) -> List[str]:
-        """Get the SSH key IDs of the instance
+    def ssh_key_ids(self) -> list[str]:
+        """Get the SSH key IDs of the instance.
 
         :return: SSH key IDs
-        :rtype: List[str]
+        :rtype: list[str]
         """
         return self._ssh_key_ids
 
     @property
-    def deleted_at(self) -> Optional[str]:
-        """Get the time when the volume was deleted (UTC)
+    def deleted_at(self) -> str | None:
+        """Get the time when the volume was deleted (UTC).
 
         :return: time
         :rtype: str
@@ -173,14 +172,13 @@ class Volume:
 
     @classmethod
     def create_from_dict(cls: 'Volume', volume_dict: dict) -> 'Volume':
-        """Create a Volume object from a dictionary
+        """Create a Volume object from a dictionary.
 
         :param volume_dict: dictionary representing the volume
         :type volume_dict: dict
         :return: Volume
         :rtype: Volume
         """
-
         return cls(
             id=volume_dict['id'],
             status=volume_dict['status'],
@@ -197,7 +195,7 @@ class Volume:
         )
 
     def __str__(self) -> str:
-        """Returns a string of the json representation of the volume
+        """Returns a string of the json representation of the volume.
 
         :return: json representation of the volume
         :rtype: str
@@ -206,24 +204,24 @@ class Volume:
 
 
 class VolumesService:
-    """A service for interacting with the volumes endpoint"""
+    """A service for interacting with the volumes endpoint."""
 
     def __init__(self, http_client) -> None:
         self._http_client = http_client
 
-    def get(self, status: str = None) -> List[Volume]:
+    def get(self, status: str | None = None) -> list[Volume]:
         """Get all of the client's non-deleted volumes, or volumes with specific status.
 
         :param status: optional, status of the volumes, defaults to None
         :type status: str, optional
         :return: list of volume details objects
-        :rtype: List[Volume]
+        :rtype: list[Volume]
         """
         volumes_dict = self._http_client.get(VOLUMES_ENDPOINT, params={'status': status}).json()
         return list(map(Volume.create_from_dict, volumes_dict))
 
     def get_by_id(self, id: str) -> Volume:
-        """Get a specific volume by its
+        """Get a specific volume by its.
 
         :param id: volume id
         :type id: str
@@ -234,11 +232,11 @@ class VolumesService:
 
         return Volume.create_from_dict(volume_dict)
 
-    def get_in_trash(self) -> List[Volume]:
-        """Get all volumes that are in trash
+    def get_in_trash(self) -> list[Volume]:
+        """Get all volumes that are in trash.
 
         :return: list of volume details objects
-        :rtype: List[Volume]
+        :rtype: list[Volume]
         """
         volumes_dicts = self._http_client.get(VOLUMES_ENDPOINT + '/trash').json()
 
@@ -249,10 +247,10 @@ class VolumesService:
         type: str,
         name: str,
         size: int,
-        instance_id: str = None,
+        instance_id: str | None = None,
         location: str = Locations.FIN_03,
     ) -> Volume:
-        """Create new volume
+        """Create new volume.
 
         :param type: volume type
         :type type: str
@@ -278,12 +276,13 @@ class VolumesService:
         volume = self.get_by_id(id)
         return volume
 
-    def attach(self, id_list: Union[List[str], str], instance_id: str) -> None:
-        """Attach multiple volumes or single volume to an instance
+    def attach(self, id_list: list[str] | str, instance_id: str) -> None:
+        """Attach multiple volumes or single volume to an instance.
+
         Note: the instance needs to be shut-down (offline)
 
         :param id_list: list of volume ids, or a volume id
-        :type id_list: Union[List[str], str]
+        :type id_list: Union[list[str], str]
         :param instance_id: instance id the volume(s) will be attached to
         :type instance_id: str
         """
@@ -296,12 +295,13 @@ class VolumesService:
         self._http_client.put(VOLUMES_ENDPOINT, json=payload)
         return
 
-    def detach(self, id_list: Union[List[str], str]) -> None:
-        """Detach multiple volumes or single volume from an instance(s)
+    def detach(self, id_list: list[str] | str) -> None:
+        """Detach multiple volumes or single volume from an instance(s).
+
         Note: the instances need to be shut-down (offline)
 
         :param id_list: list of volume ids, or a volume id
-        :type id_list: Union[List[str], str]
+        :type id_list: Union[list[str], str]
         """
         payload = {
             'id': id_list,
@@ -311,17 +311,17 @@ class VolumesService:
         self._http_client.put(VOLUMES_ENDPOINT, json=payload)
         return
 
-    def clone(self, id: str, name: str = None, type: str = None) -> Volume:
-        """Clone a volume or multiple volumes
+    def clone(self, id: str, name: str | None = None, type: str | None = None) -> Volume:
+        """Clone a volume or multiple volumes.
 
         :param id: volume id or list of volume ids
-        :type id: str or List[str]
+        :type id: str or list[str]
         :param name: new volume name
         :type name: str
         :param type: volume type
         :type type: str, optional
         :return: the new volume object, or a list of volume objects if cloned mutliple volumes
-        :rtype: Volume or List[Volume]
+        :rtype: Volume or list[Volume]
         """
         payload = {'id': id, 'action': VolumeActions.CLONE, 'name': name, 'type': type}
 
@@ -329,7 +329,7 @@ class VolumesService:
         volume_ids_array = self._http_client.put(VOLUMES_ENDPOINT, json=payload).json()
 
         # map the IDs into Volume objects
-        volumes_array = list(map(lambda volume_id: self.get_by_id(volume_id), volume_ids_array))
+        volumes_array = [self.get_by_id(volume_id) for volume_id in volume_ids_array]
 
         # if the array has only one element, return that element
         if len(volumes_array) == 1:
@@ -338,11 +338,11 @@ class VolumesService:
         # otherwise return the volumes array
         return volumes_array
 
-    def rename(self, id_list: Union[List[str], str], name: str) -> None:
-        """Rename multiple volumes or single volume
+    def rename(self, id_list: list[str] | str, name: str) -> None:
+        """Rename multiple volumes or single volume.
 
         :param id_list: list of volume ids, or a volume id
-        :type id_list: Union[List[str], str]
+        :type id_list: Union[list[str], str]
         :param name: new name
         :type name: str
         """
@@ -351,11 +351,11 @@ class VolumesService:
         self._http_client.put(VOLUMES_ENDPOINT, json=payload)
         return
 
-    def increase_size(self, id_list: Union[List[str], str], size: int) -> None:
-        """Increase size of multiple volumes or single volume
+    def increase_size(self, id_list: list[str] | str, size: int) -> None:
+        """Increase size of multiple volumes or single volume.
 
         :param id_list: list of volume ids, or a volume id
-        :type id_list: Union[List[str], str]
+        :type id_list: Union[list[str], str]
         :param size: new size in GB
         :type size: int
         """
@@ -368,12 +368,13 @@ class VolumesService:
         self._http_client.put(VOLUMES_ENDPOINT, json=payload)
         return
 
-    def delete(self, id_list: Union[List[str], str], is_permanent: bool = False) -> None:
-        """Delete multiple volumes or single volume
+    def delete(self, id_list: list[str] | str, is_permanent: bool = False) -> None:
+        """Delete multiple volumes or single volume.
+
         Note: if attached to any instances, they need to be shut-down (offline)
 
         :param id_list: list of volume ids, or a volume id
-        :type id_list: Union[List[str], str]
+        :type id_list: Union[list[str], str]
         """
         payload = {
             'id': id_list,

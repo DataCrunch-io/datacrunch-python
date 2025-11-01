@@ -1,5 +1,6 @@
-import requests
 import time
+
+import requests
 
 from datacrunch.http_client.http_client import handle_error
 
@@ -10,7 +11,7 @@ REFRESH_TOKEN = 'refresh_token'
 
 
 class AuthenticationService:
-    """A service for client authentication"""
+    """A service for client authentication."""
 
     def __init__(self, client_id: str, client_secret: str, base_url: str) -> None:
         self._base_url = base_url
@@ -18,7 +19,7 @@ class AuthenticationService:
         self._client_secret = client_secret
 
     def authenticate(self) -> dict:
-        """Authenticate the client and store the access & refresh tokens
+        """Authenticate the client and store the access & refresh tokens.
 
         returns an authentication data dictionary with the following schema:
         {

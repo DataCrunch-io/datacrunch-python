@@ -6,15 +6,14 @@ This script shows how to update scaling configurations for an existing container
 import os
 
 from datacrunch import DataCrunchClient
-from datacrunch.exceptions import APIException
 from datacrunch.containers import (
+    QueueLoadScalingTrigger,
     ScalingOptions,
     ScalingPolicy,
     ScalingTriggers,
-    QueueLoadScalingTrigger,
     UtilizationScalingTrigger,
 )
-
+from datacrunch.exceptions import APIException
 
 # Get deployment name, client secret and id from environment variables
 DEPLOYMENT_NAME = os.environ.get('DATACRUNCH_DEPLOYMENT_NAME')

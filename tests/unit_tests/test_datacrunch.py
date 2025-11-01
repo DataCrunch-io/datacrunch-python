@@ -1,5 +1,6 @@
 import pytest
 import responses  # https://github.com/getsentry/responses
+
 from datacrunch.datacrunch import DataCrunchClient
 from datacrunch.exceptions import APIException
 

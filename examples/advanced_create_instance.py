@@ -1,4 +1,5 @@
 import os
+
 from datacrunch import DataCrunchClient
 from datacrunch.exceptions import APIException
 
@@ -36,7 +37,7 @@ try:
 
     # Get all SSH keys
     ssh_keys = datacrunch.ssh_keys.get()
-    ssh_keys_ids = list(map(lambda ssh_key: ssh_key.id, ssh_keys))
+    ssh_keys_ids = [ssh_key.id for ssh_key in ssh_keys]
 
     # Get our current balance
     balance = datacrunch.balance.get()

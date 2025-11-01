@@ -1,14 +1,13 @@
-from typing import List
 from datacrunch.helpers import stringify_class_object_properties
 
 IMAGES_ENDPOINT = '/images'
 
 
 class Image:
-    """An image model class"""
+    """An image model class."""
 
-    def __init__(self, id: str, name: str, image_type: str, details: List[str]) -> None:
-        """Initialize an image object
+    def __init__(self, id: str, name: str, image_type: str, details: list[str]) -> None:
+        """Initialize an image object.
 
         :param id: image id
         :type id: str
@@ -17,7 +16,7 @@ class Image:
         :param image_type: image type, e.g. 'ubuntu-20.04-cuda-11.0'
         :type image_type: str
         :param details: image details
-        :type details: List[str]
+        :type details: list[str]
         """
         self._id = id
         self._name = name
@@ -26,7 +25,7 @@ class Image:
 
     @property
     def id(self) -> str:
-        """Get the image id
+        """Get the image id.
 
         :return: image id
         :rtype: str
@@ -35,7 +34,7 @@ class Image:
 
     @property
     def name(self) -> str:
-        """Get the image name
+        """Get the image name.
 
         :return: image name
         :rtype: str
@@ -44,7 +43,7 @@ class Image:
 
     @property
     def image_type(self) -> str:
-        """Get the image type
+        """Get the image type.
 
         :return: image type
         :rtype: str
@@ -52,16 +51,16 @@ class Image:
         return self._image_type
 
     @property
-    def details(self) -> List[str]:
-        """Get the image details
+    def details(self) -> list[str]:
+        """Get the image details.
 
         :return: image details
-        :rtype: List[str]
+        :rtype: list[str]
         """
         return self._details
 
     def __str__(self) -> str:
-        """Returns a string of the json representation of the image
+        """Returns a string of the json representation of the image.
 
         :return: json representation of the image
         :rtype: str
@@ -70,24 +69,20 @@ class Image:
 
 
 class ImagesService:
-    """A service for interacting with the images endpoint"""
+    """A service for interacting with the images endpoint."""
 
     def __init__(self, http_client) -> None:
         self._http_client = http_client
 
-    def get(self) -> List[Image]:
-        """Get the available instance images
+    def get(self) -> list[Image]:
+        """Get the available instance images.
 
         :return: list of images objects
-        :rtype: List[Image]
+        :rtype: list[Image]
         """
         images = self._http_client.get(IMAGES_ENDPOINT).json()
-        image_objects = list(
-            map(
-                lambda image: Image(
-                    image['id'], image['name'], image['image_type'], image['details']
-                ),
-                images,
-            )
-        )
+        image_objects = [
+            Image(image['id'], image['name'], image['image_type'], image['details'])
+            for image in images
+        ]
         return image_objects

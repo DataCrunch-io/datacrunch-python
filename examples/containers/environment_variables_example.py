@@ -8,9 +8,9 @@ It shows how to:
 """
 
 import os
-from datacrunch.containers import EnvVar, EnvVarType
+
 from datacrunch import DataCrunchClient
-from typing import Dict, List
+from datacrunch.containers import EnvVar, EnvVarType
 
 # Get client secret and id from environment variables
 DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
@@ -24,12 +24,12 @@ DEPLOYMENT_NAME = 'my-deployment'
 CONTAINER_NAME = 'main'
 
 
-def print_env_vars(env_vars: Dict[str, List[EnvVar]]) -> None:
+def print_env_vars(env_vars: dict[str, list[EnvVar]]) -> None:
     """Helper function to print environment variables"""
     print('\nCurrent environment variables:')
-    for container_name, vars in env_vars.items():
+    for container_name, ev in env_vars.items():
         print(f'\nContainer: {container_name}')
-        for var in vars:
+        for var in ev:
             print(f'  {var.name}: {var.value_or_reference_to_secret} ({var.type})')
 
 
