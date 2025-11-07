@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added shared filesystem (SFS) type constant and example
+
 ## [1.16.0] - 2025-10-27
 
 ### Changed
