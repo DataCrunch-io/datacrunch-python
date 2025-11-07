@@ -61,6 +61,7 @@ class VolumeTypes:
 
     NVMe = 'NVMe'
     HDD = 'HDD'
+    SFS = 'NVMe_Shared'
 
     def __init__(self):
         return

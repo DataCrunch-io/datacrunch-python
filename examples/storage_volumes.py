@@ -12,6 +12,7 @@ datacrunch = DataCrunchClient(DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET)
 # Get some volume type constants
 NVMe = datacrunch.constants.volume_types.NVMe
 HDD = datacrunch.constants.volume_types.HDD
+SFS = datacrunch.constants.volume_types.SFS
 
 # Example instance id
 INSTANCE_ID = '8705bb38-2574-454f-9967-d18b130bf5ee'
@@ -28,6 +29,9 @@ random_volume = datacrunch.volumes.get_by_id('0c41e387-3dd8-495f-a285-e861527f2f
 # Create a 200 GB detached NVMe volume
 nvme_volume = datacrunch.volumes.create(type=NVMe, name='data-storage-1', size=200)
 
+# Create a shared filesystem volume
+shared_filesystem_volume = datacrunch.volumes.create(type=SFS, name='shared-filesystem-1', size=50)
+
 # Create a 500 GB HDD volume and attach it to an existing shutdown instance
 # Note: If the instance isn't shutdown an exception would be raised
 hdd_volume = datacrunch.volumes.create(
@@ -36,6 +40,7 @@ hdd_volume = datacrunch.volumes.create(
 
 nvme_volume_id = nvme_volume.id
 hdd_volume_id = hdd_volume.id
+sfs_volume_id = shared_filesystem_volume.id
 
 # attach the nvme volume to the instance
 datacrunch.volumes.attach(nvme_volume_id, INSTANCE_ID)
@@ -59,10 +64,10 @@ datacrunch.volumes.clone(nvme_volume_id, name='my-cloned-volume', type=HDD)
 datacrunch.volumes.clone([nvme_volume_id, hdd_volume_id])
 
 # delete volumes (move to trash for 96h, not permanent)
-datacrunch.volumes.delete([nvme_volume_id, hdd_volume_id])
+datacrunch.volumes.delete([nvme_volume_id, hdd_volume_id, sfs_volume_id])
 
 # get all volumes in trash
 volumes_in_trash = datacrunch.volumes.get_in_trash()
 
 # delete volumes permanently
-datacrunch.volumes.delete([nvme_volume_id, hdd_volume_id], is_permanent=True)
+datacrunch.volumes.delete([nvme_volume_id, hdd_volume_id, sfs_volume_id], is_permanent=True)
