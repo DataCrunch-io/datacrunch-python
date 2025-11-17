@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added shared filesystem (SFS) type constant and example
 
+### Changed
+
+- Refactor `instance_types.py` to use dataclass
+
 ## [1.16.0] - 2025-10-27
 
 ### Changed
