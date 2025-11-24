@@ -1,4 +1,4 @@
-# DataCrunch Python SDK
+# Verda (formerly DataCrunch) Python SDK
 
 [<img src='https://github.com/DataCrunch-io/datacrunch-python/workflows/Unit%20Tests/badge.svg'>](https://github.com/DataCrunch-io/datacrunch-python/actions?query=workflow%3A%22Unit+Tests%22+branch%3Amaster)
 [<img src='https://github.com/DataCrunch-io/datacrunch-python/workflows/Code%20Style/badge.svg'>](https://github.com/DataCrunch-io/datacrunch-python/actions?query=workflow%3A%22Code+Style%22+branch%3Amaster)
@@ -8,11 +8,11 @@
 [<img src='https://img.shields.io/pypi/v/datacrunch?logo=python'>](https://pypi.org/project/datacrunch/)
 [<img src='https://img.shields.io/pypi/pyversions/datacrunch'>](https://pypi.org/project/datacrunch/)
 
-The official [DataCrunch.io](https://datacrunch.io) Python SDK.
+The official [Verda](https://verda.com) (formerly DataCrunch) Python SDK.
 
 The SDK's documentation is available on [ReadTheDocs](https://datacrunch-python.readthedocs.io/en/latest/)
 
-DataCrunch's Public API documentation [is available here](https://api.datacrunch.io/v1/docs).
+Verda Public API documentation [is available here](https://api.datacrunch.io/v1/docs).
 
 ## Getting Started - Using the SDK:
 
