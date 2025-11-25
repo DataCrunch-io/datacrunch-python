@@ -4,19 +4,19 @@ API Reference
 Main DataCrunch Client 
 ----------------------
 
-.. autoclass:: datacrunch.DataCrunchClient
+.. autoclass:: verda.VerdaClient
    :members:
 
 API Exception
 -------------
 
-.. autoclass:: datacrunch.exceptions.APIException
+.. autoclass:: verda.exceptions.APIException
    :members:
 
 Constants
 ---------
 
-.. autoclass:: datacrunch.constants.Constants
+.. autoclass:: verda.constants.Constants
    :members:
 
 Services API

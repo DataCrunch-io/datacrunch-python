@@ -9,14 +9,14 @@ CLIENT_ID = os.environ.get('VERDA_CLIENT_ID')
 CLIENT_SECRET = os.environ.get('VERDA_CLIENT_SECRET')
 
 # Create datcrunch client
-datacrunch = DataCrunchClient(CLIENT_ID, CLIENT_SECRET)
+verda = VerdaClient(CLIENT_ID, CLIENT_SECRET)
 
 # Get all SSH keys id's
-ssh_keys = datacrunch.ssh_keys.get()
+ssh_keys = verda.ssh_keys.get()
 ssh_keys_ids = [ssh_key.id for ssh_key in ssh_keys]
 
 # Create a new instance
-instance = datacrunch.instances.create(
+instance = verda.instances.create(
     instance_type='1V100.6V',
     image='ubuntu-22.04-cuda-12.0-docker',
     location=Locations.FIN_03,
@@ -28,9 +28,9 @@ instance = datacrunch.instances.create(
 # Wait for instance to enter running state
 while instance.status != InstanceStatus.RUNNING:
     time.sleep(0.5)
-    instance = datacrunch.instances.get_by_id(instance.id)
+    instance = verda.instances.get_by_id(instance.id)
 
 print(instance)
 
 # Delete instance
-datacrunch.instances.action(instance.id, datacrunch.constants.instance_actions.DELETE)
+verda.instances.action(instance.id, verda.constants.instance_actions.DELETE)

@@ -11,14 +11,14 @@ CLIENT_SECRET = os.environ.get('VERDA_CLIENT_SECRET')
 INFERENCE_KEY = os.environ.get('VERDA_INFERENCE_KEY')
 
 # DataCrunch client instance
-datacrunch = DataCrunchClient(
+verda = VerdaClient(
     CLIENT_ID,
     CLIENT_SECRET,
     inference_key=INFERENCE_KEY,
 )
 
 # Get the deployment
-deployment = datacrunch.containers.get_deployment_by_name(DEPLOYMENT_NAME)
+deployment = verda.containers.get_deployment_by_name(DEPLOYMENT_NAME)
 
 # Make a synchronous request to the endpoint.
 # This example demonstrates calling a SGLang deployment which serves LLMs using an OpenAI-compatible API format

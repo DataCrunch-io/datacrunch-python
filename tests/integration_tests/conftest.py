@@ -18,5 +18,5 @@ CLIENT_ID = os.getenv('VERDA_CLIENT_ID')
 
 
 @pytest.fixture
-def datacrunch_client():
+def verda_client():
     return VerdaClient(CLIENT_ID, CLIENT_SECRET, BASE_URL)

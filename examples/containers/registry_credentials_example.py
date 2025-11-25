@@ -14,7 +14,7 @@ CLIENT_ID = os.environ.get('VERDA_CLIENT_ID')
 CLIENT_SECRET = os.environ.get('VERDA_CLIENT_SECRET')
 
 # Initialize DataCrunch client
-datacrunch = DataCrunchClient(CLIENT_ID, CLIENT_SECRET)
+verda = VerdaClient(CLIENT_ID, CLIENT_SECRET)
 
 # Example 1: DockerHub Credentials
 dockerhub_creds = DockerHubCredentials(
@@ -22,7 +22,7 @@ dockerhub_creds = DockerHubCredentials(
     username='your-dockerhub-username',
     access_token='your-dockerhub-access-token',
 )
-datacrunch.containers.add_registry_credentials(dockerhub_creds)
+verda.containers.add_registry_credentials(dockerhub_creds)
 print('Created DockerHub credentials')
 
 # Example 2: GitHub Container Registry Credentials
@@ -31,7 +31,7 @@ github_creds = GithubCredentials(
     username='your-github-username',
     access_token='your-github-token',
 )
-datacrunch.containers.add_registry_credentials(github_creds)
+verda.containers.add_registry_credentials(github_creds)
 print('Created GitHub credentials')
 
 # Example 3: Google Container Registry (GCR) Credentials
@@ -50,7 +50,7 @@ gcr_service_account_key = """{
 }"""
 
 gcr_creds = GCRCredentials(name='my-gcr-creds', service_account_key=gcr_service_account_key)
-datacrunch.containers.add_registry_credentials(gcr_creds)
+verda.containers.add_registry_credentials(gcr_creds)
 print('Created GCR credentials')
 
 # Example 4: AWS ECR Credentials
@@ -61,7 +61,7 @@ aws_creds = AWSECRCredentials(
     region='eu-north-1',
     ecr_repo='887841266746.dkr.ecr.eu-north-1.amazonaws.com',
 )
-datacrunch.containers.add_registry_credentials(aws_creds)
+verda.containers.add_registry_credentials(aws_creds)
 print('Created AWS ECR credentials')
 
 # Example 5: Custom Registry Credentials
@@ -76,12 +76,12 @@ custom_docker_config = """{
 custom_creds = CustomRegistryCredentials(
     name='my-custom-registry-creds', docker_config_json=custom_docker_config
 )
-datacrunch.containers.add_registry_credentials(custom_creds)
+verda.containers.add_registry_credentials(custom_creds)
 print('Created Custom registry credentials')
 
 # Delete all registry credentials
-datacrunch.containers.delete_registry_credentials('my-dockerhub-creds')
-datacrunch.containers.delete_registry_credentials('my-github-creds')
-datacrunch.containers.delete_registry_credentials('my-gcr-creds')
-datacrunch.containers.delete_registry_credentials('my-aws-ecr-creds')
-datacrunch.containers.delete_registry_credentials('my-custom-registry-creds')
+verda.containers.delete_registry_credentials('my-dockerhub-creds')
+verda.containers.delete_registry_credentials('my-github-creds')
+verda.containers.delete_registry_credentials('my-gcr-creds')
+verda.containers.delete_registry_credentials('my-aws-ecr-creds')
+verda.containers.delete_registry_credentials('my-custom-registry-creds')

@@ -11,8 +11,8 @@ CLIENT_ID = os.environ.get('VERDA_CLIENT_ID')
 CLIENT_SECRET = os.environ.get('VERDA_CLIENT_SECRET')
 
 # Initialize client with inference key
-datacrunch = DataCrunchClient(CLIENT_ID, CLIENT_SECRET)
+verda = VerdaClient(CLIENT_ID, CLIENT_SECRET)
 
 # Register signal handlers for cleanup
-datacrunch.containers.delete_deployment(DEPLOYMENT_NAME)
+verda.containers.delete_deployment(DEPLOYMENT_NAME)
 print('Deployment deleted')

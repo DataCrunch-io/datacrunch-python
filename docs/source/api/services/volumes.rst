@@ -1,8 +1,8 @@
 Volumes
 =======
 
-.. autoclass:: datacrunch.volumes.volumes.VolumesService
+.. autoclass:: verda.volumes.volumes.VolumesService
    :members:
 
-.. autoclass:: datacrunch.volumes.volumes.Volume
+.. autoclass:: verda.volumes.volumes.Volume
    :members:

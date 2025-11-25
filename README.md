@@ -2,11 +2,11 @@
 
 [<img src='https://github.com/verda-cloud/sdk-python/workflows/Unit%20Tests/badge.svg'>](https://github.com/verda-cloud/sdk-python/actions?query=workflow%3A%22Unit+Tests%22+branch%3Amaster)
 [<img src='https://github.com/verda-cloud/sdk-python/workflows/Code%20Style/badge.svg'>](https://github.com/verda-cloud/sdk-python/actions?query=workflow%3A%22Code+Style%22+branch%3Amaster)
-[<img src="https://codecov.io/gh/DataCrunch-io/datacrunch-python/branch/master/graph/badge.svg?token=5X5KTYSSPK">](https://codecov.io/gh/DataCrunch-io/datacrunch-python)
+[<img src="https://codecov.io/gh/verda-cloud/sdk-python/branch/master/graph/badge.svg?token=5X5KTYSSPK">](https://codecov.io/gh/verda-cloud/sdk-python)
 [<img src='https://readthedocs.org/projects/datacrunch-python/badge/?version=latest'>](https://datacrunch-python.readthedocs.io/en/latest/)
-[<img src='https://img.shields.io/github/license/DataCrunch-io/datacrunch-python'>](https://github.com/verda-cloud/sdk-python/blob/master/LICENSE)
-[<img src='https://img.shields.io/pypi/v/datacrunch?logo=python'>](https://pypi.org/project/datacrunch/)
-[<img src='https://img.shields.io/pypi/pyversions/datacrunch'>](https://pypi.org/project/datacrunch/)
+[<img src='https://img.shields.io/github/license/verda-cloud/sdk-python'>](https://github.com/verda-cloud/sdk-python/blob/master/LICENSE)
+[<img src='https://img.shields.io/pypi/v/verda?logo=python'>](https://pypi.org/project/verda/)
+[<img src='https://img.shields.io/pypi/pyversions/verda'>](https://pypi.org/project/verda/)
 
 The official [Verda](https://verda.com) (formerly DataCrunch) Python SDK.
 
@@ -38,7 +38,7 @@ Verda Public API documentation [is available here](https://api.datacrunch.io/v1/
   export VERDA_CLIENT_SECRET=YOUR_SECRET_HERE
   ```
 
-- To enable sending inference requests from SDK you must generate an inference key - [Instructions on inference authorization](https://docs.datacrunch.io/inference/authorization)
+- To enable sending inference requests from SDK you must generate an inference key - [Instructions on inference authorization](https://docs.verda.com/inference/authorization)
   
 
 - Add your inference key to an environment variable
@@ -58,27 +58,27 @@ Verda Public API documentation [is available here](https://api.datacrunch.io/v1/
 
   ```python
   import os
-  from verda import VerdaClient
+  import verda
 
   # Get credentials from environment variables
   CLIENT_ID = os.environ.get('VERDA_CLIENT_ID')
   CLIENT_SECRET = os.environ['VERDA_CLIENT_SECRET']
 
-  # Create datcrunch client
-  datacrunch = DataCrunchClient(CLIENT_ID, CLIENT_SECRET)
+  # Create client
+  verda = VerdaClient(CLIENT_ID, CLIENT_SECRET)
 
   # Get all SSH keys
-  ssh_keys = [key.id for key in datacrunch.ssh_keys.get()]
+  ssh_keys = [key.id for key in verda.ssh_keys.get()]
 
   # Create a new instance
-  instance = datacrunch.instances.create(instance_type='1V100.6V',
-                                        image='ubuntu-24.04-cuda-12.8-open-docker',
-                                        ssh_key_ids=ssh_keys,
-                                        hostname='example',
-                                        description='example instance')
+  instance = verda.instances.create(instance_type='1V100.6V',
+                                    image='ubuntu-24.04-cuda-12.8-open-docker',
+                                    ssh_key_ids=ssh_keys,
+                                    hostname='example',
+                                    description='example instance')
 
   # Delete instance
-  datacrunch.instances.action(instance.id, datacrunch.constants.instance_actions.DELETE)
+  verda.instances.action(instance.id, verda.constants.instance_actions.DELETE)
   ```
 
   More examples can be found in the `/examples` folder or in the [documentation](https://datacrunch-python.readthedocs.io/en/latest/).
@@ -122,8 +122,8 @@ from verda.verda import VerdaClient
 CLIENT_SECRET = 'secret'
 CLIENT_ID = 'your-id'
 
-# Create datacrunch client
-datacrunch = DataCrunchClient(CLIENT_ID, CLIENT_SECRET, base_url='http://localhost:3001/v1')
+# Create client
+verda = VerdaClient(CLIENT_ID, CLIENT_SECRET, base_url='http://localhost:3001/v1')
 ```
 
 Run it:
@@ -153,4 +153,4 @@ uv run ruff format
 
 ## Contact
 
-You can [contact us here](https://datacrunch.io/contact), or open an issue in the repo.
+You can [contact us here](https://verda.com/contact), or open an issue in the repo.

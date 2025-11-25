@@ -15,13 +15,13 @@ response_json = {
 }
 
 
-class TestDataCrunchClient:
+class TestVerdaClient:
     def test_client(self):
         # arrange - add response mock
         responses.add(responses.POST, BASE_URL + '/oauth2/token', json=response_json, status=200)
 
         # act
-        client = DataCrunchClient('XXXXXXXXXXXXXX', 'XXXXXXXXXXXXXX', BASE_URL)
+        client = VerdaClient('XXXXXXXXXXXXXX', 'XXXXXXXXXXXXXX', BASE_URL)
 
         # assert
         assert client.constants.base_url == BASE_URL
@@ -37,7 +37,7 @@ class TestDataCrunchClient:
         )
 
         # act
-        client = DataCrunchClient('XXXXXXXXXXXXXX', 'XXXXXXXXXXXXXX')
+        client = VerdaClient('XXXXXXXXXXXXXX', 'XXXXXXXXXXXXXX')
 
         # assert
         assert client.constants.base_url == DEFAULT_BASE_URL
@@ -56,7 +56,7 @@ class TestDataCrunchClient:
 
         # act
         with pytest.raises(APIException) as excinfo:
-            DataCrunchClient('x', 'y', BASE_URL)
+            VerdaClient('x', 'y', BASE_URL)
 
         # assert
         assert excinfo.value.code == 'unauthorized_request'

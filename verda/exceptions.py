@@ -15,7 +15,7 @@ class APIException(Exception):
         :type message: str
         """
         self.code = code
-        """Error code. should be available in DataCrunchClient.error_codes"""
+        """Error code. should be available in VerdaClient.error_codes"""
 
         self.message = message
         """Error message

@@ -45,7 +45,7 @@ HF_TOKEN = os.environ.get('HF_TOKEN')
 
 
 def wait_for_deployment_health(
-    datacrunch_client: DataCrunchClient,
+    client: VerdaClient,
     deployment_name: str,
     max_attempts: int = 20,
     delay: int = 30,
@@ -64,7 +64,7 @@ def wait_for_deployment_health(
     print('Waiting for deployment to be healthy (may take several minutes to download model)...')
     for attempt in range(max_attempts):
         try:
-            status = datacrunch_client.containers.get_deployment_status(deployment_name)
+            status = client.containers.get_deployment_status(deployment_name)
             print(f'Attempt {attempt + 1}/{max_attempts} - Deployment status: {status}')
             if status == ContainerDeploymentStatus.HEALTHY:
                 return True
@@ -75,7 +75,7 @@ def wait_for_deployment_health(
     return False
 
 
-def cleanup_resources(datacrunch_client: DataCrunchClient) -> None:
+def cleanup_resources(client: VerdaClient) -> None:
     """Clean up all created resources.
 
     Args:
@@ -83,7 +83,7 @@ def cleanup_resources(datacrunch_client: DataCrunchClient) -> None:
     """
     try:
         # Delete deployment
-        datacrunch_client.containers.delete_deployment(DEPLOYMENT_NAME)
+        client.containers.delete_deployment(DEPLOYMENT_NAME)
         print('Deployment deleted')
     except APIException as e:
         print(f'Error during cleanup: {e}')
@@ -93,7 +93,7 @@ def graceful_shutdown(signum, _frame) -> None:
     """Handle graceful shutdown on signals."""
     print(f'\nSignal {signum} received, cleaning up resources...')
     try:
-        cleanup_resources(datacrunch)
+        cleanup_resources(verda)
     except Exception as e:
         print(f'Error during cleanup: {e}')
     sys.exit(0)
@@ -108,7 +108,7 @@ try:
         print('Using Inference API Key from environment')
 
     # Initialize client with inference key
-    datacrunch = DataCrunchClient(
+    verda = VerdaClient(
         client_id=CLIENT_ID,
         client_secret=CLIENT_SECRET,
         inference_key=inference_key,
@@ -122,14 +122,14 @@ try:
     print(f'Creating secret for Hugging Face token: {HF_SECRET_NAME}')
     try:
         # Check if secret already exists
-        existing_secrets = datacrunch.containers.get_secrets()
+        existing_secrets = verda.containers.get_secrets()
         secret_exists = any(secret.name == HF_SECRET_NAME for secret in existing_secrets)
 
         if not secret_exists:
             # check is HF_TOKEN is set, if not, prompt the user
             if not HF_TOKEN:
                 HF_TOKEN = input('Enter your Hugging Face token: ')
-            datacrunch.containers.create_secret(HF_SECRET_NAME, HF_TOKEN)
+            verda.containers.create_secret(HF_SECRET_NAME, HF_TOKEN)
             print(f"Secret '{HF_SECRET_NAME}' created successfully")
         else:
             print(f"Secret '{HF_SECRET_NAME}' already exists, using existing secret")
@@ -196,14 +196,14 @@ try:
     )
 
     # Create the deployment
-    created_deployment = datacrunch.containers.create_deployment(deployment)
+    created_deployment = verda.containers.create_deployment(deployment)
     print(f'Created deployment: {created_deployment.name}')
     print('This could take several minutes while the model is downloaded and the server starts...')
 
     # Wait for deployment to be healthy
-    if not wait_for_deployment_health(datacrunch, DEPLOYMENT_NAME):
+    if not wait_for_deployment_health(verda, DEPLOYMENT_NAME):
         print('Deployment health check failed')
-        cleanup_resources(datacrunch)
+        cleanup_resources(verda)
         sys.exit(1)
 
     # Test the deployment with a simple request
@@ -264,17 +264,17 @@ try:
     # Cleanup or keep running based on user input
     keep_running = input('\nDo you want to keep the deployment running? (y/n): ')
     if keep_running.lower() != 'y':
-        cleanup_resources(datacrunch)
+        cleanup_resources(verda)
     else:
         print(f"Deployment {DEPLOYMENT_NAME} is running. Don't forget to delete it when finished.")
         print('You can delete it from the DataCrunch dashboard or by running:')
-        print(f"datacrunch.containers.delete('{DEPLOYMENT_NAME}')")
+        print(f"verda.containers.delete('{DEPLOYMENT_NAME}')")
 
 except Exception as e:
     print(f'Unexpected error: {e}')
     # Attempt cleanup even if there was an error
     try:
-        cleanup_resources(datacrunch)
+        cleanup_resources(verda)
     except Exception as cleanup_error:
         print(f'Error during cleanup after failure: {cleanup_error}')
     sys.exit(1)

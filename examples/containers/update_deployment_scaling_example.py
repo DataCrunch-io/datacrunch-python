@@ -21,11 +21,11 @@ CLIENT_ID = os.environ.get('VERDA_CLIENT_ID')
 CLIENT_SECRET = os.environ.get('VERDA_CLIENT_SECRET')
 
 # Initialize client
-datacrunch = DataCrunchClient(CLIENT_ID, CLIENT_SECRET)
+verda = VerdaClient(CLIENT_ID, CLIENT_SECRET)
 
 try:
     # Get current scaling options
-    scaling_options = datacrunch.containers.get_deployment_scaling_options(DEPLOYMENT_NAME)
+    scaling_options = verda.containers.get_deployment_scaling_options(DEPLOYMENT_NAME)
 
     print('Current scaling configuration:\n')
     print(f'Min replicas: {scaling_options.min_replica_count}')
@@ -70,7 +70,7 @@ try:
     )
 
     # Update scaling options
-    updated_options = datacrunch.containers.update_deployment_scaling_options(
+    updated_options = verda.containers.update_deployment_scaling_options(
         DEPLOYMENT_NAME, scaling_options
     )
 

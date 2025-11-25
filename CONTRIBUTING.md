@@ -82,4 +82,4 @@ To release a new version:
 
 4. [Draft and publish](https://github.com/verda-cloud/sdk-python/releases) a new release.
 
-5. Check that package is automatically published to [PyPI](https://pypi.org/project/datacrunch/) via [GitHub action](https://github.com/verda-cloud/sdk-python/actions/workflows/publish_package.yml).
+5. Check that package is automatically published to [PyPI](https://pypi.org/project/verda/) via [GitHub action](https://github.com/verda-cloud/sdk-python/actions/workflows/publish_package.yml).
