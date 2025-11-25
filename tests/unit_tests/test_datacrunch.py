@@ -1,8 +1,8 @@
 import pytest
 import responses  # https://github.com/getsentry/responses
 
-from verda.verda import VerdaClient
 from verda.exceptions import APIException
+from verda.verda import VerdaClient
 
 BASE_URL = 'https://api-testing.datacrunch.io/v1'
 

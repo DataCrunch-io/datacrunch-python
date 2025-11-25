@@ -1,7 +1,7 @@
+import warnings
+
 from verda._version import __version__
 from verda.verda import VerdaClient
-
-import warnings
 
 
 class _DataCrunchClientAlias:
