@@ -78,3 +78,6 @@ class VerdaClient:
 
         self.containers: ContainersService = ContainersService(self._http_client, inference_key)
         """Containers service. Deploy, manage, and monitor container deployments"""
+
+
+__all__ = ['VerdaClient']

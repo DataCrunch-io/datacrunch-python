@@ -18,3 +18,5 @@ class _DataCrunchClientAlias:
 DataCrunchClient = _DataCrunchClientAlias()
 DataCrunchClient.__name__ = 'DataCrunchClient'
 DataCrunchClient.__doc__ = VerdaClient.__doc__
+
+__all__ = ['DataCrunchClient', 'VerdaClient', '__version__']
