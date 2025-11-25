@@ -58,7 +58,7 @@ Verda Public API documentation [is available here](https://api.datacrunch.io/v1/
 
   ```python
   import os
-  import verda
+  from verda import VerdaClient
 
   # Get credentials from environment variables
   CLIENT_ID = os.environ.get('VERDA_CLIENT_ID')
