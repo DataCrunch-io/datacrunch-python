@@ -103,9 +103,7 @@ try:
     # Get the inference API key
     inference_key = INFERENCE_KEY
     if not inference_key:
-        inference_key = input(
-            'Enter your Inference API Key from the DataCrunch dashboard: '
-        )
+        inference_key = input('Enter your Inference API Key from the DataCrunch dashboard: ')
     else:
         print('Using Inference API Key from environment')
 
