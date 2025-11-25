@@ -11,8 +11,8 @@ import sys
 import time
 from datetime import datetime
 
-from datacrunch import DataCrunchClient
-from datacrunch.containers import (
+from verda import DataCrunchClient
+from verda.containers import (
     ComputeResource,
     Container,
     ContainerDeploymentStatus,
@@ -27,7 +27,7 @@ from datacrunch.containers import (
     ScalingTriggers,
     UtilizationScalingTrigger,
 )
-from datacrunch.exceptions import APIException
+from verda.exceptions import APIException
 
 CURRENT_TIMESTAMP = datetime.now().strftime('%Y%m%d-%H%M%S').lower()  # e.g. 20250403-120000
 
@@ -38,9 +38,9 @@ DEEPSEEK_MODEL_PATH = 'deepseek-ai/deepseek-llm-7b-chat'
 HF_SECRET_NAME = 'huggingface-token'
 
 # Get confidential values from environment variables
-DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
-DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
-DATACRUNCH_INFERENCE_KEY = os.environ.get('DATACRUNCH_INFERENCE_KEY')
+CLIENT_ID = os.environ.get('VERDA_CLIENT_ID')
+CLIENT_SECRET = os.environ.get('VERDA_CLIENT_SECRET')
+INFERENCE_KEY = os.environ.get('VERDA_INFERENCE_KEY')
 HF_TOKEN = os.environ.get('HF_TOKEN')
 
 
@@ -101,9 +101,9 @@ def graceful_shutdown(signum, _frame) -> None:
 
 try:
     # Get the inference API key
-    datacrunch_inference_key = DATACRUNCH_INFERENCE_KEY
-    if not datacrunch_inference_key:
-        datacrunch_inference_key = input(
+    inference_key = INFERENCE_KEY
+    if not inference_key:
+        inference_key = input(
             'Enter your Inference API Key from the DataCrunch dashboard: '
         )
     else:
@@ -111,9 +111,9 @@ try:
 
     # Initialize client with inference key
     datacrunch = DataCrunchClient(
-        client_id=DATACRUNCH_CLIENT_ID,
-        client_secret=DATACRUNCH_CLIENT_SECRET,
-        inference_key=datacrunch_inference_key,
+        client_id=CLIENT_ID,
+        client_secret=CLIENT_SECRET,
+        inference_key=inference_key,
     )
 
     # Register signal handlers for cleanup

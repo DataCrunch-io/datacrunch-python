@@ -2,7 +2,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from datacrunch.http_client.http_client import HTTPClient
+from verda.http_client.http_client import HTTPClient
 
 BASE_URL = 'https://api-testing.datacrunch.io/v1'
 ACCESS_TOKEN = 'test-token'

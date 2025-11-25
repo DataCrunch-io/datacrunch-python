@@ -5,12 +5,12 @@ Instance Actions
 
     import os
     import time
-    from datacrunch import DataCrunchClient
-    from datacrunch.exceptions import APIException
+    from verda import DataCrunchClient
+    from verda.exceptions import APIException
 
 
     # Get client secret from environment variable
-    CLIENT_SECRET = os.environ['DATACRUNCH_CLIENT_SECRET']
+    CLIENT_SECRET = os.environ['VERDA_CLIENT_SECRET']
     CLIENT_ID = 'Ibk5bdxV64lKAWOqYnvSi'  # Replace with your client ID
 
     # Create datcrunch client

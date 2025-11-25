@@ -7,8 +7,8 @@ including creation, monitoring, scaling, and cleanup.
 import os
 import time
 
-from datacrunch import DataCrunchClient
-from datacrunch.containers import (
+from verda import DataCrunchClient
+from verda.containers import (
     ComputeResource,
     Container,
     ContainerDeploymentStatus,
@@ -26,15 +26,15 @@ from datacrunch.containers import (
     SharedFileSystemMount,
     UtilizationScalingTrigger,
 )
-from datacrunch.exceptions import APIException
+from verda.exceptions import APIException
 
 # Configuration constants
 DEPLOYMENT_NAME = 'my-deployment'
 IMAGE_NAME = 'your-image-name:version'
 
 # Get client secret and id from environment variables
-DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
-DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
+CLIENT_ID = os.environ.get('VERDA_CLIENT_ID')
+CLIENT_SECRET = os.environ.get('VERDA_CLIENT_SECRET')
 
 # DataCrunch client instance
 datacrunch = None
@@ -89,7 +89,7 @@ def main() -> None:
     try:
         # Initialize client
         global datacrunch
-        datacrunch = DataCrunchClient(DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET)
+        datacrunch = DataCrunchClient(CLIENT_ID, CLIENT_SECRET)
 
         # Create container configuration
         container = Container(

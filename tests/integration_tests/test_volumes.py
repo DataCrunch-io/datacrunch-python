@@ -3,8 +3,8 @@ import time
 
 import pytest
 
-from datacrunch.constants import Locations, VolumeStatus, VolumeTypes
-from datacrunch.datacrunch import DataCrunchClient
+from verda.constants import Locations, VolumeStatus, VolumeTypes
+from verda.datacrunch import DataCrunchClient
 
 IN_GITHUB_ACTIONS = os.getenv('GITHUB_ACTIONS') == 'true'
 

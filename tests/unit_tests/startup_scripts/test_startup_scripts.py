@@ -1,8 +1,8 @@
 import pytest
 import responses  # https://github.com/getsentry/responses
 
-from datacrunch.exceptions import APIException
-from datacrunch.startup_scripts.startup_scripts import (
+from verda.exceptions import APIException
+from verda.startup_scripts.startup_scripts import (
     StartupScript,
     StartupScriptsService,
 )

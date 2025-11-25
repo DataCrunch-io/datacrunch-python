@@ -2,7 +2,7 @@
 
 Any contributions are welcome!
 
-Open new issues at https://github.com/DataCrunch-io/datacrunch-python/issues.
+Open new issues at https://github.com/verda-cloud/sdk-python/issues.
 
 You can open pull requests by following the steps:
 
@@ -10,13 +10,13 @@ You can open pull requests by following the steps:
 
 Prerequisite: install [`uv`](https://docs.astral.sh/uv/).
 
-1. Fork the `datacrunch-python` repo on GitHub.
+1. Fork this repo on GitHub.
 
 2. Clone your fork locally:
 
    ```bash
-   git clone git@github.com:{your_username}/datacrunch-python.git
-   cd datacrunch-python
+   git clone git@github.com:{your_username}/sdk-python.git
+   cd sdk-python
    ```
 
 3. Set up local environment and install dependencies:
@@ -80,6 +80,6 @@ To release a new version:
    git push --tags
    ```
 
-4. [Draft and publish](https://github.com/DataCrunch-io/datacrunch-python/releases) a new release.
+4. [Draft and publish](https://github.com/verda-cloud/sdk-python/releases) a new release.
 
-5. Check that package is automatically published to [PyPI](https://pypi.org/project/datacrunch/) via [GitHub action](https://github.com/DataCrunch-io/datacrunch-python/actions/workflows/publish_package.yml).
+5. Check that package is automatically published to [PyPI](https://pypi.org/project/datacrunch/) via [GitHub action](https://github.com/verda-cloud/sdk-python/actions/workflows/publish_package.yml).

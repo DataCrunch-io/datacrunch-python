@@ -1,16 +1,16 @@
 import os
 
-from datacrunch import DataCrunchClient
+from verda import DataCrunchClient
 
 # Fileset secrets are a way to mount sensitive files like API keys, certs, and credentials securely inside a container, without hardcoding them in the image or env vars.
 # This example demonstrates how to create a fileset secret containing two files from your local filesystem
 
 # Get client secret and id from environment variables
-DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
-DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
+CLIENT_ID = os.environ.get('VERDA_CLIENT_ID')
+CLIENT_SECRET = os.environ.get('VERDA_CLIENT_SECRET')
 
 # Initialize the client with your credentials
-datacrunch = DataCrunchClient(DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET)
+datacrunch = DataCrunchClient(CLIENT_ID, CLIENT_SECRET)
 
 # Define the secret name and the file paths from your local filesystem where this script is running
 SECRET_NAME = 'my-fileset-secret'

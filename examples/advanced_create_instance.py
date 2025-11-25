@@ -1,7 +1,7 @@
 import os
 
-from datacrunch import DataCrunchClient
-from datacrunch.exceptions import APIException
+from verda import DataCrunchClient
+from verda.exceptions import APIException
 
 """
 In this hypothetical example, we check if we have enough balance
@@ -22,12 +22,12 @@ INSTANCE_TYPE_4V = '4V100.20V'
 DURATION = 24 * 7  # one week
 
 # Get client secret and id from environment variables
-DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
-DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
+CLIENT_ID = os.environ.get('VERDA_CLIENT_ID')
+CLIENT_SECRET = os.environ.get('VERDA_CLIENT_SECRET')
 
 try:
     # Create datcrunch client
-    datacrunch = DataCrunchClient(DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET)
+    datacrunch = DataCrunchClient(CLIENT_ID, CLIENT_SECRET)
 
     # Create new SSH key
     public_key = (

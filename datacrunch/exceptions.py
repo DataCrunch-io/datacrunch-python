@@ -1,5 +1,5 @@
 class APIException(Exception):
-    """This exception is raised if there was an error from datacrunch's API.
+    """This exception is raised if there was an error from verda's API.
 
     Could be an invalid input, token etc.
 

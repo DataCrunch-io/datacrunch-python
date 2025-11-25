@@ -1,15 +1,15 @@
 import os
 import time
 
-from datacrunch import DataCrunchClient
-from datacrunch.exceptions import APIException
+from verda import DataCrunchClient
+from verda.exceptions import APIException
 
 # Get client secret and id from environment variables
-DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
-DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
+CLIENT_ID = os.environ.get('VERDA_CLIENT_ID')
+CLIENT_SECRET = os.environ.get('VERDA_CLIENT_SECRET')
 
 # Create datcrunch client
-datacrunch = DataCrunchClient(DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET)
+datacrunch = DataCrunchClient(CLIENT_ID, CLIENT_SECRET)
 
 # Get all SSH keys
 ssh_keys = datacrunch.ssh_keys.get()

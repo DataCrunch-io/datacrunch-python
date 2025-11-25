@@ -22,12 +22,12 @@ from recommonmark.parser import CommonMarkParser
 # -- Project information -----------------------------------------------------
 current_year = datetime.datetime.now().year
 
-project = 'DataCrunch Python SDK'
-copyright = f'{current_year}, DataCrunch.io'  # noqa: A001
-author = 'DataCrunch.io'
+project = ' Verda Python SDK'
+copyright = f'{current_year}, Verda Cloud Oy'  # noqa: A001
+author = 'Verda Cloud'
 
 try:
-    release = pkg_version('datacrunch')
+    release = pkg_version('verda')
 except PackageNotFoundError:
     release = '0.0.0+dev'
 
@@ -118,7 +118,7 @@ html_static_path = []
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'DataCrunch-Python-SDKdoc'
+htmlhelp_basename = 'Verda-Python-SDKdoc'
 
 
 # -- Options for LaTeX output ------------------------------------------------

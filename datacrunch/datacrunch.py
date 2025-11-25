@@ -1,17 +1,17 @@
-from datacrunch._version import __version__
-from datacrunch.authentication.authentication import AuthenticationService
-from datacrunch.balance.balance import BalanceService
-from datacrunch.constants import Constants
-from datacrunch.containers.containers import ContainersService
-from datacrunch.http_client.http_client import HTTPClient
-from datacrunch.images.images import ImagesService
-from datacrunch.instance_types.instance_types import InstanceTypesService
-from datacrunch.instances.instances import InstancesService
-from datacrunch.locations.locations import LocationsService
-from datacrunch.ssh_keys.ssh_keys import SSHKeysService
-from datacrunch.startup_scripts.startup_scripts import StartupScriptsService
-from datacrunch.volume_types.volume_types import VolumeTypesService
-from datacrunch.volumes.volumes import VolumesService
+from verda._version import __version__
+from verda.authentication.authentication import AuthenticationService
+from verda.balance.balance import BalanceService
+from verda.constants import Constants
+from verda.containers.containers import ContainersService
+from verda.http_client.http_client import HTTPClient
+from verda.images.images import ImagesService
+from verda.instance_types.instance_types import InstanceTypesService
+from verda.instances.instances import InstancesService
+from verda.locations.locations import LocationsService
+from verda.ssh_keys.ssh_keys import SSHKeysService
+from verda.startup_scripts.startup_scripts import StartupScriptsService
+from verda.volume_types.volume_types import VolumeTypesService
+from verda.volumes.volumes import VolumesService
 
 
 class DataCrunchClient:

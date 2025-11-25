@@ -4,8 +4,8 @@ import pytest
 import responses  # https://github.com/getsentry/responses
 from responses import matchers
 
-from datacrunch.authentication.authentication import AuthenticationService
-from datacrunch.exceptions import APIException
+from verda.authentication.authentication import AuthenticationService
+from verda.exceptions import APIException
 
 INVALID_REQUEST = 'invalid_request'
 INVALID_REQUEST_MESSAGE = 'Your existence is invalid'

@@ -1,8 +1,8 @@
 import pytest
 import responses  # https://github.com/getsentry/responses
 
-from datacrunch.datacrunch import DataCrunchClient
-from datacrunch.exceptions import APIException
+from verda.datacrunch import DataCrunchClient
+from verda.exceptions import APIException
 
 BASE_URL = 'https://api-testing.datacrunch.io/v1'
 

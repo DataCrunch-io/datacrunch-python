@@ -5,7 +5,7 @@ from typing import Literal
 
 from dataclasses_json import dataclass_json
 
-from datacrunch.constants import InstanceStatus, Locations
+from verda.constants import InstanceStatus, Locations
 
 INSTANCES_ENDPOINT = '/instances'
 

@@ -9,15 +9,15 @@ It shows how to:
 
 import os
 
-from datacrunch import DataCrunchClient
-from datacrunch.containers import EnvVar, EnvVarType
+from verda import DataCrunchClient
+from verda.containers import EnvVar, EnvVarType
 
 # Get client secret and id from environment variables
-DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
-DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
+CLIENT_ID = os.environ.get('VERDA_CLIENT_ID')
+CLIENT_SECRET = os.environ.get('VERDA_CLIENT_SECRET')
 
 # Initialize DataCrunch client
-datacrunch = DataCrunchClient(DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET)
+datacrunch = DataCrunchClient(CLIENT_ID, CLIENT_SECRET)
 
 # Example deployment and container names
 DEPLOYMENT_NAME = 'my-deployment'

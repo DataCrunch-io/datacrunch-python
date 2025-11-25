@@ -1,11 +1,11 @@
 [project]
-name = "datacrunch"
+name = "verda"
 version = "1.16.0"
-description = "Official Python SDK for DataCrunch Public API"
+description = "Official Python SDK for Verda (formerly DataCrunch) Public API"
 readme = "README.md"
 requires-python = ">=3.11"
 
-authors = [{ name = "DataCrunch Oy", email = "info@datacrunch.io" }]
+authors = [{ name = "Verda Cloud Oy", email = "info@verda.com" }]
 
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -33,9 +33,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/DataCrunch-io"
+Homepage = "https://github.com/verda-cloud"
 Documentation = "https://datacrunch-python.readthedocs.io/"
-Repository = "https://github.com/DataCrunch-io/datacrunch-python"
+Repository = "https://github.com/verda-cloud/sdk-python"
 Changelog = "https://datacrunch-python.readthedocs.io/en/latest/changelog.html"
 
 [build-system]
@@ -43,7 +43,7 @@ requires = ["uv_build>=0.9.5,<0.10.0"]
 build-backend = "uv_build"
 
 [tool.uv.build-backend]
-module-name = "datacrunch"
+module-name = "verda"
 module-root = ""
 
 [tool.ruff]

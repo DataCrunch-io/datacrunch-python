@@ -1,6 +1,6 @@
 import pytest
 
-from datacrunch.exceptions import APIException
+from verda.exceptions import APIException
 
 ERROR_CODE = 'test_code'
 ERROR_MESSAGE = 'test message'

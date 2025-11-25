@@ -1,20 +1,20 @@
 import os
 
-from datacrunch import DataCrunchClient
+from verda import DataCrunchClient
 
 # Configuration - replace with your deployment name
-DEPLOYMENT_NAME = os.environ.get('DATACRUNCH_DEPLOYMENT_NAME')
+DEPLOYMENT_NAME = os.environ.get('VERDA_DEPLOYMENT_NAME')
 
 # Get client secret and id from environment variables
-DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
-DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
-DATACRUNCH_INFERENCE_KEY = os.environ.get('DATACRUNCH_INFERENCE_KEY')
+CLIENT_ID = os.environ.get('VERDA_CLIENT_ID')
+CLIENT_SECRET = os.environ.get('VERDA_CLIENT_SECRET')
+INFERENCE_KEY = os.environ.get('VERDA_INFERENCE_KEY')
 
 # DataCrunch client instance
 datacrunch = DataCrunchClient(
-    DATACRUNCH_CLIENT_ID,
-    DATACRUNCH_CLIENT_SECRET,
-    inference_key=DATACRUNCH_INFERENCE_KEY,
+    CLIENT_ID,
+    CLIENT_SECRET,
+    inference_key=INFERENCE_KEY,
 )
 
 # Get the deployment

@@ -4,8 +4,8 @@ Advanced Create Instance
 .. code-block:: python
 
     import os
-    from datacrunch import DataCrunchClient
-    from datacrunch.exceptions import APIException
+    from verda import DataCrunchClient
+    from verda.exceptions import APIException
 
     """
     In this hypothetical example, we check if we have enough balance
@@ -26,7 +26,7 @@ Advanced Create Instance
     DURATION = 24 * 7  # one week
 
     # Get client secret from environment variable
-    CLIENT_SECRET = os.environ['DATACRUNCH_CLIENT_SECRET']
+    CLIENT_SECRET = os.environ['VERDA_CLIENT_SECRET']
     CLIENT_ID = 'Ibk5bdxV64lKAWOqYnvSi'  # Replace with your client ID
 
     try:

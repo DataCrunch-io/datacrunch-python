@@ -1,13 +1,13 @@
 import os
 
-from datacrunch import DataCrunchClient
+from verda import DataCrunchClient
 
 # Get client secret and id from environment variables
-DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
-DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
+CLIENT_ID = os.environ.get('VERDA_CLIENT_ID')
+CLIENT_SECRET = os.environ.get('VERDA_CLIENT_SECRET')
 
 # Create datcrunch client
-datacrunch = DataCrunchClient(DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET)
+datacrunch = DataCrunchClient(CLIENT_ID, CLIENT_SECRET)
 
 # Create new startup script
 bash_script = """echo this is a test script for serious cat business

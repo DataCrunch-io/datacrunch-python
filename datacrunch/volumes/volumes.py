@@ -1,5 +1,5 @@
-from datacrunch.constants import Locations, VolumeActions
-from datacrunch.helpers import stringify_class_object_properties
+from verda.constants import Locations, VolumeActions
+from verda.helpers import stringify_class_object_properties
 
 VOLUMES_ENDPOINT = '/volumes'
 

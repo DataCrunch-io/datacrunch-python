@@ -3,7 +3,7 @@ from unittest.mock import Mock
 import pytest
 import responses  # https://github.com/getsentry/responses
 
-from datacrunch.exceptions import APIException
+from verda.exceptions import APIException
 
 INVALID_REQUEST = 'invalid_request'
 INVALID_REQUEST_MESSAGE = 'Your existence is invalid'

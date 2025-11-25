@@ -2,8 +2,8 @@ import json
 
 import requests
 
-from datacrunch._version import __version__
-from datacrunch.exceptions import APIException
+from verda._version import __version__
+from verda.exceptions import APIException
 
 
 def handle_error(response: requests.Response) -> None:

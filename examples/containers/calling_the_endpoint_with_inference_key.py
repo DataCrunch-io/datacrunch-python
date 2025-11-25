@@ -1,15 +1,15 @@
 import os
 
-from datacrunch.InferenceClient import InferenceClient
+from verda.InferenceClient import InferenceClient
 
 # Get inference key and endpoint base url from environment variables
-DATACRUNCH_INFERENCE_KEY = os.environ.get('DATACRUNCH_INFERENCE_KEY')
-DATACRUNCH_ENDPOINT_BASE_URL = os.environ.get('DATACRUNCH_ENDPOINT_BASE_URL')
+INFERENCE_KEY = os.environ.get('VERDA_INFERENCE_KEY')
+BASE_URL = os.environ.get('VERDA_BASE_URL')
 
 # Create an inference client that uses only the inference key, without client credentials
 inference_client = InferenceClient(
-    inference_key=DATACRUNCH_INFERENCE_KEY,
-    endpoint_base_url=DATACRUNCH_ENDPOINT_BASE_URL,
+    inference_key=INFERENCE_KEY,
+    endpoint_base_url=BASE_URL,
 )
 
 # Make a synchronous request to the endpoint.

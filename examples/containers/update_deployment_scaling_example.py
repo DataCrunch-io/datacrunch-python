@@ -5,23 +5,23 @@ This script shows how to update scaling configurations for an existing container
 
 import os
 
-from datacrunch import DataCrunchClient
-from datacrunch.containers import (
+from verda import DataCrunchClient
+from verda.containers import (
     QueueLoadScalingTrigger,
     ScalingOptions,
     ScalingPolicy,
     ScalingTriggers,
     UtilizationScalingTrigger,
 )
-from datacrunch.exceptions import APIException
+from verda.exceptions import APIException
 
 # Get deployment name, client secret and id from environment variables
-DEPLOYMENT_NAME = os.environ.get('DATACRUNCH_DEPLOYMENT_NAME')
-DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
-DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
+DEPLOYMENT_NAME = os.environ.get('VERDA_DEPLOYMENT_NAME')
+CLIENT_ID = os.environ.get('VERDA_CLIENT_ID')
+CLIENT_SECRET = os.environ.get('VERDA_CLIENT_SECRET')
 
 # Initialize client
-datacrunch = DataCrunchClient(DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET)
+datacrunch = DataCrunchClient(CLIENT_ID, CLIENT_SECRET)
 
 try:
     # Get current scaling options

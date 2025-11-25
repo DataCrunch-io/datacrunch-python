@@ -2,8 +2,8 @@ import os
 
 import pytest
 
-from datacrunch.constants import Locations
-from datacrunch.datacrunch import DataCrunchClient
+from verda.constants import Locations
+from verda.datacrunch import DataCrunchClient
 
 IN_GITHUB_ACTIONS = os.getenv('GITHUB_ACTIONS') == 'true'
 
