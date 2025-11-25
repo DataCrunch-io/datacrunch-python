@@ -31,10 +31,10 @@ jobs:
 
       # check that basic features work and we didn't miss to include crucial files
       - name: Smoke test (wheel)
-        run: uv run --isolated --no-project --with dist/*.whl tests/unit_tests/test_client.py
+        run: uv run --isolated --no-project --with dist/*.whl --with "responses==0.25.8" tests/smoke.py
 
       - name: Smoke test (source distribution)
-        run: uv run --isolated --no-project --with dist/*.tar.gz tests/unit_tests/test_client.py
+        run: uv run --isolated --no-project --with dist/*.tar.gz --with "responses==0.25.8" tests/smoke.py
 
       # we use Trusted publishing, no keys necessary: https://docs.astral.sh/uv/guides/integration/github/#publishing-to-pypi
       - name: Publish
