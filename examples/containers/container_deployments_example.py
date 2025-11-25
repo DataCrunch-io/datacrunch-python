@@ -1,4 +1,4 @@
-"""Example script demonstrating container deployment management using the DataCrunch API.
+"""Example script demonstrating container deployment management using the Verda API.
 
 This script provides a comprehensive example of container deployment lifecycle,
 including creation, monitoring, scaling, and cleanup.
@@ -36,7 +36,7 @@ IMAGE_NAME = 'your-image-name:version'
 CLIENT_ID = os.environ.get('VERDA_CLIENT_ID')
 CLIENT_SECRET = os.environ.get('VERDA_CLIENT_SECRET')
 
-# DataCrunch client instance
+# Verda client instance
 verda = None
 
 
@@ -49,7 +49,7 @@ def wait_for_deployment_health(
     """Wait for deployment to reach healthy status.
 
     Args:
-        client: DataCrunch API client
+        client: Verda API client
         deployment_name: Name of the deployment to check
         max_attempts: Maximum number of status checks
         delay: Delay between checks in seconds
@@ -74,7 +74,7 @@ def cleanup_resources(client: VerdaClient) -> None:
     """Clean up all created resources.
 
     Args:
-        client: DataCrunch API client
+        client: Verda API client
     """
     try:
         # Delete deployment

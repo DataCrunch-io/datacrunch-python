@@ -1,4 +1,4 @@
-"""Example script demonstrating deleting a deployment using the DataCrunch API."""
+"""Example script demonstrating deleting a deployment using the Verda API."""
 
 import os
 

@@ -1,6 +1,6 @@
 """Example script demonstrating how to update scaling options for a container deployment.
 
-This script shows how to update scaling configurations for an existing container deployment on DataCrunch.
+This script shows how to update scaling configurations for an existing container deployment on Verda.
 """
 
 import os

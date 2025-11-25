@@ -70,8 +70,7 @@ class Instance:
 class InstancesService:
     """Service for managing cloud instances through the API.
 
-    This service provides methods to create, retrieve, and manage cloud instances
-    through the DataCrunch API.
+    This service provides methods to create, retrieve, and manage cloud instances.
     """
 
     def __init__(self, http_client) -> None:

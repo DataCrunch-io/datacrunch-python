@@ -10,7 +10,7 @@ CLIENT_ID = os.environ.get('VERDA_CLIENT_ID')
 CLIENT_SECRET = os.environ.get('VERDA_CLIENT_SECRET')
 INFERENCE_KEY = os.environ.get('VERDA_INFERENCE_KEY')
 
-# DataCrunch client instance
+# Verda client instance
 verda = VerdaClient(
     CLIENT_ID,
     CLIENT_SECRET,

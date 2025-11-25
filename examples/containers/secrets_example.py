@@ -6,7 +6,7 @@ from verda import VerdaClient
 CLIENT_ID = os.environ.get('VERDA_CLIENT_ID')
 CLIENT_SECRET = os.environ.get('VERDA_CLIENT_SECRET')
 
-# Initialize DataCrunch client
+# Initialize Verda client
 verda = VerdaClient(CLIENT_ID, CLIENT_SECRET)
 
 # List all secrets

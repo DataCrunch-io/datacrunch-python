@@ -1,4 +1,4 @@
-"""Example script demonstrating SGLang model deployment using the DataCrunch API.
+"""Example script demonstrating SGLang model deployment using the Verda API.
 
 This script provides an example of deploying a SGLang server with deepseek-ai/deepseek-llm-7b-chat model,
 including creation, monitoring, testing, and cleanup.
@@ -53,7 +53,7 @@ def wait_for_deployment_health(
     """Wait for deployment to reach healthy status.
 
     Args:
-        client: DataCrunch API client
+        client: Verda API client
         deployment_name: Name of the deployment to check
         max_attempts: Maximum number of status checks
         delay: Delay between checks in seconds
@@ -79,7 +79,7 @@ def cleanup_resources(client: VerdaClient) -> None:
     """Clean up all created resources.
 
     Args:
-        client: DataCrunchAPI client
+        client: Verda API client
     """
     try:
         # Delete deployment
@@ -103,7 +103,7 @@ try:
     # Get the inference API key
     inference_key = INFERENCE_KEY
     if not inference_key:
-        inference_key = input('Enter your Inference API Key from the DataCrunch dashboard: ')
+        inference_key = input('Enter your Inference API Key from the Verda dashboard: ')
     else:
         print('Using Inference API Key from environment')
 
@@ -267,7 +267,7 @@ try:
         cleanup_resources(verda)
     else:
         print(f"Deployment {DEPLOYMENT_NAME} is running. Don't forget to delete it when finished.")
-        print('You can delete it from the DataCrunch dashboard or by running:')
+        print('You can delete it from the Verda dashboard or by running:')
         print(f"verda.containers.delete('{DEPLOYMENT_NAME}')")
 
 except Exception as e:

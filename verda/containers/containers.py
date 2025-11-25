@@ -1,4 +1,4 @@
-"""Container deployment and management service for DataCrunch.
+"""Container deployment and management service for Verda.
 
 This module provides functionality for managing container deployments, including
 creation, updates, deletion, and monitoring of containerized applications.
@@ -727,8 +727,8 @@ class CustomRegistryCredentials(BaseRegistryCredentials):
 class ContainersService:
     """Service for managing container deployments.
 
-    This class provides methods for interacting with the DataCrunch container
-    deployment API, including CRUD operations for deployments and related resources.
+    This class provides methods for interacting with container deployment API,
+    including CRUD operations for deployments and related resources.
     """
 
     def __init__(self, http_client: HTTPClient, inference_key: str | None = None) -> None:

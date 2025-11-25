@@ -1,8 +1,8 @@
 API Reference
 =============
 
-Main DataCrunch Client 
-----------------------
+Main Verda Client 
+-----------------
 
 .. autoclass:: verda.VerdaClient
    :members:
