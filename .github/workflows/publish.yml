@@ -1,0 +1,42 @@
+name: "Publish verda to PyPI"
+
+# TODO(shamrin) switch to tags or releases
+on:
+  pull_request:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+
+    environment:
+      name: pypi
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.9.11"
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Build
+        run: uv build
+
+      # check that basic features work and we didn't miss to include crucial files
+      - name: Smoke test (wheel)
+        run: uv run --isolated --no-project --with dist/*.whl tests/unit_tests/test_client.py
+
+      - name: Smoke test (source distribution)
+        run: uv run --isolated --no-project --with dist/*.tar.gz tests/unit_tests/test_client.py
+
+      # we use Trusted publishing, no keys necessary: https://docs.astral.sh/uv/guides/integration/github/#publishing-to-pypi
+      - name: Publish
+        run: uv publish
+
