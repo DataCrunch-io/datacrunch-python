@@ -5,7 +5,7 @@ This script shows how to update scaling configurations for an existing container
 
 import os
 
-from verda import DataCrunchClient
+from verda import VerdaClient
 from verda.containers import (
     QueueLoadScalingTrigger,
     ScalingOptions,

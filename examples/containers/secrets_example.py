@@ -1,6 +1,6 @@
 import os
 
-from verda import DataCrunchClient
+from verda import VerdaClient
 
 # Get client secret and id from environment variables
 CLIENT_ID = os.environ.get('VERDA_CLIENT_ID')

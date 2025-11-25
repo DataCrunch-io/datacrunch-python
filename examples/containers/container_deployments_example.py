@@ -7,7 +7,7 @@ including creation, monitoring, scaling, and cleanup.
 import os
 import time
 
-from verda import DataCrunchClient
+from verda import VerdaClient
 from verda.containers import (
     ComputeResource,
     Container,

@@ -2,7 +2,7 @@
 
 import os
 
-from verda import DataCrunchClient
+from verda import VerdaClient
 
 DEPLOYMENT_NAME = 'sglang-deployment-example-20250411-160652'
 

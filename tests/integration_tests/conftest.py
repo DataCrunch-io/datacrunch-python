@@ -3,7 +3,7 @@ import os
 import pytest
 from dotenv import load_dotenv
 
-from verda.datacrunch import DataCrunchClient
+from verda.verda import VerdaClient
 
 """
 Make sure to run the server and the account has enough balance before running the tests
@@ -19,4 +19,4 @@ CLIENT_ID = os.getenv('VERDA_CLIENT_ID')
 
 @pytest.fixture
 def datacrunch_client():
-    return DataCrunchClient(CLIENT_ID, CLIENT_SECRET, BASE_URL)
+    return VerdaClient(CLIENT_ID, CLIENT_SECRET, BASE_URL)

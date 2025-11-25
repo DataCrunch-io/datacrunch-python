@@ -22,7 +22,7 @@ Deploy a new instance:
 .. code-block:: python
 
     import os
-    from verda import DataCrunchClient
+    from verda import VerdaClient
 
     # Get client secret from environment variable
     CLIENT_SECRET = os.environ['VERDA_CLIENT_SECRET']

@@ -1,6 +1,6 @@
 import os
 
-from verda import DataCrunchClient
+from verda import VerdaClient
 
 # Configuration - replace with your deployment name
 DEPLOYMENT_NAME = os.environ.get('VERDA_DEPLOYMENT_NAME')

@@ -11,7 +11,7 @@ import sys
 import time
 from datetime import datetime
 
-from verda import DataCrunchClient
+from verda import VerdaClient
 from verda.containers import (
     ComputeResource,
     Container,

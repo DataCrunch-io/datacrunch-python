@@ -1,6 +1,6 @@
 import os
 
-from verda import DataCrunchClient
+from verda import VerdaClient
 
 # Fileset secrets are a way to mount sensitive files like API keys, certs, and credentials securely inside a container, without hardcoding them in the image or env vars.
 # This example demonstrates how to create a fileset secret containing two files from your local filesystem

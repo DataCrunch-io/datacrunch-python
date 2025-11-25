@@ -1,7 +1,7 @@
 import os
 from time import sleep
 
-from verda import DataCrunchClient
+from verda import VerdaClient
 from verda.InferenceClient.inference_client import AsyncStatus
 
 # Configuration - replace with your deployment name

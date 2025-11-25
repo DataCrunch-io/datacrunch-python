@@ -4,7 +4,7 @@ Advanced Create Instance
 .. code-block:: python
 
     import os
-    from verda import DataCrunchClient
+    from verda import VerdaClient
     from verda.exceptions import APIException
 
     """

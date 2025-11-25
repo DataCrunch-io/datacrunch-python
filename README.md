@@ -58,7 +58,7 @@ Verda Public API documentation [is available here](https://api.datacrunch.io/v1/
 
   ```python
   import os
-  from verda import DataCrunchClient
+  from verda import VerdaClient
 
   # Get credentials from environment variables
   CLIENT_ID = os.environ.get('VERDA_CLIENT_ID')
@@ -117,7 +117,7 @@ Create a file in the root directory of the project:
 
 ```python
 # example.py
-from verda.datacrunch import DataCrunchClient
+from verda.verda import VerdaClient
 
 CLIENT_SECRET = 'secret'
 CLIENT_ID = 'your-id'

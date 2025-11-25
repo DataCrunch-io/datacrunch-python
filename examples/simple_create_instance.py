@@ -1,7 +1,7 @@
 import os
 import time
 
-from verda import DataCrunchClient
+from verda import VerdaClient
 from verda.constants import InstanceStatus, Locations
 
 # Get client secret and id from environment variables

@@ -9,7 +9,7 @@ It shows how to:
 
 import os
 
-from verda import DataCrunchClient
+from verda import VerdaClient
 from verda.containers import EnvVar, EnvVarType
 
 # Get client secret and id from environment variables
