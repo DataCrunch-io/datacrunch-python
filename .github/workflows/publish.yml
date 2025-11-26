@@ -1,8 +1,8 @@
 name: "Publish verda to PyPI"
 
-# TODO(shamrin) switch to tags or releases
 on:
-  pull_request:
+  release:
+    types: [published]
 
 jobs:
   deploy:
@@ -39,4 +39,3 @@ jobs:
       # we use Trusted publishing, no keys necessary: https://docs.astral.sh/uv/guides/integration/github/#publishing-to-pypi
       - name: Publish
         run: uv publish
-

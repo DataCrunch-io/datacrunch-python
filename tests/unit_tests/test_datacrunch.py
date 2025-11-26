@@ -44,7 +44,7 @@ def test_datacrunch_module_deprecation():
 
 
 def test_datacrunch_constants_module():
-    # Test that old re-exports in datacrunch.datacrunch module still work, but warn
+    # Test that old re-exports in datacrunch.datacrunch (sub)module still work, but warn
 
     with pytest.warns(DeprecationWarning, match='datacrunch.datacrunch is deprecated'):
         from verda.datacrunch import Constants
