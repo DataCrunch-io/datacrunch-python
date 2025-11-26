@@ -23,7 +23,7 @@ def reset_verda_datacrunch():
 
 
 def test_datacrunch_client_deprecation():
-    with pytest.warns(DeprecationWarning, match='datacrunch import is deprecated'):
+    with pytest.warns(DeprecationWarning, match='datacrunch is deprecated'):
         from datacrunch import DataCrunchClient
 
     responses.add(responses.POST, BASE_URL + '/oauth2/token', json=response_json, status=200)
@@ -32,7 +32,7 @@ def test_datacrunch_client_deprecation():
 
 
 def test_datacrunch_module_deprecation():
-    with pytest.warns(DeprecationWarning, match='datacrunch import is deprecated'):
+    with pytest.warns(DeprecationWarning, match='datacrunch is deprecated'):
         from datacrunch.datacrunch import DataCrunchClient
 
     responses.add(responses.POST, BASE_URL + '/oauth2/token', json=response_json, status=200)
@@ -43,7 +43,7 @@ def test_datacrunch_module_deprecation():
 def test_datacrunch_constants_module():
     # Test that old re-exports in datacrunch.datacrunch (sub)module still work, but warn
 
-    with pytest.warns(DeprecationWarning, match='datacrunch import is deprecated'):
+    with pytest.warns(DeprecationWarning, match='datacrunch is deprecated'):
         from datacrunch.datacrunch import Constants
 
     constants = Constants('url', 'v1')

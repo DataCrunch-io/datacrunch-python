@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Highlights
 
-- `datacrunch` package is now `verda`, because the company [changed the name to Verda](https://verda.com/blog/datacrunch-is-changing-its-name-to-verda). Original `datacrunch` package does not go anywhere and would continue tracking `verda` releases.
+- `datacrunch` package is now `verda`, because [DataCrunch company changed its name to Verda](https://verda.com/blog/datacrunch-is-changing-its-name-to-verda). Original `datacrunch` package is deprecated, but it would continue tracking `verda` releases.
 
 ### Deprecated
 
