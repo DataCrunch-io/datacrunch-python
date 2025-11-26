@@ -26,16 +26,15 @@ jobs:
       - name: Set up Python
         run: uv python install
 
-      - name: Build
+      - name: Build verda
         run: uv build
 
-      # check that basic features work and we didn't miss to include crucial files
-      - name: Smoke test (wheel)
-        run: uv run --isolated --no-project --with dist/*.whl --with "responses==0.25.8" tests/smoke.py
+      - name: Smoke test verda (wheel)
+        run: uv run --isolated --no-project --with dist/verda-*.whl --with "responses==0.25.8" tests/smoke_verda.py
 
-      - name: Smoke test (source distribution)
-        run: uv run --isolated --no-project --with dist/*.tar.gz --with "responses==0.25.8" tests/smoke.py
+      - name: Smoke test verda (source distribution)
+        run: uv run --isolated --no-project --with dist/verda-*.tar.gz --with "responses==0.25.8" tests/smoke_verda.py
 
-      # we use Trusted publishing, no keys necessary: https://docs.astral.sh/uv/guides/integration/github/#publishing-to-pypi
-      - name: Publish
-        run: uv publish
+      # we use Trusted publishing for verda package, no keys necessary: https://docs.astral.sh/uv/guides/integration/github/#publishing-to-pypi
+      - name: Publish verda package
+        run: uv publish dist/verda-*

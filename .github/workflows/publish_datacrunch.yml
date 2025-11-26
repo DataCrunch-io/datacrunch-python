@@ -1,15 +1,12 @@
 name: Publish datacrunch package
 
 on:
-  workflow_run:
-    workflows: ["Publish verda package"]
-    types:
-      - completed
+  release:
+    types: [published]
 
 jobs:
   deploy:
     runs-on: ubuntu-24.04
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     environment:
       name: pypi
@@ -19,48 +16,41 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v5
 
       - name: Install uv
         uses: astral-sh/setup-uv@v7
         with:
           version: "0.9.11"
 
+      - name: Set up Python
+        run: uv python install
+
       - name: Sync datacrunch version and dependency to verda
-        working-directory: datacrunch_compat
         run: |
           # read version from top-level project
-          VERSION=$(uv version --short --project ..)
+          VERSION=$(uv version --short --package verda)
           echo "Syncing datacrunch to verda==$VERSION"
 
-          uv version "$VERSION"
-          uv add "verda==$VERSION"
+          uv version --package datacrunch "$VERSION"
+          uv add --package datacrunch "verda==$VERSION"
 
           echo
           echo "Resulting pyproject.toml:"
-          cat pyproject.toml
+          cat datacrunch_compat/pyproject.toml
 
-      - name: Set up Python
-        working-directory: datacrunch_compat
-        run: uv python install
+      - name: Build all packages
+        run: uv build --all-packages
 
-      - name: Build
-        working-directory: datacrunch_compat
-        run: uv build
+      - name: Smoke test datacrunch (wheel)
+        run: uv run --isolated --no-project --with dist/datacrunch-*.whl --with dist/verda-*.whl --with "responses==0.25.8" datacrunch_compat/tests/smoke_datacrunch.py
 
-      # check that basic features work and we didn't miss to include crucial files
-      - name: Smoke test (wheel)
-        working-directory: datacrunch_compat
-        run: uv run --isolated --no-project --with dist/*.whl --with "responses==0.25.8" tests/smoke_datacrunch.py
+      - name: Smoke test datacrunch (source distribution)
+        run: uv run --isolated --no-project --with dist/datacrunch-*.tar.gz --with dist/verda-*.tar.gz  --with "responses==0.25.8" datacrunch_compat/tests/smoke_datacrunch.py
 
-      - name: Smoke test (source distribution)
-        working-directory: datacrunch_compat
-        run: uv run --isolated --no-project --with dist/*.tar.gz --with "responses==0.25.8" tests/smoke_datacrunch.py
-
-      - name: Publish
-        working-directory: datacrunch_compat
+      # we don't use Trusted publishing for datacrunch package yet, thus we need secrets
+      - name: Publish datacrunch
         env:
           UV_PUBLISH_USERNAME: ${{ secrets.PYPI_USERNAME }}
           UV_PUBLISH_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-        run: uv publish
+        run: uv publish dist/datacrunch-*

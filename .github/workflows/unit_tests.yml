@@ -39,3 +39,8 @@ jobs:
         uses: codecov/codecov-action@v1
         with:
           fail_ci_if_error: false
+
+      - name: Test datacrunch_compat with pytest
+        working-directory: datacrunch_compat
+        run: |
+          uv run pytest
