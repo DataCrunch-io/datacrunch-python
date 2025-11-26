@@ -235,8 +235,8 @@ class HTTPClient:
 
         Example:
         if the relative url is '/balance'
-        and the base url is 'https://api.datacrunch.io/v1'
-        then this method will return 'https://api.datacrunch.io/v1/balance'
+        and the base url is 'https://api.verda.com/v1'
+        then this method will return 'https://api.verda.com/v1/balance'
 
         :param url: a relative url path
         :type url: str

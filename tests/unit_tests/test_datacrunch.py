@@ -3,7 +3,7 @@ import sys
 import pytest
 import responses  # https://github.com/getsentry/responses
 
-BASE_URL = 'https://api-testing.datacrunch.io/v1'
+BASE_URL = 'https://api.example.com/v1'
 
 response_json = {
     'access_token': 'SECRET',

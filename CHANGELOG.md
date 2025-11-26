@@ -51,6 +51,7 @@ verda.instances.create(...)
 
 - Refactor `instance_types.py` to use dataclass
 - Put back support for Python 3.10
+- Default API base URL is now `https://api.verda.com/v1`
 
 ## [1.16.0] - 2025-10-27
 

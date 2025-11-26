@@ -8,14 +8,14 @@ Verda Python SDK
 
 Welcome to the documentation for the official Verda (formerly Datacrunch) Python SDK.
 
-The Public API documentation is `available here <https://api.datacrunch.io/v1/docs>`_
+The Public API documentation is `available here <https://api.verda.com/v1/docs>`_
 
 The Python SDK is open-sourced and can be `found here <https://github.com/verda-cloud/sdk-python>`_
 
 Basic Examples:
 ---------------
 
-First, get your client credentials - `instructions available here <https://api.datacrunch.io/v1/docs#description/quick-start-guide>`_.
+First, get your client credentials - `instructions available here <https://api.verda.com/v1/docs#description/quick-start-guide>`_.
 
 Deploy a new instance:
 

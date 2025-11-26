@@ -4,7 +4,7 @@ import responses  # https://github.com/getsentry/responses
 from verda.exceptions import APIException
 from verda.verda import VerdaClient
 
-BASE_URL = 'https://api-testing.datacrunch.io/v1'
+BASE_URL = 'https://api.example.com/v1'
 
 response_json = {
     'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJoZXkiOiJ5b3UgYWN1YWxseSBjaGVja2VkIHRoaXM_In0.0RjcdKQ1NJP9gbRyXITE6LFFLwKGzeeshuubnkkfkb8',
@@ -28,7 +28,7 @@ class TestVerdaClient:
 
     def test_client_with_default_base_url(self):
         # arrange - add response mock
-        DEFAULT_BASE_URL = 'https://api.datacrunch.io/v1'
+        DEFAULT_BASE_URL = 'https://api.verda.com/v1'
         responses.add(
             responses.POST,
             DEFAULT_BASE_URL + '/oauth2/token',

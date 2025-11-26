@@ -12,7 +12,7 @@ The official [Verda](https://verda.com) (formerly DataCrunch) Python SDK.
 
 The SDK's documentation is available on [ReadTheDocs](https://datacrunch-python.readthedocs.io/en/latest/)
 
-Verda Public API documentation [is available here](https://api.datacrunch.io/v1/docs).
+Verda Public API documentation [is available here](https://api.verda.com/v1/docs).
 
 ## Getting Started - Using the SDK:
 
@@ -26,7 +26,7 @@ Verda Public API documentation [is available here](https://api.datacrunch.io/v1/
   uv add verda
   ```
 
-- Generate your client credentials - [instructions in the public API docs](https://api.datacrunch.io/v1/docs#description/quick-start-guide).
+- Generate your client credentials - [instructions in the public API docs](https://api.verda.com/v1/docs#description/quick-start-guide).
 
 
 - Add your client id and client secret to an environment variable (don't want it to be hardcoded):

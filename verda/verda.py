@@ -21,7 +21,7 @@ class VerdaClient:
         self,
         client_id: str,
         client_secret: str,
-        base_url: str = 'https://api.datacrunch.io/v1',
+        base_url: str = 'https://api.verda.com/v1',
         inference_key: str | None = None,
     ) -> None:
         """Verda client.
@@ -30,7 +30,7 @@ class VerdaClient:
         :type client_id: str
         :param client_secret: client secret
         :type client_secret: str
-        :param base_url: base url for all the endpoints, optional, defaults to "https://api.datacrunch.io/v1"
+        :param base_url: base url for all the endpoints, optional, defaults to "https://api.verda.com/v1"
         :type base_url: str, optional
         :param inference_key: inference key, optional
         :type inference_key: str, optional
