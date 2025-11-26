@@ -7,6 +7,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Highlights
+
+- `datacrunch` package is now `verda`, because the company [changed the name to Verda](https://verda.com/blog/datacrunch-is-changing-its-name-to-verda). Original `datacrunch` package does not go anywhere and would continue tracking `verda` releases.
+
+### Deprecated
+
+- `DataCrunchClient` and `datacrunch` are deprecated, please change your imports to `VerdaClient` and `verda`.
+
+Was:
+
+```shell
+uv add datacrunch
+pip3 install datacrunch
+```
+
+```python
+from datacrunch import DataCrunchClient
+
+datacrunch = DataCrunchClient(...)
+datacrunch.instances.create(...)
+```
+
+Now:
+
+```shell
+uv add verda
+pip3 install verda
+```
+
+```python
+from verda import VerdaClient
+
+verda = VerdaClient(...)
+verda.instances.create(...)
+```
+
 ### Added
 
 - Added shared filesystem (SFS) type constant and example
@@ -14,6 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Refactor `instance_types.py` to use dataclass
+- Put back support for Python 3.10
 
 ## [1.16.0] - 2025-10-27
 
