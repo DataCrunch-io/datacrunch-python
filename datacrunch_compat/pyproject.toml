@@ -1,0 +1,41 @@
+[project]
+name = "datacrunch"
+version = "0.0.0"  # version set by .github/workflows/publish_datacrunch.yml before release
+description = "datacrunch is now verda"
+readme = "README.md"
+requires-python = ">=3.10"
+
+authors = [{ name = "Verda Cloud Oy", email = "info@verda.com" }]
+
+classifiers = [
+    "Development Status :: 7 - Inactive",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+[project.urls]
+Homepage = "https://github.com/verda-cloud"
+Documentation = "https://datacrunch-python.readthedocs.io/"
+Repository = "https://github.com/verda-cloud/sdk-python"
+Changelog = "https://datacrunch-python.readthedocs.io/en/latest/changelog.html"
+
+[build-system]
+requires = ["uv_build>=0.9.5,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "datacrunch"
+module-root = ""
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.1",
+    "pytest-responses>=0.5.1",
+    "responses>=0.25.8",
+]

@@ -1,4 +1,4 @@
-name: "Publish verda to PyPI"
+name: Publish verda package
 
 on:
   release:

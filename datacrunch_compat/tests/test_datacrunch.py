@@ -18,27 +18,24 @@ response_json = {
 def reset_verda_datacrunch():
     # Ensure this module gets freshly imported in each test. Python normally caches imports,
     # which prevents module-level DeprecationWarnings from firing more than once.
-    sys.modules.pop('verda.datacrunch', None)
+    sys.modules.pop('datacrunch.datacrunch', None)
+    sys.modules.pop('datacrunch', None)
 
 
 def test_datacrunch_client_deprecation():
-    from verda import DataCrunchClient
+    with pytest.warns(DeprecationWarning, match='datacrunch import is deprecated'):
+        from datacrunch import DataCrunchClient
 
     responses.add(responses.POST, BASE_URL + '/oauth2/token', json=response_json, status=200)
-
-    with pytest.warns(DeprecationWarning, match='DataCrunchClient is deprecated'):
-        client = DataCrunchClient('XXXXXXXXXXXXXX', 'XXXXXXXXXXXXXX', BASE_URL)
-
+    client = DataCrunchClient('XXXXXXXXXXXXXX', 'XXXXXXXXXXXXXX', BASE_URL)
     assert client.constants.base_url == BASE_URL
 
 
-@pytest.mark.filterwarnings('ignore:DataCrunchClient is deprecated')
 def test_datacrunch_module_deprecation():
+    with pytest.warns(DeprecationWarning, match='datacrunch import is deprecated'):
+        from datacrunch.datacrunch import DataCrunchClient
+
     responses.add(responses.POST, BASE_URL + '/oauth2/token', json=response_json, status=200)
-
-    with pytest.warns(DeprecationWarning, match='datacrunch.datacrunch is deprecated'):
-        from verda.datacrunch import DataCrunchClient
-
     client = DataCrunchClient('XXXXXXXXXXXXXX', 'XXXXXXXXXXXXXX', BASE_URL)
     assert client.constants.base_url == BASE_URL
 
@@ -46,8 +43,8 @@ def test_datacrunch_module_deprecation():
 def test_datacrunch_constants_module():
     # Test that old re-exports in datacrunch.datacrunch (sub)module still work, but warn
 
-    with pytest.warns(DeprecationWarning, match='datacrunch.datacrunch is deprecated'):
-        from verda.datacrunch import Constants
+    with pytest.warns(DeprecationWarning, match='datacrunch import is deprecated'):
+        from datacrunch.datacrunch import Constants
 
     constants = Constants('url', 'v1')
 

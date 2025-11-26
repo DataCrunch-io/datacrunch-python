@@ -1,6 +1,6 @@
-# Frozen, minimal compatibility layer for old DataCrunch API
+# Compatibility layer for deprecated `datacrunch.datacrunch` package
 
-from verda import DataCrunchClient
+from verda import VerdaClient as DataCrunchClient
 from verda._version import __version__
 from verda.authentication.authentication import AuthenticationService
 from verda.balance.balance import BalanceService
@@ -16,6 +16,7 @@ from verda.startup_scripts.startup_scripts import StartupScriptsService
 from verda.volume_types.volume_types import VolumeTypesService
 from verda.volumes.volumes import VolumesService
 
+# for `from datacrunch.datacrunch import *`
 __all__ = [
     'AuthenticationService',
     'BalanceService',
@@ -37,7 +38,7 @@ __all__ = [
 import warnings
 
 warnings.warn(
-    'datacrunch.datacrunch is deprecated; use `from verda` instead.',
+    'datacrunch import is deprecated; use verda instead.',
     DeprecationWarning,
     stacklevel=2,
 )
