@@ -6,7 +6,7 @@ Stable Release
 
 Use `pip (Package manager for python) <https://pip.pypa.io/en/stable/>`_ to install the latest stable release::
 
-   pip3 install verda
+   pip install verda
 
 Install from source
 -------------------

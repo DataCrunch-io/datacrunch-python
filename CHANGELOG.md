@@ -19,7 +19,7 @@ Was:
 
 ```shell
 uv add datacrunch
-pip3 install datacrunch
+pip install datacrunch
 ```
 
 ```python
@@ -33,7 +33,7 @@ Now:
 
 ```shell
 uv add verda
-pip3 install verda
+pip install verda
 ```
 
 ```python

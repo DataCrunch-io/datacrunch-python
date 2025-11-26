@@ -20,7 +20,7 @@ Verda Public API documentation [is available here](https://api.verda.com/v1/docs
 
   ```bash
   # via pip
-  pip3 install verda
+  pip install verda
 
   # via uv
   uv add verda
