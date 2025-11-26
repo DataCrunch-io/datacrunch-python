@@ -1,4 +1,4 @@
-from datacrunch.helpers import stringify_class_object_properties
+from verda.helpers import stringify_class_object_properties
 
 IMAGES_ENDPOINT = '/images'
 

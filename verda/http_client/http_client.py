@@ -2,8 +2,8 @@ import json
 
 import requests
 
-from datacrunch._version import __version__
-from datacrunch.exceptions import APIException
+from verda._version import __version__
+from verda.exceptions import APIException
 
 
 def handle_error(response: requests.Response) -> None:
@@ -235,8 +235,8 @@ class HTTPClient:
 
         Example:
         if the relative url is '/balance'
-        and the base url is 'https://api.datacrunch.io/v1'
-        then this method will return 'https://api.datacrunch.io/v1/balance'
+        and the base url is 'https://api.verda.com/v1'
+        then this method will return 'https://api.verda.com/v1/balance'
 
         :param url: a relative url path
         :type url: str

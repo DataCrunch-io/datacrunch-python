@@ -4,13 +4,13 @@ import pytest
 import responses  # https://github.com/getsentry/responses
 from responses import matchers
 
-from datacrunch.authentication.authentication import AuthenticationService
-from datacrunch.exceptions import APIException
+from verda.authentication.authentication import AuthenticationService
+from verda.exceptions import APIException
 
 INVALID_REQUEST = 'invalid_request'
 INVALID_REQUEST_MESSAGE = 'Your existence is invalid'
 
-BASE_URL = 'https://api-testing.datacrunch.io/v1'
+BASE_URL = 'https://api.example.com/v1'
 CLIENT_ID = '0123456789xyz'
 CLIENT_SECRET = 'zyx987654321'
 

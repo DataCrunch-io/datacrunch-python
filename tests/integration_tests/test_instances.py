@@ -2,8 +2,8 @@ import os
 
 import pytest
 
-from datacrunch.constants import Locations
-from datacrunch.datacrunch import DataCrunchClient
+from verda.constants import Locations
+from verda.verda import VerdaClient
 
 IN_GITHUB_ACTIONS = os.getenv('GITHUB_ACTIONS') == 'true'
 
@@ -11,12 +11,12 @@ IN_GITHUB_ACTIONS = os.getenv('GITHUB_ACTIONS') == 'true'
 @pytest.mark.skipif(IN_GITHUB_ACTIONS, reason="Test doesn't work in Github Actions.")
 @pytest.mark.withoutresponses
 class TestInstances:
-    def test_create_instance(self, datacrunch_client: DataCrunchClient):
+    def test_create_instance(self, verda_client: VerdaClient):
         # get ssh key
-        ssh_key = datacrunch_client.ssh_keys.get()[0]
+        ssh_key = verda_client.ssh_keys.get()[0]
 
         # create instance
-        instance = datacrunch_client.instances.create(
+        instance = verda_client.instances.create(
             hostname='test-instance',
             location=Locations.FIN_03,
             instance_type='CPU.4V',
@@ -27,12 +27,12 @@ class TestInstances:
 
         # assert instance is created
         assert instance.id is not None
-        assert instance.status == datacrunch_client.constants.instance_status.PROVISIONING
+        assert instance.status == verda_client.constants.instance_status.PROVISIONING
 
         # delete instance
-        datacrunch_client.instances.action(instance.id, 'delete')
+        verda_client.instances.action(instance.id, 'delete')
 
         # permanently delete all volumes in trash
-        trash = datacrunch_client.volumes.get_in_trash()
+        trash = verda_client.volumes.get_in_trash()
         for volume in trash:
-            datacrunch_client.volumes.delete(volume.id, is_permanent=True)
+            verda_client.volumes.delete(volume.id, is_permanent=True)

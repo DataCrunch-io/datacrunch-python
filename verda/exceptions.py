@@ -1,5 +1,5 @@
 class APIException(Exception):
-    """This exception is raised if there was an error from datacrunch's API.
+    """This exception is raised if there was an error from verda's API.
 
     Could be an invalid input, token etc.
 
@@ -15,7 +15,7 @@ class APIException(Exception):
         :type message: str
         """
         self.code = code
-        """Error code. should be available in DataCrunchClient.error_codes"""
+        """Error code. should be available in VerdaClient.error_codes"""
 
         self.message = message
         """Error message

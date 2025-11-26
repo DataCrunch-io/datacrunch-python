@@ -1,8 +1,8 @@
 SSH Keys
 ========
 
-.. autoclass:: datacrunch.ssh_keys.ssh_keys.SSHKeysService
+.. autoclass:: verda.ssh_keys.ssh_keys.SSHKeysService
    :members:
 
-.. autoclass:: datacrunch.ssh_keys.ssh_keys.SSHKey
+.. autoclass:: verda.ssh_keys.ssh_keys.SSHKey
    :members:

@@ -9,15 +9,15 @@ It shows how to:
 
 import os
 
-from datacrunch import DataCrunchClient
-from datacrunch.containers import EnvVar, EnvVarType
+from verda import VerdaClient
+from verda.containers import EnvVar, EnvVarType
 
 # Get client secret and id from environment variables
-DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
-DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
+CLIENT_ID = os.environ.get('VERDA_CLIENT_ID')
+CLIENT_SECRET = os.environ.get('VERDA_CLIENT_SECRET')
 
-# Initialize DataCrunch client
-datacrunch = DataCrunchClient(DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET)
+# Initialize Verda client
+verda = VerdaClient(CLIENT_ID, CLIENT_SECRET)
 
 # Example deployment and container names
 DEPLOYMENT_NAME = 'my-deployment'
@@ -36,12 +36,12 @@ def print_env_vars(env_vars: dict[str, list[EnvVar]]) -> None:
 def main():
     # First, let's get the current environment variables
     print('Getting current environment variables...')
-    env_vars = datacrunch.containers.get_deployment_environment_variables(DEPLOYMENT_NAME)
+    env_vars = verda.containers.get_deployment_environment_variables(DEPLOYMENT_NAME)
     print_env_vars(env_vars)
 
     # Create a new secret
     secret_name = 'my-secret-key'
-    datacrunch.containers.create_secret(secret_name, 'my-secret-value')
+    verda.containers.create_secret(secret_name, 'my-secret-value')
 
     # Add new environment variables
     print('\nAdding new environment variables...')
@@ -54,7 +54,7 @@ def main():
         EnvVar(name='DEBUG', value_or_reference_to_secret='true', type=EnvVarType.PLAIN),
     ]
 
-    env_vars = datacrunch.containers.add_deployment_environment_variables(
+    env_vars = verda.containers.add_deployment_environment_variables(
         deployment_name=DEPLOYMENT_NAME,
         container_name=CONTAINER_NAME,
         env_vars=new_env_vars,
@@ -67,7 +67,7 @@ def main():
         EnvVar(name='DEBUG', value_or_reference_to_secret='false', type=EnvVarType.PLAIN),
     ]
 
-    env_vars = datacrunch.containers.update_deployment_environment_variables(
+    env_vars = verda.containers.update_deployment_environment_variables(
         deployment_name=DEPLOYMENT_NAME,
         container_name=CONTAINER_NAME,
         env_vars=updated_env_vars,
@@ -76,7 +76,7 @@ def main():
 
     # Delete environment variables
     print('\nDeleting environment variables...')
-    env_vars = datacrunch.containers.delete_deployment_environment_variables(
+    env_vars = verda.containers.delete_deployment_environment_variables(
         deployment_name=DEPLOYMENT_NAME,
         container_name=CONTAINER_NAME,
         env_var_names=['DEBUG'],

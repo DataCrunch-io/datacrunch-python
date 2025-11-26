@@ -1,31 +1,31 @@
 """Example script demonstrating how to update scaling options for a container deployment.
 
-This script shows how to update scaling configurations for an existing container deployment on DataCrunch.
+This script shows how to update scaling configurations for an existing container deployment on Verda.
 """
 
 import os
 
-from datacrunch import DataCrunchClient
-from datacrunch.containers import (
+from verda import VerdaClient
+from verda.containers import (
     QueueLoadScalingTrigger,
     ScalingOptions,
     ScalingPolicy,
     ScalingTriggers,
     UtilizationScalingTrigger,
 )
-from datacrunch.exceptions import APIException
+from verda.exceptions import APIException
 
 # Get deployment name, client secret and id from environment variables
-DEPLOYMENT_NAME = os.environ.get('DATACRUNCH_DEPLOYMENT_NAME')
-DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
-DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
+DEPLOYMENT_NAME = os.environ.get('VERDA_DEPLOYMENT_NAME')
+CLIENT_ID = os.environ.get('VERDA_CLIENT_ID')
+CLIENT_SECRET = os.environ.get('VERDA_CLIENT_SECRET')
 
 # Initialize client
-datacrunch = DataCrunchClient(DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET)
+verda = VerdaClient(CLIENT_ID, CLIENT_SECRET)
 
 try:
     # Get current scaling options
-    scaling_options = datacrunch.containers.get_deployment_scaling_options(DEPLOYMENT_NAME)
+    scaling_options = verda.containers.get_deployment_scaling_options(DEPLOYMENT_NAME)
 
     print('Current scaling configuration:\n')
     print(f'Min replicas: {scaling_options.min_replica_count}')
@@ -70,7 +70,7 @@ try:
     )
 
     # Update scaling options
-    updated_options = datacrunch.containers.update_deployment_scaling_options(
+    updated_options = verda.containers.update_deployment_scaling_options(
         DEPLOYMENT_NAME, scaling_options
     )
 

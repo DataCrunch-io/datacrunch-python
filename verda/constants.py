@@ -120,7 +120,7 @@ class Constants:
         """Available error codes"""
 
         self.base_url: str = base_url
-        """DataCrunch's Public API URL"""
+        """Verda Public API URL"""
 
         self.version: str = version
         """Current SDK Version"""

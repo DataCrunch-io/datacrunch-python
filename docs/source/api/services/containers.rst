@@ -1,9 +1,9 @@
 Containers
 ==========
 
-.. autoclass:: datacrunch.containers.containers.ContainersService
+.. autoclass:: verda.containers.containers.ContainersService
    :members:
 
-.. autoclass:: datacrunch.containers.containers.Container
+.. autoclass:: verda.containers.containers.Container
    :members:
 

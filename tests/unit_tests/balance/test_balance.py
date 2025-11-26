@@ -1,6 +1,6 @@
 import responses  # https://github.com/getsentry/responses
 
-from datacrunch.balance.balance import Balance, BalanceService
+from verda.balance.balance import Balance, BalanceService
 
 
 def test_balance(http_client):

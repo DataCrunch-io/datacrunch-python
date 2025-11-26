@@ -2,7 +2,7 @@ import pytest
 import responses  # https://github.com/getsentry/responses
 from responses import matchers
 
-from datacrunch.containers.containers import (
+from verda.containers.containers import (
     CONTAINER_DEPLOYMENTS_ENDPOINT,
     CONTAINER_REGISTRY_CREDENTIALS_ENDPOINT,
     SECRETS_ENDPOINT,
@@ -33,7 +33,7 @@ from datacrunch.containers.containers import (
     VolumeMount,
     VolumeMountType,
 )
-from datacrunch.exceptions import APIException
+from verda.exceptions import APIException
 
 DEPLOYMENT_NAME = 'test-deployment'
 CONTAINER_NAME = 'test-container'

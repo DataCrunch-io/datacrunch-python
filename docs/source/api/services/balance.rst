@@ -1,8 +1,8 @@
 Balance
 =======
 
-.. autoclass:: datacrunch.balance.balance.BalanceService
+.. autoclass:: verda.balance.balance.BalanceService
    :members:
 
-.. autoclass:: datacrunch.balance.balance.Balance
+.. autoclass:: verda.balance.balance.Balance
    :members:

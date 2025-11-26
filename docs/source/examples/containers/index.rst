@@ -1,7 +1,7 @@
 Container Examples
 ==================
 
-This section contains examples demonstrating how to work with containers in DataCrunch.
+This section contains examples demonstrating how to work with containers in Verda.
 
 .. toctree::
    :maxdepth: 1

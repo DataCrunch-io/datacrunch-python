@@ -1,8 +1,8 @@
 import pytest
 import responses  # https://github.com/getsentry/responses
 
-from datacrunch.exceptions import APIException
-from datacrunch.ssh_keys.ssh_keys import SSHKey, SSHKeysService
+from verda.exceptions import APIException
+from verda.ssh_keys.ssh_keys import SSHKey, SSHKeysService
 
 INVALID_REQUEST = 'invalid_request'
 INVALID_REQUEST_MESSAGE = 'Your existence is invalid'

@@ -1,8 +1,8 @@
 Images
 ======
 
-.. autoclass:: datacrunch.images.images.ImagesService
+.. autoclass:: verda.images.images.ImagesService
    :members:
 
-.. autoclass:: datacrunch.images.images.Image
+.. autoclass:: verda.images.images.Image
    :members:

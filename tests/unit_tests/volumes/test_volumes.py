@@ -2,15 +2,15 @@ import pytest
 import responses  # https://github.com/getsentry/responses
 from responses import matchers
 
-from datacrunch.constants import (
+from verda.constants import (
     ErrorCodes,
     Locations,
     VolumeActions,
     VolumeStatus,
     VolumeTypes,
 )
-from datacrunch.exceptions import APIException
-from datacrunch.volumes.volumes import Volume, VolumesService
+from verda.exceptions import APIException
+from verda.volumes.volumes import Volume, VolumesService
 
 INVALID_REQUEST = ErrorCodes.INVALID_REQUEST
 INVALID_REQUEST_MESSAGE = 'Your existence is invalid'

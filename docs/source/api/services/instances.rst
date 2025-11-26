@@ -1,8 +1,8 @@
 Instances
 =========
 
-.. autoclass:: datacrunch.instances.instances.InstancesService
+.. autoclass:: verda.instances.instances.InstancesService
    :members:
 
-.. autoclass:: datacrunch.instances.instances.Instance
+.. autoclass:: verda.instances.instances.Instance
    :members:

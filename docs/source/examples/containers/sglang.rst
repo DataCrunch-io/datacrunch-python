@@ -1,7 +1,7 @@
 SGLang Deployment
 =================
 
-This example demonstrates how to deploy and manage SGLang applications in DataCrunch.
+This example demonstrates how to deploy and manage SGLang applications in Verda.
 
 .. literalinclude:: ../../../../examples/containers/sglang_deployment_example.py
    :language: python

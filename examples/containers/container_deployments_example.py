@@ -1,4 +1,4 @@
-"""Example script demonstrating container deployment management using the DataCrunch API.
+"""Example script demonstrating container deployment management using the Verda API.
 
 This script provides a comprehensive example of container deployment lifecycle,
 including creation, monitoring, scaling, and cleanup.
@@ -7,8 +7,8 @@ including creation, monitoring, scaling, and cleanup.
 import os
 import time
 
-from datacrunch import DataCrunchClient
-from datacrunch.containers import (
+from verda import VerdaClient
+from verda.containers import (
     ComputeResource,
     Container,
     ContainerDeploymentStatus,
@@ -26,22 +26,22 @@ from datacrunch.containers import (
     SharedFileSystemMount,
     UtilizationScalingTrigger,
 )
-from datacrunch.exceptions import APIException
+from verda.exceptions import APIException
 
 # Configuration constants
 DEPLOYMENT_NAME = 'my-deployment'
 IMAGE_NAME = 'your-image-name:version'
 
 # Get client secret and id from environment variables
-DATACRUNCH_CLIENT_ID = os.environ.get('DATACRUNCH_CLIENT_ID')
-DATACRUNCH_CLIENT_SECRET = os.environ.get('DATACRUNCH_CLIENT_SECRET')
+CLIENT_ID = os.environ.get('VERDA_CLIENT_ID')
+CLIENT_SECRET = os.environ.get('VERDA_CLIENT_SECRET')
 
-# DataCrunch client instance
-datacrunch = None
+# Verda client instance
+verda = None
 
 
 def wait_for_deployment_health(
-    client: DataCrunchClient,
+    client: VerdaClient,
     deployment_name: str,
     max_attempts: int = 10,
     delay: int = 30,
@@ -49,7 +49,7 @@ def wait_for_deployment_health(
     """Wait for deployment to reach healthy status.
 
     Args:
-        client: DataCrunch API client
+        client: Verda API client
         deployment_name: Name of the deployment to check
         max_attempts: Maximum number of status checks
         delay: Delay between checks in seconds
@@ -70,11 +70,11 @@ def wait_for_deployment_health(
     return False
 
 
-def cleanup_resources(client: DataCrunchClient) -> None:
+def cleanup_resources(client: VerdaClient) -> None:
     """Clean up all created resources.
 
     Args:
-        client: DataCrunch API client
+        client: Verda API client
     """
     try:
         # Delete deployment
@@ -88,8 +88,8 @@ def main() -> None:
     """Main function demonstrating deployment lifecycle management."""
     try:
         # Initialize client
-        global datacrunch
-        datacrunch = DataCrunchClient(DATACRUNCH_CLIENT_ID, DATACRUNCH_CLIENT_SECRET)
+        global verda
+        verda = VerdaClient(CLIENT_ID, CLIENT_SECRET)
 
         # Create container configuration
         container = Container(
@@ -153,18 +153,18 @@ def main() -> None:
         )
 
         # Create the deployment
-        created_deployment = datacrunch.containers.create_deployment(deployment)
+        created_deployment = verda.containers.create_deployment(deployment)
         print(f'Created deployment: {created_deployment.name}')
 
         # Wait for deployment to be healthy
-        if not wait_for_deployment_health(datacrunch, DEPLOYMENT_NAME):
+        if not wait_for_deployment_health(verda, DEPLOYMENT_NAME):
             print('Deployment health check failed')
-            cleanup_resources(datacrunch)
+            cleanup_resources(verda)
             return
 
         # Update scaling configuration
         try:
-            deployment = datacrunch.containers.get_deployment_by_name(DEPLOYMENT_NAME)
+            deployment = verda.containers.get_deployment_by_name(DEPLOYMENT_NAME)
             # Create new scaling options with increased replica counts
             deployment.scaling = ScalingOptions(
                 min_replica_count=2,
@@ -179,9 +179,7 @@ def main() -> None:
                     gpu_utilization=UtilizationScalingTrigger(enabled=True, threshold=80),
                 ),
             )
-            updated_deployment = datacrunch.containers.update_deployment(
-                DEPLOYMENT_NAME, deployment
-            )
+            updated_deployment = verda.containers.update_deployment(DEPLOYMENT_NAME, deployment)
             print(f'Updated deployment scaling: {updated_deployment.name}')
         except APIException as e:
             print(f'Error updating scaling options: {e}')
@@ -189,32 +187,32 @@ def main() -> None:
         # Demonstrate deployment operations
         try:
             # Pause deployment
-            datacrunch.containers.pause_deployment(DEPLOYMENT_NAME)
+            verda.containers.pause_deployment(DEPLOYMENT_NAME)
             print('Deployment paused')
             time.sleep(60)
 
             # Resume deployment
-            datacrunch.containers.resume_deployment(DEPLOYMENT_NAME)
+            verda.containers.resume_deployment(DEPLOYMENT_NAME)
             print('Deployment resumed')
 
             # Restart deployment
-            datacrunch.containers.restart_deployment(DEPLOYMENT_NAME)
+            verda.containers.restart_deployment(DEPLOYMENT_NAME)
             print('Deployment restarted')
 
             # Purge queue
-            datacrunch.containers.purge_deployment_queue(DEPLOYMENT_NAME)
+            verda.containers.purge_deployment_queue(DEPLOYMENT_NAME)
             print('Queue purged')
         except APIException as e:
             print(f'Error in deployment operations: {e}')
 
         # Clean up
-        cleanup_resources(datacrunch)
+        cleanup_resources(verda)
 
     except Exception as e:
         print(f'Unexpected error: {e}')
         # Attempt cleanup even if there was an error
         try:
-            cleanup_resources(datacrunch)
+            cleanup_resources(verda)
         except Exception as cleanup_error:
             print(f'Error during cleanup after failure: {cleanup_error}')
 
