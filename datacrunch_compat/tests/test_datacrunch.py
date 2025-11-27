@@ -50,3 +50,21 @@ def test_datacrunch_constants_module():
 
     assert constants.base_url == 'url'
     assert constants.version == 'v1'
+
+
+def test_datacrunch_constants_submodule():
+    # Test that old re-exports in datacrunch.constants still work
+
+    with pytest.warns(DeprecationWarning, match='datacrunch is deprecated'):
+        from datacrunch.constants import Locations
+
+    assert Locations.FIN_03 == 'FIN-03'
+
+
+def test_datacrunch_inference_submodule():
+    # Test that old re-exports in datacrunch.InferenceClient.* still work
+
+    with pytest.warns(DeprecationWarning, match='datacrunch is deprecated'):
+        from datacrunch.InferenceClient.inference_client import AsyncStatus
+
+    assert AsyncStatus.Initialized == 'Initialized'
