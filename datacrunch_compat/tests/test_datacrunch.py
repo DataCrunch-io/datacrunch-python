@@ -68,3 +68,8 @@ def test_datacrunch_inference_submodule():
         from datacrunch.InferenceClient.inference_client import AsyncStatus
 
     assert AsyncStatus.Initialized == 'Initialized'
+
+
+def test_datacrunch_instances_instances():
+    with pytest.warns(DeprecationWarning, match='datacrunch is deprecated'):
+        from datacrunch.instances.instances import InstancesService

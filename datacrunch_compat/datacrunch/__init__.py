@@ -1,7 +1,7 @@
 # Compatibility layer for deprecated `datacrunch` package
 
+from verda import VerdaClient as DataCrunchClient
 from verda import (
-    InferenceClient,
     __version__,
     authentication,
     balance,
@@ -19,12 +19,12 @@ from verda import (
     volume_types,
     volumes,
 )
-from verda import VerdaClient as DataCrunchClient
+from verda import inference_client as Inference_client
 
 # For old `from datacrunch import *``
 __all__ = [
     'DataCrunchClient',
-    'InferenceClient',
+    'Inference_client',
     '__version__',
     'authentication',
     'balance',

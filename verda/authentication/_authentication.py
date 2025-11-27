@@ -2,7 +2,7 @@ import time
 
 import requests
 
-from verda.http_client.http_client import handle_error
+from verda.http_client import handle_error
 
 TOKEN_ENDPOINT = '/oauth2/token'
 

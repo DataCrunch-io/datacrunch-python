@@ -2,10 +2,7 @@ import pytest
 import responses  # https://github.com/getsentry/responses
 
 from verda.exceptions import APIException
-from verda.startup_scripts.startup_scripts import (
-    StartupScript,
-    StartupScriptsService,
-)
+from verda.startup_scripts import StartupScript, StartupScriptsService
 
 INVALID_REQUEST = 'invalid_request'
 INVALID_REQUEST_MESSAGE = 'Your existence is invalid'

@@ -2,7 +2,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from verda.http_client.http_client import HTTPClient
+from verda.http_client import HTTPClient
 
 BASE_URL = 'https://api.example.com/v1'
 ACCESS_TOKEN = 'test-token'

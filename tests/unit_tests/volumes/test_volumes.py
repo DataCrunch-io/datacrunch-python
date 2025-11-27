@@ -10,7 +10,7 @@ from verda.constants import (
     VolumeTypes,
 )
 from verda.exceptions import APIException
-from verda.volumes.volumes import Volume, VolumesService
+from verda.volumes import Volume, VolumesService
 
 INVALID_REQUEST = ErrorCodes.INVALID_REQUEST
 INVALID_REQUEST_MESSAGE = 'Your existence is invalid'

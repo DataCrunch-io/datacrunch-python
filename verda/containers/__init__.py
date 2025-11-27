@@ -1,4 +1,4 @@
-from .containers import (
+from ._containers import (
     AWSECRCredentials,
     BaseRegistryCredentials,
     ComputeResource,

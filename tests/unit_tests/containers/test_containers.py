@@ -2,11 +2,7 @@ import pytest
 import responses  # https://github.com/getsentry/responses
 from responses import matchers
 
-from verda.containers.containers import (
-    CONTAINER_DEPLOYMENTS_ENDPOINT,
-    CONTAINER_REGISTRY_CREDENTIALS_ENDPOINT,
-    SECRETS_ENDPOINT,
-    SERVERLESS_COMPUTE_RESOURCES_ENDPOINT,
+from verda.containers import (
     AWSECRCredentials,
     ComputeResource,
     Container,
@@ -32,6 +28,12 @@ from verda.containers.containers import (
     UtilizationScalingTrigger,
     VolumeMount,
     VolumeMountType,
+)
+from verda.containers._containers import (
+    CONTAINER_DEPLOYMENTS_ENDPOINT,
+    CONTAINER_REGISTRY_CREDENTIALS_ENDPOINT,
+    SECRETS_ENDPOINT,
+    SERVERLESS_COMPUTE_RESOURCES_ENDPOINT,
 )
 from verda.exceptions import APIException
 
