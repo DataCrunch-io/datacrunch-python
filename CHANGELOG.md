@@ -7,11 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.17.3] - 2025-11-27
+
 ### Fixed
 
 - `datacrunch`: fix imports from `datacrunch.instances.instances` and other similar modules
 
-### Changed 
+### Changed
 
 - `verda`: removed repeating submodules like `.instances.instances`.
 - `verda`: renamed `.InferenceClient.inference_client` module to `.inference_client`.
