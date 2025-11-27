@@ -86,6 +86,7 @@ ignore = ["F401", "B006", "D100", "D105", "D107"]
 [tool.ruff.lint.per-file-ignores]
 "{tests,examples,datacrunch_compat/tests}/*" = ["D"]
 "__init__.py" = ["D104"]
+"datacrunch_compat/datacrunch/*.py" = ["F403"]
 
 [tool.ruff.format]
 quote-style = "single"

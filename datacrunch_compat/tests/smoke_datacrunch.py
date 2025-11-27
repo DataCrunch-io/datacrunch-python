@@ -1,6 +1,7 @@
-import datacrunch
 import responses
 from datacrunch import DataCrunchClient
+from datacrunch.constants import Locations
+from datacrunch.InferenceClient.inference_client import AsyncStatus
 
 BASE_URL = 'https://example.com'
 
@@ -22,6 +23,10 @@ def main():
 
     client = DataCrunchClient('id', 'secret', BASE_URL)
     assert client.constants.base_url == BASE_URL
+
+    assert AsyncStatus.Initialized == 'Initialized'
+
+    assert Locations.FIN_03 == 'FIN-03'
 
 
 if __name__ == '__main__':
