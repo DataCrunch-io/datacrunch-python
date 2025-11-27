@@ -5,11 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- `datacrunch` package now imports `verda`, tracking its releases
+- Moved `DataCrunchClient` and `.datacrunch` sub-module into compatibility `datacrunch` package
+
 ## [1.17.0] - 2025-11-26
 
 ### Highlights
 
-- `datacrunch` package is now `verda`, because the company [changed the name to Verda](https://verda.com/blog/datacrunch-is-changing-its-name-to-verda). Original `datacrunch` package does not go anywhere and would continue tracking `verda` releases.
+- `datacrunch` package is now `verda`, because [DataCrunch company changed its name to Verda](https://verda.com/blog/datacrunch-is-changing-its-name-to-verda). Original `datacrunch` package is deprecated, but it would continue tracking `verda` releases.
 
 ### Deprecated
 
@@ -19,7 +26,7 @@ Was:
 
 ```shell
 uv add datacrunch
-pip3 install datacrunch
+pip install datacrunch
 ```
 
 ```python
@@ -33,7 +40,7 @@ Now:
 
 ```shell
 uv add verda
-pip3 install verda
+pip install verda
 ```
 
 ```python

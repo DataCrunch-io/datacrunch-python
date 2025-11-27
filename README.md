@@ -20,7 +20,7 @@ Verda Public API documentation [is available here](https://api.verda.com/v1/docs
 
   ```bash
   # via pip
-  pip3 install verda
+  pip install verda
 
   # via uv
   uv add verda
@@ -117,7 +117,7 @@ Create a file in the root directory of the project:
 
 ```python
 # example.py
-from verda.verda import VerdaClient
+from verda import VerdaClient
 
 CLIENT_SECRET = 'secret'
 CLIENT_ID = 'your-id'

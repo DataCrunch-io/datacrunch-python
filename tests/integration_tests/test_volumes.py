@@ -3,8 +3,8 @@ import time
 
 import pytest
 
+from verda import VerdaClient
 from verda.constants import Locations, VolumeStatus, VolumeTypes
-from verda.verda import VerdaClient
 
 IN_GITHUB_ACTIONS = os.getenv('GITHUB_ACTIONS') == 'true'
 
