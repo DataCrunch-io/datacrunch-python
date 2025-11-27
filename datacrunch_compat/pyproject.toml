@@ -25,7 +25,7 @@ classifiers = [
 Homepage = "https://github.com/verda-cloud"
 Documentation = "https://datacrunch-python.readthedocs.io/"
 Repository = "https://github.com/verda-cloud/sdk-python"
-Changelog = "https://datacrunch-python.readthedocs.io/en/latest/changelog.html"
+Changelog = "https://github.com/verda-cloud/sdk-python/blob/master/CHANGELOG.md"
 
 [build-system]
 requires = ["uv_build>=0.9.5,<0.10.0"]
