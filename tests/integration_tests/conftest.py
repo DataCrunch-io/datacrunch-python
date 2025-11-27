@@ -3,7 +3,7 @@ import os
 import pytest
 from dotenv import load_dotenv
 
-from verda.verda import VerdaClient
+from verda import VerdaClient
 
 """
 Make sure to run the server and the account has enough balance before running the tests

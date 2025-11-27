@@ -3,7 +3,7 @@ import os
 import pytest
 
 from verda.constants import Locations
-from verda.verda import VerdaClient
+from verda import VerdaClient
 
 IN_GITHUB_ACTIONS = os.getenv('GITHUB_ACTIONS') == 'true'
 
