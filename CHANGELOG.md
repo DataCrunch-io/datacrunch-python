@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.17.1] - 2025-11-27
+
 ### Changed
 
 - `datacrunch` package now imports `verda`, tracking its releases
