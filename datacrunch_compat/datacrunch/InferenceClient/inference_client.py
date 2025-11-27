@@ -1,1 +1,1 @@
-from verda.InferenceClient.inference_client import *
+from verda.inference_client import *

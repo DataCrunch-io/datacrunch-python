@@ -1,8 +1,7 @@
 import os
 from time import sleep
 
-from verda.InferenceClient import InferenceClient
-from verda.InferenceClient.inference_client import AsyncStatus
+from verda.inference_client import AsyncStatus, InferenceClient
 
 # Get inference key and endpoint base url from environment variables
 INFERENCE_KEY = os.environ.get('VERDA_INFERENCE_KEY')

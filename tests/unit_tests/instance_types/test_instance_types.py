@@ -1,6 +1,6 @@
 import responses  # https://github.com/getsentry/responses
 
-from verda.instance_types.instance_types import InstanceType, InstanceTypesService
+from verda.instance_types import InstanceType, InstanceTypesService
 
 TYPE_ID = '01cf5dc1-a5d2-4972-ae4e-d429115d055b'
 CPU_DESCRIPTION = '48 CPU 3.5GHz'

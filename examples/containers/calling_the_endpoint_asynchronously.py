@@ -2,7 +2,7 @@ import os
 from time import sleep
 
 from verda import VerdaClient
-from verda.InferenceClient.inference_client import AsyncStatus
+from verda.inference_client import AsyncStatus
 
 # Configuration - replace with your deployment name
 DEPLOYMENT_NAME = os.environ.get('VERDA_DEPLOYMENT_NAME')

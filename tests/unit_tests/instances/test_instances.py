@@ -3,7 +3,7 @@ import responses  # https://github.com/getsentry/responses
 
 from verda.constants import Actions, ErrorCodes, Locations
 from verda.exceptions import APIException
-from verda.instances.instances import Instance, InstancesService
+from verda.instances import Instance, InstancesService
 
 INVALID_REQUEST = ErrorCodes.INVALID_REQUEST
 INVALID_REQUEST_MESSAGE = 'Your existence is invalid'

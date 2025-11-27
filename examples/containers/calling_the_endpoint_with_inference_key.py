@@ -1,6 +1,6 @@
 import os
 
-from verda.InferenceClient import InferenceClient
+from verda.inference_client import InferenceClient
 
 # Get inference key and endpoint base url from environment variables
 INFERENCE_KEY = os.environ.get('VERDA_INFERENCE_KEY')

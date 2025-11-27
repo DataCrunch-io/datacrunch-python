@@ -12,8 +12,8 @@ from typing import Any
 
 from dataclasses_json import Undefined, dataclass_json  # type: ignore
 
-from verda.http_client.http_client import HTTPClient
-from verda.InferenceClient import InferenceClient, InferenceResponse
+from verda.http_client import HTTPClient
+from verda.inference_client import InferenceClient, InferenceResponse
 
 # API endpoints
 CONTAINER_DEPLOYMENTS_ENDPOINT = '/container-deployments'
