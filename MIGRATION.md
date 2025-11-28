@@ -1,10 +1,10 @@
-### Migration from `datacrunch` to `verda`
+# Migration from `datacrunch` to `verda`
 
 On November 2025 [DataCrunch company changed its name to Verda](https://verda.com/blog/datacrunch-is-changing-its-name-to-verda). Starting with version 1.17.0, `verda` is the new name for the Python package.
 
 Original `datacrunch` package is deprecated, but we will continue maintaining it, publishing new `datacrunch` releases together with the new `verda` releases using the same version numbers.
 
-### Migration guide
+## Migration guide
 
 While we plan to continue maintaining `datacrunch` package, we recommend migrating to `verda`. Except for import changes, API is the same.
 
