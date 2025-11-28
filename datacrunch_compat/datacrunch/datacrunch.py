@@ -34,11 +34,3 @@ __all__ = [
     'VolumesService',
     '__version__',
 ]
-
-import warnings
-
-warnings.warn(
-    'datacrunch is deprecated; use verda package instead: https://github.com/verda-cloud/sdk-python/blob/master/CHANGELOG.md#1170---2025-11-26',
-    DeprecationWarning,
-    stacklevel=2,
-)

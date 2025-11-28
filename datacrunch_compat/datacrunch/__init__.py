@@ -47,7 +47,7 @@ __all__ = [
 import warnings
 
 warnings.warn(
-    'datacrunch is deprecated; use verda package instead: https://github.com/verda-cloud/sdk-python/blob/master/CHANGELOG.md#1170---2025-11-26',
+    'datacrunch is deprecated; use verda package instead: https://github.com/verda-cloud/sdk-python/blob/master/MIGRATION.md',
     DeprecationWarning,
     stacklevel=2,
 )

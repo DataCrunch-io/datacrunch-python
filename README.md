@@ -14,6 +14,8 @@ The SDK's documentation is available on [ReadTheDocs](https://datacrunch-python.
 
 Verda Public API documentation [is available here](https://api.verda.com/v1/docs).
 
+This package was originally published under `datacrunch` name, see [MIGRATION.md](./MIGRATION.md) for details.
+
 ## Getting Started - Using the SDK:
 
 - Install:
@@ -39,7 +41,6 @@ Verda Public API documentation [is available here](https://api.verda.com/v1/docs
   ```
 
 - To enable sending inference requests from SDK you must generate an inference key - [Instructions on inference authorization](https://docs.verda.com/inference/authorization)
-  
 
 - Add your inference key to an environment variable
 
@@ -51,8 +52,6 @@ Verda Public API documentation [is available here](https://api.verda.com/v1/docs
   
   Other platforms:
   https://en.wikipedia.org/wiki/Environment_variable
-
-
 
 - Example for creating a new instance:
 
